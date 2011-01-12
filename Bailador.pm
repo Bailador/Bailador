@@ -21,7 +21,7 @@ sub dispatch($env) {
     return "404";
 }
 
-sub bailar is export {
+sub baile is export {
     my $app = sub ($env) {
         my $res = dispatch($env);
         return ['200', [ 'Content-Type' => 'text/plain' ], $res];
