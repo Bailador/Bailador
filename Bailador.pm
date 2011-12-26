@@ -1,34 +1,39 @@
 module Bailador;
 
-use HTTP::Server::Simple::PSGI;
+use HTTP::Easy::PSGI;
 
-my @routes;
+my %routes;
+%routes<GET> = [];
 
 multi get(Pair $x) is export {
-    @routes.push: $x;
+    %routes<GET>.push: $x;
 }
 
 sub dispatch($env) {
-    for @routes -> $r {
+    my $res = '';
+    for %routes{$env<REQUEST_METHOD>}.list -> $r {
         if $env<REQUEST_URI> ~~ $r.key {
             if $/ {
-                return $r.value.(|$/.list);
+                $res = $r.value.(|$/.list);
             } else {
-                return $r.value.();
+                $res = $r.value.();
             }
         }
     }
-    return "404";
+    if $res {
+        return [200, [ 'Content-Type' => 'text/plain' ], [$res]];
+    } else {
+        return [404, [ 'Content-Type' => 'text/plain' ], ['Not found']];
+    }
 }
 
 sub baile is export {
     my $app = sub ($env) {
+        return dispatch($env);
         my $res = dispatch($env);
-        return ['200', [ 'Content-Type' => 'text/plain' ], $res];
     }
 
-    given HTTP::Server::Simple::PSGI.new {
-        .host = 'localhost';
+    given HTTP::Easy::PSGI.new {
         .app($app);
         .run;
     }
