@@ -34,7 +34,7 @@ sub dispatch($env) {
         }
     }
     if $res {
-        return [200, [ 'Content-Type' => 'text/plain' ], [$res]];
+        return [200, [ 'Content-Type' => 'text/html' ], [$res]];
     } else {
         return [404, [ 'Content-Type' => 'text/plain' ], ['Not found']];
     }
