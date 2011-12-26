@@ -3,5 +3,5 @@
     "version"     : "*",
     "description" : "A bare-bones Dancer port",
     "depends"     : [ "HTTP::Easy" ],
-    "source-url"  : "git://github.com/tadzik/bailador.git"
+    "source-url"  : "git://github.com/tadzik/Bailador.git"
 }
