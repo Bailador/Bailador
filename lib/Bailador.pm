@@ -23,7 +23,7 @@ sub route_to_regex($route) {
 multi parse_route(Str $route) {
     my $r = route_to_regex($route);
     say $r.perl;
-    return / ^ <$r> $ /
+    return / ^ <_capture=$r> $ /
 }
 
 multi parse_route($route) {
@@ -66,6 +66,7 @@ sub dispatch($env) {
         if $env<REQUEST_URI> ~~ $r.key {
             $current-response.code = 200;
             if $/ {
+                unless $/[0] { $/ = $/<_capture> }
                 $current-response.content = $r.value.(|$/.list);
             } else {
                 $current-response.content = $r.value.();
