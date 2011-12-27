@@ -1,5 +1,5 @@
 class Bailador::Request {
-    has $.env;
+    has $.env is rw;
 
     method params {
         my %ret;
