@@ -1,12 +1,14 @@
 module Bailador;
 use Bailador::Request;
+use Bailador::Response;
 use HTTP::Easy::PSGI;
 
 my %routes;
 %routes<GET>  = [];
 %routes<POST> = [];
 
-my $current-request;
+my $current-request  = Bailador::Request.new;
+my $current-response = Bailador::Response.new;
 
 sub get(Pair $x) is export {
     %routes<GET>.push: $x;
@@ -20,24 +22,34 @@ sub post(Pair $x) is export {
 
 sub request is export { $current-request }
 
+sub content_type(Str $type) is export {
+    $current-response.headers<Content-Type> = $type;
+}
+
+sub status(Int $code) is export {
+    $current-response.code = $code;
+}
+
 sub dispatch($env) {
     my $res = '';
-    $current-request = Bailador::Request.new(:$env);
+
+    $current-request.env      = $env;
+    $current-response.code    = 404;
+    $current-response.content = 'Not found';
+    $current-response.headers<Content-Type> = 'text/html';
+
     for %routes{$env<REQUEST_METHOD>}.list -> $r {
         next unless $r;
         if $env<REQUEST_URI> ~~ $r.key {
+            $current-response.code = 200;
             if $/ {
-                $res = $r.value.(|$/.list);
+                $current-response.content = $r.value.(|$/.list);
             } else {
-                $res = $r.value.();
+                $current-response.content = $r.value.();
             }
         }
     }
-    if $res {
-        return [200, [ 'Content-Type' => 'text/html' ], [$res]];
-    } else {
-        return [404, [ 'Content-Type' => 'text/plain' ], ['Not found']];
-    }
+    return $current-response.psgi;
 }
 
 sub baile is export {
