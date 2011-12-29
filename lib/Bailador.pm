@@ -1,6 +1,7 @@
 module Bailador;
 use Bailador::Request;
 use Bailador::Response;
+use Ratel;
 use HTTP::Easy::PSGI;
 
 my %routes;
@@ -9,6 +10,7 @@ my %routes;
 
 my $current-request  = Bailador::Request.new;
 my $current-response = Bailador::Response.new;
+my $template-engine  = Ratel.new;
 
 sub get(Pair $x) is export {
     %routes<GET>.push: $x;
@@ -28,6 +30,11 @@ sub content_type(Str $type) is export {
 
 sub status(Int $code) is export {
     $current-response.code = $code;
+}
+
+sub template(Str $tmpl, %params) is export {
+    $template-engine.load("views/$tmpl");
+    return $template-engine.render(|%params);
 }
 
 sub dispatch($env) {
