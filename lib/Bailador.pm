@@ -22,7 +22,6 @@ sub route_to_regex($route) {
 
 multi parse_route(Str $route) {
     my $r = route_to_regex($route);
-    say $r.perl;
     return / ^ <_capture=$r> $ /
 }
 
