@@ -10,13 +10,35 @@ my %routes;
 my $current-request  = Bailador::Request.new;
 my $current-response = Bailador::Response.new;
 
+sub route_to_regex($route) {
+    $route.split('/').map({
+        my $r = $_;
+        if $_.substr(0, 1) eq ':' {
+            $r = q{(<-[\/\.]>+)};
+        }
+        $r
+    }).join("'/'");
+}
+
+multi parse_route(Str $route) {
+    my $r = route_to_regex($route);
+    return / ^ <_capture=$r> $ /
+}
+
+multi parse_route($route) {
+    # do nothing
+    $route
+}
+
 sub get(Pair $x) is export {
-    %routes<GET>.push: $x;
+    my $p = parse_route($x.key) => $x.value;
+    %routes<GET>.push: $p;
     return $x;
 }
 
 sub post(Pair $x) is export {
-    %routes<POST>.push: $x;
+    my $p = parse_route($x.key) => $x.value;
+    %routes<POST>.push: $p;
     return $x;
 }
 
@@ -43,6 +65,7 @@ sub dispatch($env) {
         if $env<REQUEST_URI> ~~ $r.key {
             $current-response.code = 200;
             if $/ {
+                unless $/[0] { $/ = $/<_capture> }
                 $current-response.content = $r.value.(|$/.list);
             } else {
                 $current-response.content = $r.value.();

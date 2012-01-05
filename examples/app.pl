@@ -9,6 +9,10 @@ get '/about' => sub {
     "about me"
 };
 
+get '/hello/:name' => sub ($name) {
+    "Hello $name!"
+};
+
 # regexes, as usual
 get /foo(.+)/ => sub ($x) {
     "regexes! I got $x"
