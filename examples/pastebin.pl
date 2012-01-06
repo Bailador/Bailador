@@ -5,12 +5,7 @@ unless 'data'.IO ~~ :d {
 }
 
 get '/' => sub {
-    q[
-<form action='/new_paste' method='post'>
-	<textarea name='content' cols=50 rows=10></textarea><br />
-	<input type='submit' value='Paste it!' />
-</form>
-    ]
+    template 'index.tt'
 }
 
 post '/new_paste' => sub {
