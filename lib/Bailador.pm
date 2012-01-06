@@ -54,7 +54,7 @@ sub status(Int $code) is export {
     $current-response.code = $code;
 }
 
-sub template(Str $tmpl, %params) is export {
+sub template(Str $tmpl, %params = {}) is export {
     $template-engine.load("views/$tmpl");
     return $template-engine.render(|%params);
 }
