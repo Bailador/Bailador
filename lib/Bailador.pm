@@ -83,13 +83,8 @@ sub dispatch($env) {
 }
 
 sub baile is export {
-    my $app = sub ($env) {
-        return dispatch($env);
-        my $res = dispatch($env);
-    }
-
     given HTTP::Easy::PSGI.new(port => 3000) {
-        .app($app);
+        .app(&dispatch);
         .run;
     }
 }
