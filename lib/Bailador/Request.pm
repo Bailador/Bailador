@@ -10,6 +10,10 @@ class Bailador::Request {
         return %ret;
     }
 
+    method new_for_request($meth, $path) {
+        self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path}
+    }
+
     method port        { $.env<SERVER_PORT>      }
     method request_uri { $.env<REQUEST_URI>      }
     method uri         { self.request_uri        }
