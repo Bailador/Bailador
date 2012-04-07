@@ -1,13 +1,11 @@
 module Bailador;
+use Bailador::App;
 use Bailador::Request;
 use Bailador::Response;
 use Ratel;
 use HTTP::Easy::PSGI;
 
-my %routes;
-%routes<GET>  = [];
-%routes<POST> = [];
-
+my $current-app      = Bailador::App.current;
 my $current-request  = Bailador::Request.new;
 my $current-response = Bailador::Response.new;
 my $template-engine  = Ratel.new;
@@ -34,13 +32,13 @@ multi parse_route($route) {
 
 sub get(Pair $x) is export {
     my $p = parse_route($x.key) => $x.value;
-    %routes<GET>.push: $p;
+    $current-app.add_route: 'GET', $p;
     return $x;
 }
 
 sub post(Pair $x) is export {
     my $p = parse_route($x.key) => $x.value;
-    %routes<POST>.push: $p;
+    $current-app.add_route: 'POST', $p;
     return $x;
 }
 
@@ -67,16 +65,14 @@ sub dispatch($env) {
     $current-response.content = 'Not found';
     $current-response.headers<Content-Type> = 'text/html';
 
-    for %routes{$env<REQUEST_METHOD>}.list -> $r {
-        next unless $r;
-        if $env<REQUEST_URI> ~~ $r.key {
-            $current-response.code = 200;
-            if $/ {
-                unless $/[0] { $/ = $/<_capture> }
-                $current-response.content = $r.value.(|$/.list);
-            } else {
-                $current-response.content = $r.value.();
-            }
+    my $r = $current-app.find_route($env);
+    if $r {
+        $current-response.code = 200;
+        if $/ {
+            unless $/[0] { $/ = $/<_capture> }
+            $current-response.content = $r.value.(|$/.list);
+        } else {
+            $current-response.content = $r.value.();
         }
     }
     return $current-response.psgi;
