@@ -26,8 +26,18 @@ sub response-status-isnt($meth, $path, $status, $desc = '') is export {
     isnt $resp.code, $status, $desc;
 }
 
-sub response-content-is($meth, $path, $cont, $desc) is export { ... }
-sub response-content-isnt($meth, $path, $cont, $desc) is export { ... }
+sub response-content-is($meth, $path, $cont, $desc = '') is export {
+    my $req = Bailador::Request.new_for_request($meth, $path);
+    my $resp = Bailador::dispatch_request($req);
+    is ~$resp.content, $cont, $desc;
+}
+
+sub response-content-isnt($meth, $path, $cont, $desc = '') is export {
+    my $req = Bailador::Request.new_for_request($meth, $path);
+    my $resp = Bailador::dispatch_request($req);
+    isnt ~$resp.content, $cont, $desc;
+}
+
 sub response-content-is-deeply($meth, $path, $cont, $desc) is export { ... }
 sub response-content-like($meth, $path, $cont, $desc) is export { ... }
 sub response-content-unlike($meth, $path, $cont, $desc) is export { ... }
