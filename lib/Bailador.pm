@@ -1,9 +1,10 @@
-module Bailador;
 use Bailador::App;
 use Bailador::Request;
 use Bailador::Response;
 use Ratel;
 use HTTP::Easy::PSGI;
+
+module Bailador;
 
 my $current-app      = Bailador::App.current;
 my $current-request  = Bailador::Request.new;
@@ -57,15 +58,19 @@ sub template(Str $tmpl, %params = {}) is export {
     return $template-engine.render(|%params);
 }
 
-sub dispatch($env) {
-    my $res = '';
+our sub dispatch_request(Bailador::Request $r) {
+    return dispatch($r.env);
+}
 
-    $current-request.env      = $env;
+sub dispatch($env) {
+    $current-request.env = $env;
+
     $current-response.code    = 404;
     $current-response.content = 'Not found';
     $current-response.headers<Content-Type> = 'text/html';
 
     my $r = $current-app.find_route($env);
+
     if $r {
         $current-response.code = 200;
         if $/ {
@@ -75,12 +80,17 @@ sub dispatch($env) {
             $current-response.content = $r.value.();
         }
     }
-    return $current-response.psgi;
+
+    return $current-response;
+}
+
+sub dispatch-psgi($env) {
+    return dispatch($env).psgi;
 }
 
 sub baile is export {
     given HTTP::Easy::PSGI.new(port => 3000) {
-        .app(&dispatch);
+        .app(&dispatch-psgi);
         .run;
     }
 }

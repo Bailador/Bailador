@@ -1,7 +1,8 @@
-module Bailador::Test;
-
 use Test;
-use Bailador::App;
+use Bailador;
+use Bailador::Request;
+
+module Bailador::Test;
 
 sub route-exists($meth, $path, $desc = '') is export {
     my $req = Bailador::Request.new_for_request($meth, $path);
@@ -13,8 +14,17 @@ sub route-doesnt-exist($meth, $path, $desc = '') is export {
     ok !Bailador::App.current.find_route($req), $desc;
 }
 
-sub response-status-is($meth, $path, $status, $desc) is export { ... }
-sub response-status-isnt($meth, $path, $status, $desc) is export { ... }
+sub response-status-is($meth, $path, $status, $desc = '') is export {
+    my $req = Bailador::Request.new_for_request($meth, $path);
+    my $resp = Bailador::dispatch_request($req);
+    is $resp.code, $status, $desc;
+}
+
+sub response-status-isnt($meth, $path, $status, $desc = '') is export {
+    my $req = Bailador::Request.new_for_request($meth, $path);
+    my $resp = Bailador::dispatch_request($req);
+    isnt $resp.code, $status, $desc;
+}
 
 sub response-content-is($meth, $path, $cont, $desc) is export { ... }
 sub response-content-isnt($meth, $path, $cont, $desc) is export { ... }
