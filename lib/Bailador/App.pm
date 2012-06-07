@@ -10,7 +10,6 @@ class Bailador::App {
     method request  { $.context.request  }
     method response { $.context.response }
     method template(Str $tmpl, @params) {
-        say slurp $tmpl;
         $!template.new(slurp $tmpl).render(|@params);
     }
 
