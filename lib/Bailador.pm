@@ -1,14 +1,13 @@
 use Bailador::App;
 use Bailador::Request;
 use Bailador::Response;
+use Bailador::Context;
 use Ratel;
 use HTTP::Easy::PSGI;
 
 module Bailador;
 
 my $current-app      = Bailador::App.current;
-my $current-request  = Bailador::Request.new;
-my $current-response = Bailador::Response.new;
 my $template-engine  = Ratel.new;
 
 sub route_to_regex($route) {
@@ -43,14 +42,14 @@ sub post(Pair $x) is export {
     return $x;
 }
 
-sub request is export { $current-request }
+sub request is export { $current-app.context.request }
 
 sub content_type(Str $type) is export {
-    $current-response.headers<Content-Type> = $type;
+    $current-app.response.headers<Content-Type> = $type;
 }
 
 sub status(Int $code) is export {
-    $current-response.code = $code;
+    $current-app.response.code = $code;
 }
 
 sub template(Str $tmpl, %params = {}) is export {
@@ -63,25 +62,21 @@ our sub dispatch_request(Bailador::Request $r) {
 }
 
 sub dispatch($env) {
-    $current-request.env = $env;
-
-    $current-response.code    = 404;
-    $current-response.content = 'Not found';
-    $current-response.headers<Content-Type> = 'text/html';
+    $current-app.context.env = $env;
 
     my $r = $current-app.find_route($env);
 
     if $r {
-        $current-response.code = 200;
+        status 200;
         if $/ {
             unless $/[0] { $/ = $/<_capture> }
-            $current-response.content = $r.value.(|$/.list);
+            $current-app.response.content = $r.value.(|$/.list);
         } else {
-            $current-response.content = $r.value.();
+            $current-app.response.content = $r.value.();
         }
     }
 
-    return $current-response;
+    return $current-app.response;
 }
 
 sub dispatch-psgi($env) {

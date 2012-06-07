@@ -1,7 +1,12 @@
 use Bailador::Request;
+use Bailador::Context;
 
 class Bailador::App {
-    has %.routes = { GET => [], 'POST' => [] };
+    has %.routes  = { GET => [], 'POST' => [] };
+    has Bailador::Context $.context = Bailador::Context.new;
+
+    method request  { $.context.request  }
+    method response { $.context.response }
 
     my $current = Bailador::App.new;
 
