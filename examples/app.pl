@@ -1,3 +1,5 @@
+use lib 'lib';
+
 use Bailador;
 
 # simple cases

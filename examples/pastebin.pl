@@ -1,3 +1,5 @@
+use lib 'lib';
+
 use Bailador;
 
 unless 'data'.IO ~~ :d {
@@ -5,7 +7,7 @@ unless 'data'.IO ~~ :d {
 }
 
 get '/' => sub {
-    template 'index.tt'
+    template 'examples/views/index.tt'
 }
 
 post '/new_paste' => sub {
