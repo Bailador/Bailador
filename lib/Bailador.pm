@@ -62,13 +62,13 @@ our sub dispatch_request(Bailador::Request $r) {
 sub dispatch($env) {
     $app.context.env = $env;
 
-    my $r = $app.find_route($env);
+    my ($r, $match) = $app.find_route($env);
 
     if $r {
         status 200;
-        if $/ {
-            unless $/[0] { $/ = $/<_capture> }
-            $app.response.content = $r.value.(|$/.list);
+        if $match {
+            unless $match[0] { $match = $match<_capture> }
+            $app.response.content = $r.value.(|$match.list);
         } else {
             $app.response.content = $r.value.();
         }

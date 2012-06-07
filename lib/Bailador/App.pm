@@ -32,7 +32,7 @@ class Bailador::App {
         for %.routes{$meth}.list -> $r {
             next unless $r;
             if $uri ~~ $r.key {
-                return $r;
+                return $r, $/;
             }
         }
         return;
