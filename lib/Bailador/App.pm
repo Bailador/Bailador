@@ -1,12 +1,18 @@
 use Bailador::Request;
 use Bailador::Context;
+use Template::Mojo;
 
 class Bailador::App {
     has %.routes  = { GET => [], 'POST' => [] };
-    has Bailador::Context $.context = Bailador::Context.new;
+    has Bailador::Context  $.context  = Bailador::Context.new;
+    has Template::Mojo     $!template; # type object
 
     method request  { $.context.request  }
     method response { $.context.response }
+    method template(Str $tmpl, @params) {
+        say slurp $tmpl;
+        $!template.new(slurp $tmpl).render(|@params);
+    }
 
     my $current = Bailador::App.new;
 

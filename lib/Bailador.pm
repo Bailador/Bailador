@@ -7,8 +7,7 @@ use HTTP::Easy::PSGI;
 
 module Bailador;
 
-my $current-app      = Bailador::App.current;
-my $template-engine  = Ratel.new;
+my $app = Bailador::App.current;
 
 sub route_to_regex($route) {
     $route.split('/').map({
@@ -32,29 +31,28 @@ multi parse_route($route) {
 
 sub get(Pair $x) is export {
     my $p = parse_route($x.key) => $x.value;
-    $current-app.add_route: 'GET', $p;
+    $app.add_route: 'GET', $p;
     return $x;
 }
 
 sub post(Pair $x) is export {
     my $p = parse_route($x.key) => $x.value;
-    $current-app.add_route: 'POST', $p;
+    $app.add_route: 'POST', $p;
     return $x;
 }
 
-sub request is export { $current-app.context.request }
+sub request is export { $app.context.request }
 
 sub content_type(Str $type) is export {
-    $current-app.response.headers<Content-Type> = $type;
+    $app.response.headers<Content-Type> = $type;
 }
 
 sub status(Int $code) is export {
-    $current-app.response.code = $code;
+    $app.response.code = $code;
 }
 
-sub template(Str $tmpl, %params = {}) is export {
-    $template-engine.load("views/$tmpl");
-    return $template-engine.render(|%params);
+sub template(Str $tmpl, @params = []) is export {
+    $app.template($tmpl, @params);
 }
 
 our sub dispatch_request(Bailador::Request $r) {
@@ -62,21 +60,21 @@ our sub dispatch_request(Bailador::Request $r) {
 }
 
 sub dispatch($env) {
-    $current-app.context.env = $env;
+    $app.context.env = $env;
 
-    my $r = $current-app.find_route($env);
+    my $r = $app.find_route($env);
 
     if $r {
         status 200;
         if $/ {
             unless $/[0] { $/ = $/<_capture> }
-            $current-app.response.content = $r.value.(|$/.list);
+            $app.response.content = $r.value.(|$/.list);
         } else {
-            $current-app.response.content = $r.value.();
+            $app.response.content = $r.value.();
         }
     }
 
-    return $current-app.response;
+    return $app.response;
 }
 
 sub dispatch-psgi($env) {
