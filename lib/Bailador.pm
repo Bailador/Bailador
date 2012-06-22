@@ -11,7 +11,12 @@ my $app = Bailador::App.current;
 
 our sub import {
     my $file = callframe(1).file;
-    $app.location = $file.substr(0, $file.rindex('/'));
+    my $slash = $file.rindex('/');
+    if $slash {
+        $app.location = $file.substr(0, $file.rindex('/'));
+    } else {
+        $app.location = '.';
+    }
 }
 
 sub route_to_regex($route) {
