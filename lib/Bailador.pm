@@ -9,6 +9,11 @@ module Bailador;
 
 my $app = Bailador::App.current;
 
+our sub import {
+    my $file = callframe(1).file;
+    $app.location = $file.substr(0, $file.rindex('/'));
+}
+
 sub route_to_regex($route) {
     $route.split('/').map({
         my $r = $_;

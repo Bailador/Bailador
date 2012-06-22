@@ -1,13 +1,14 @@
 use lib 'lib';
 
 use Bailador;
+Bailador::import;
 
 unless 'data'.IO ~~ :d {
     mkdir 'data'
 }
 
 get '/' => sub {
-    template 'examples/views/index.tt'
+    template 'index.tt'
 }
 
 post '/new_paste' => sub {
