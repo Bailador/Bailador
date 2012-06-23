@@ -2,7 +2,6 @@ use Bailador::App;
 use Bailador::Request;
 use Bailador::Response;
 use Bailador::Context;
-use Ratel;
 use HTTP::Easy::PSGI;
 
 module Bailador;
