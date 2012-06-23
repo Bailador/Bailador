@@ -1,11 +1,13 @@
 class Bailador::Request {
+    use URI::Escape;
+
     has $.env is rw;
 
     method params {
         my %ret;
         for $.env<psgi.input>.split('&') -> $p {
             my $pair = $p.split('=');
-            %ret{$pair[0]} = $pair[1];
+            %ret{$pair[0]} = uri_unescape $pair[1];
         }
         return %ret;
     }
