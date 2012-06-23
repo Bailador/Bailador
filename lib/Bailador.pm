@@ -93,6 +93,7 @@ sub dispatch-psgi($env) {
 sub baile is export {
     given HTTP::Easy::PSGI.new(port => 3000) {
         .app(&dispatch-psgi);
+        say "Entering the development dance floor: http://0.0.0.0:3000";
         .run;
     }
 }
