@@ -4,14 +4,15 @@ use Bailador::Template::Mojo;
 
 class Bailador::App {
     has %.routes  = { GET => [], 'POST' => [] };
-    has $.location is rw;
+    my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $!renderer = Bailador::Template::Mojo.new;
 
     method request  { $.context.request  }
     method response { $.context.response }
+    method location is rw { return-rw $_location }
     method template(Str $tmpl, @params) {
-        $!renderer.render(slurp("$!location/views/$tmpl"), @params);
+        $!renderer.render(slurp("$_location/views/$tmpl"), @params);
     }
 
     my $current = Bailador::App.new;
@@ -29,7 +30,7 @@ class Bailador::App {
     }
 
     method _find_route($meth, $uri) {
-        for %.routes{$meth}.list -> $r {
+        for $current.routes{$meth}.list -> $r {
             next unless $r;
             if $uri ~~ $r.key {
                 return $r, $/;
@@ -39,6 +40,6 @@ class Bailador::App {
     }
 
     method add_route($meth, Pair $route) {
-        %.routes{$meth}.push: $route;
+        $current.routes{$meth}.push: $route;
     }
 }
