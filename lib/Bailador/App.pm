@@ -4,14 +4,15 @@ use Template::Mojo;
 
 class Bailador::App {
     has %.routes  = { GET => [], 'POST' => [] };
-    has $.location is rw;
+    my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Template::Mojo     $!template; # type object
 
     method request  { $.context.request  }
     method response { $.context.response }
+    method location is rw { return-rw $_location }
     method template(Str $tmpl, @params) {
-        $!template.new(slurp "$!location/views/$tmpl").render(|@params);
+        $!template.new(slurp "$_location/views/$tmpl").render(|@params);
     }
 
     my $current = Bailador::App.new;
