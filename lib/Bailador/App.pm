@@ -29,7 +29,7 @@ class Bailador::App {
     }
 
     method _find_route($meth, $uri) {
-        for %.routes{$meth}.list -> $r {
+        for $current.routes{$meth}.list -> $r {
             next unless $r;
             if $uri ~~ $r.key {
                 return $r, $/;
@@ -39,6 +39,6 @@ class Bailador::App {
     }
 
     method add_route($meth, Pair $route) {
-        %.routes{$meth}.push: $route;
+        $current.routes{$meth}.push: $route;
     }
 }
