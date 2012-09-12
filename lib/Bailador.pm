@@ -57,7 +57,7 @@ sub content_type(Str $type) is export {
 }
 
 sub header(Str $name, Cool $value) is export {
-    $app.response.headers{$name} = $value;
+    $app.response.headers{$name} = ~$value;
 }
 
 sub status(Int $code) is export {
