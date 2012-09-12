@@ -56,6 +56,10 @@ sub content_type(Str $type) is export {
     $app.response.headers<Content-Type> = $type;
 }
 
+sub header(Str $name, Cool $value) is export {
+    $app.response.headers{$name} = ~$value;
+}
+
 sub status(Int $code) is export {
     $app.response.code = $code;
 }
