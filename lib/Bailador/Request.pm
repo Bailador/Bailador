@@ -5,8 +5,8 @@ class Bailador::Request {
 
     method params {
         my %ret;
-        for $.env<psgi.input>.split('&') -> $p {
-            my $pair = $p.split('=');
+        for $.env<psgi.input>.decode.split('&') -> $p {
+            my $pair = $p.split('=', 2);
             %ret{$pair[0]} = uri_unescape $pair[1];
         }
         return %ret;
