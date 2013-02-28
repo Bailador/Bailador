@@ -30,7 +30,7 @@ sub route_to_regex($route) {
 
 multi parse_route(Str $route) {
     my $r = route_to_regex($route);
-    return / ^ <_capture=$r> $ /
+    return "/ ^ $r \$ /".eval;
 }
 
 multi parse_route($route) {
@@ -80,7 +80,6 @@ sub dispatch($env) {
     if $r {
         status 200;
         if $match {
-            unless $match[0] { $match = $match<_capture> }
             $app.response.content = $r.value.(|$match.list);
         } else {
             $app.response.content = $r.value.();
