@@ -93,10 +93,10 @@ sub dispatch-psgi($env) {
     return dispatch($env).psgi;
 }
 
-sub baile is export {
-    given HTTP::Easy::PSGI.new(port => 3000) {
+sub baile($port = 3000) is export {
+    given HTTP::Easy::PSGI.new(:$port) {
         .app(&dispatch-psgi);
-        say "Entering the development dance floor: http://0.0.0.0:3000";
+        say "Entering the development dance floor: http://0.0.0.0:$port";
         .run;
     }
 }
