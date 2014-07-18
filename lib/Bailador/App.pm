@@ -3,7 +3,7 @@ use Bailador::Context;
 use Bailador::Template::Mojo;
 
 class Bailador::App {
-    has %.routes  = { GET => [], 'POST' => [] };
+    has %.routes  = GET => [], 'POST' => [];
     my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $!renderer = Bailador::Template::Mojo.new;
