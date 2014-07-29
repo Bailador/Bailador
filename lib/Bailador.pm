@@ -50,6 +50,18 @@ sub post(Pair $x) is export {
     return $x;
 }
 
+sub put(Pair $x) is export {
+    my $p = parse_route($x.key) => $x.value;
+    $app.add_route: 'PUT', $p;
+    return $x;
+}
+
+sub delete(Pair $x) is export {
+    my $p = parse_route($x.key) => $x.value;
+    $app.add_route: 'DELETE', $p;
+    return $x;
+}
+
 sub request is export { $app.context.request }
 
 sub content_type(Str $type) is export {
