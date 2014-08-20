@@ -8,7 +8,7 @@ class Bailador::Request {
         return {} unless $!env<psgi.input>;
         my $input = $!env<psgi.input>.decode;
 
-        %ret<content> = $input;
+        %ret<&content> = $input;
 
         for $input.split('&') -> $p {
             my $pair = $p.split('=', 2);
