@@ -32,5 +32,7 @@ class Bailador::Request {
 
     method content_type   { $.env<CONTENT_TYPE>   }
     method content_length { $.env<CONTENT_LENGTH> }
-    method body           { $.env<psgi.input>     }
+
+    # TODO Shouldn't ignore Content-Type
+    method body           { $.env<psgi.input>.decode }
 }
