@@ -3,5 +3,15 @@
     "version"     : "*",
     "description" : "A bare-bones Dancer port",
     "depends"     : [ "HTTP::Easy", "Template::Mojo", "URI" ],
+    "provides" : {
+        "Bailador" : "lib/Bailador.pm",
+        "Bailador::App"      : "lib/Bailador/App.pm",
+        "Bailador::Context"  : "lib/Bailador/Context.pm",
+        "Bailador::Request"  : "lib/Bailador/Request.pm",
+        "Bailador::Response" : "lib/Bailador/Response.pm",
+        "Bailador::Test"     : "lib/Bailador/Test.pm",
+        "Bailador::Template" : "lib/Bailador/Template.pm",
+        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm"
+    },
     "source-url"  : "git://github.com/tadzik/Bailador.git"
 }
