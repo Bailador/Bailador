@@ -14,7 +14,7 @@ class Bailador::Request {
     }
 
     method new_for_request($meth, $path) {
-        self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path}
+        self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path, PATH_INFO => $path }
     }
 
     method port        { $.env<SERVER_PORT>      }

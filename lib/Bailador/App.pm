@@ -26,7 +26,7 @@ class Bailador::App {
 
     # a simplier version to avoid creation of short-living objects
     multi method find_route($env) {
-        self._find_route: $env<REQUEST_METHOD>, $env<REQUEST_URI>
+        self._find_route: $env<REQUEST_METHOD>, $env<PATH_INFO>
     }
 
     method _find_route($meth, $uri) {
