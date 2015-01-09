@@ -21,7 +21,7 @@ class Bailador::App {
     method current                         { $current        }
 
     multi method find_route(Bailador::Request $req) {
-        self._find_route: $req.method, $req.request_uri
+        self._find_route: $req.method, $req.path
     }
 
     # a simplier version to avoid creation of short-living objects
