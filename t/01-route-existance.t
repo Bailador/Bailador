@@ -23,6 +23,6 @@ route-exists('GET', '/foo?name=bar');
 
 {
     my $resp = get-psgi-response('GET', 'http://127.0.0.1:1234/echo?text=bar');
-    is_deeply $resp, [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo with text';
+    is_deeply $resp, [200, ["Content-Type" => "text/html"], 'Echo: bar'], 'echo with text';
 }
 
