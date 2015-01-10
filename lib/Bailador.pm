@@ -101,7 +101,7 @@ sub dispatch($env) {
     return $app.response;
 }
 
-sub dispatch-psgi($env) {
+our sub dispatch-psgi($env) {
     return dispatch($env).psgi;
 }
 
