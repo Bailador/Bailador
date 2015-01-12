@@ -6,7 +6,7 @@ use URI;
 module Bailador::Test;
 
 # preparing a environment variale for PSGI
-sub get-psgi-response($meth, $url) is export {
+sub get-psgi-response($meth, $url, $data = '') is export {
     die "Invalid method '$meth'" if $meth ne 'GET' and $meth ne 'POST';
     my $uri = URI.new($url);
 
@@ -19,7 +19,7 @@ sub get-psgi-response($meth, $url) is export {
         "psgi.version"         => [1, 0],
         "psgi.run_once"        => Bool::False,
         "psgi.url_scheme"      => $uri.scheme,
-        "psgi.input"           => Buf[uint8].new(),
+        "psgi.input"           => $data.encode('utf-8'),
         "HTTP_CACHE_CONTROL"   => "max-age=0",
         "SERVER_PROTOCOL"      => "HTTP/1.1",
         "HTTP_USER_AGENT"      => "Testing",
