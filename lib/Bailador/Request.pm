@@ -3,22 +3,37 @@ class Bailador::Request {
 
     has $.env is rw;
 
-    method params {
-        my %ret;
+    multi method params () {
         # Dancer2 also mixes GET and POST params and overwrites the GET params by the POST params
-        # but maybe this is not such a good idea.
-        if $!env<QUERY_STRING> {
-            for $.env<QUERY_STRING>.split('&') -> $p {
-                my $pair = $p.split('=', 2);
-                %ret{$pair[0]} = uri_unescape $pair[1];
+        my %ret = self.params('query');
+        %ret = %ret, self.params('body');
+
+        return %ret;
+    }
+    multi method params ($source) {
+        my %ret;
+        given $source {
+            when 'query' {
+                if $!env<QUERY_STRING> {
+                    for $.env<QUERY_STRING>.split('&') -> $p {
+                        my $pair = $p.split('=', 2);
+                        %ret{$pair[0]} = uri_unescape $pair[1];
+                    }
+                }
+            }
+            when 'body' {
+                if $!env<psgi.input> {
+                    for $.env<psgi.input>.decode.split('&') -> $p {
+                        my $pair = $p.split('=', 2);
+                        %ret{$pair[0]} = uri_unescape $pair[1];
+                    }
+                }
+            }
+            default {
+                die "unknown source '$source'";
             }
         }
-        if $!env<psgi.input> {
-            for $.env<psgi.input>.decode.split('&') -> $p {
-                my $pair = $p.split('=', 2);
-                %ret{$pair[0]} = uri_unescape $pair[1];
-            }
-        }
+
         return %ret;
     }
 
