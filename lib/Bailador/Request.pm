@@ -5,16 +5,26 @@ class Bailador::Request {
 
     method params {
         my %ret;
-        return {} unless $!env<psgi.input>;
-        for $.env<psgi.input>.decode.split('&') -> $p {
-            my $pair = $p.split('=', 2);
-            %ret{$pair[0]} = uri_unescape $pair[1];
+        # Dancer2 also mixes GET and POST params and overwrites the GET params by the POST params
+        # but maybe this is not such a good idea.
+        if $!env<QUERY_STRING> {
+            for $.env<QUERY_STRING>.split('&') -> $p {
+                my $pair = $p.split('=', 2);
+                %ret{$pair[0]} = uri_unescape $pair[1];
+            }
+        }
+        if $!env<psgi.input> {
+            for $.env<psgi.input>.decode.split('&') -> $p {
+                my $pair = $p.split('=', 2);
+                %ret{$pair[0]} = uri_unescape $pair[1];
+            }
         }
         return %ret;
     }
 
     method new_for_request($meth, $path) {
-        self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path}
+        my $path_info = $path.split('?')[0];
+        self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path, PATH_INFO => $path_info }
     }
 
     method port        { $.env<SERVER_PORT>      }
