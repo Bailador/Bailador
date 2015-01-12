@@ -1,0 +1,9 @@
+branches:
+  except:
+    - gh-pages
+language: c
+before_install:
+  - git clone https://github.com/szabgab/perl6-travis-ci.git ../perl6-travis-ci
+  - ../perl6-travis-ci/install_rakudo.sh
+script:
+  - ../perl6-travis-ci/run_tests.sh
