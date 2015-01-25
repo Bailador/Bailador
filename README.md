@@ -1,4 +1,4 @@
-Bailador is a bare-bones port of the Perl Dancer web development framework
+Bailador is a port of the Perl Dancer web development framework
 ==============================================
 
     use Bailador;
