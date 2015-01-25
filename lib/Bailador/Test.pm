@@ -57,15 +57,15 @@ sub get-response($meth, $path) {
 #    ok !Bailador::App.current.find_route($req), $desc;
 #}
 
-sub response-status-is($meth, $path, $status, $desc = '') is export {
-    my $resp = get-response($meth, $path);
-    is $resp.code, $status, $desc;
-}
-
-sub response-status-isnt($meth, $path, $status, $desc = '') is export {
-    my $resp = get-response($meth, $path);
-    isnt $resp.code, $status, $desc;
-}
+#sub response-status-is($meth, $path, $status, $desc = '') is export {
+#    my $resp = get-response($meth, $path);
+#    is $resp.code, $status, $desc;
+#}
+#
+#sub response-status-isnt($meth, $path, $status, $desc = '') is export {
+#    my $resp = get-response($meth, $path);
+#    isnt $resp.code, $status, $desc;
+#}
 
 sub response-content-is($meth, $path, $cont, $desc = '') is export {
     my $resp = get-response($meth, $path);
