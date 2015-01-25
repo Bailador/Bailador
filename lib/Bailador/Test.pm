@@ -67,27 +67,27 @@ sub get-response($meth, $path) {
 #    isnt $resp.code, $status, $desc;
 #}
 
-sub response-content-is($meth, $path, $cont, $desc = '') is export {
-    my $resp = get-response($meth, $path);
-    is ~$resp.content, $cont, $desc;
-}
+#sub response-content-is($meth, $path, $cont, $desc = '') is export {
+#    my $resp = get-response($meth, $path);
+#    is ~$resp.content, $cont, $desc;
+#}
+#
+#sub response-content-isnt($meth, $path, $cont, $desc = '') is export {
+#    my $resp = get-response($meth, $path);
+#    isnt ~$resp.content, $cont, $desc;
+#}
+#
+#sub response-content-is-deeply($meth, $path, $y, $desc = '') is export {
+#    my $resp = get-response($meth, $path);
+#    is_deeply ~$resp.content, $y, $desc;
+#}
+#
+#sub response-content-like($meth, $path, $cont, $desc) is export { ... }
+#sub response-content-unlike($meth, $path, $cont, $desc) is export { ... }
 
-sub response-content-isnt($meth, $path, $cont, $desc = '') is export {
-    my $resp = get-response($meth, $path);
-    isnt ~$resp.content, $cont, $desc;
-}
+#sub response-headers-are-deeply($meth, $path, $cont, $desc) is export { ... }
+#sub response-headers-include($meth, $path, $cont, $desc) is export { ... }
 
-sub response-content-is-deeply($meth, $path, $y, $desc = '') is export {
-    my $resp = get-response($meth, $path);
-    is_deeply ~$resp.content, $y, $desc;
-}
-
-sub response-content-like($meth, $path, $cont, $desc) is export { ... }
-sub response-content-unlike($meth, $path, $cont, $desc) is export { ... }
-
-sub response-headers-are-deeply($meth, $path, $cont, $desc) is export { ... }
-sub response-headers-include($meth, $path, $cont, $desc) is export { ... }
-
-sub bailador-response($meth, $path, *%opts) is export { ... }
+#sub bailador-response($meth, $path, *%opts) is export { ... }
 
 sub read-logs is export { ... }

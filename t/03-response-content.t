@@ -2,7 +2,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 7;
+plan 9;
 
 get '/foo' => sub { "foo text" }
 post '/bar' => sub { "peti bar" }
@@ -21,5 +21,13 @@ is_deeply get-psgi-response('GET',  '/bar'),  [404, ["Content-Type" => "text/htm
 is_deeply get-psgi-response('GET',  '/params/bar'),   [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /params/bar returns content';
 is_deeply get-psgi-response('GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /regexes/bar returns content';
 
+#todo 'returning complex structs NYI';
+#response-content-is-deeply 'GET', '/baz', { foo => "bar", baz => 5 };
+
+my $res = get-psgi-response('GET',  '/regexes/bar');
+is $res[0], 200, 'status code';
+is_deeply $res[1], ["Content-Type" => "text/html"], 'header';
+
 todo 'returning complex structs NYI';
-response-content-is-deeply 'GET', '/baz', { foo => "bar", baz => 5 };
+is_deeply $res[2], { foo => "bar", baz => 5 }; # this should be json, right? 
+

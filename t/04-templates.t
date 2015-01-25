@@ -7,4 +7,4 @@ plan 1;
 
 get '/' => sub { template 'simple.tt', 'bar' }
 
-response-content-is 'GET', '/', "a happy bar\n";
+is_deeply get-psgi-response('GET',  '/'),  [200, ["Content-Type" => "text/html"], "a happy bar\n"],   'route GET / returns content';
