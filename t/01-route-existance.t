@@ -2,7 +2,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 10;
+plan 9;
 
 get '/foo' => sub { }
 get '/echo' => sub { return 'Echo: ' ~ (request.params<text> // '')}
@@ -10,13 +10,23 @@ get '/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (reques
 post '/bar' => sub { }
 post '/echo3/:text' => sub ($text) { return 'Echo3: ' ~ join('-', $text,  (request.params<text> // ''), (request.params('body')<text> // ''), (request.params('query')<text> // ''))}
 
-route-exists('GET', '/foo');
-route-doesnt-exist('POST', '/foo');
+{
+    my $resp = get-psgi-response('GET', '/foo');
+    is_deeply $resp, [200, ["Content-Type" => "text/html"]], 'route GET /foo exists';
+}
+{
+    my $resp = get-psgi-response('POST', '/foo');
+    is_deeply $resp, [404, ["Content-Type" => "text/html"], 'Not found'], 'route POST /foo does not exist';
+}
 
-route-exists('POST', '/bar');
-route-doesnt-exist('GET', '/bar');
-
-route-exists('GET', '/foo?name=bar');
+{
+    my $resp = get-psgi-response('POST', '/bar');
+    is_deeply $resp, [200, ["Content-Type" => "text/html"]], 'route POST /bar exists';
+}
+{
+    my $resp = get-psgi-response('GET', '/bar');
+    is_deeply $resp, [404, ["Content-Type" => "text/html"], 'Not found'], 'route GET /bar does not exist';
+}
 
 {
     my $resp = get-psgi-response('GET', 'http://127.0.0.1:1234/echo');

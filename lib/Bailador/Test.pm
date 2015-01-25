@@ -8,7 +8,8 @@ module Bailador::Test;
 # preparing a environment variale for PSGI
 sub get-psgi-response($meth, $url, $data = '') is export {
     die "Invalid method '$meth'" if $meth ne 'GET' and $meth ne 'POST';
-    my $uri = URI.new($url);
+	# prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
+    my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
     my $env = {
         "psgi.multiprocess"    => Bool::False,
@@ -45,15 +46,16 @@ sub get-response($meth, $path) {
     Bailador::dispatch_request($req);
 }
 
-sub route-exists($meth, $path, $desc = '') is export {
-    my $req = Bailador::Request.new_for_request($meth, $path);
-    ok Bailador::App.current.find_route($req), $desc;
-}
-
-sub route-doesnt-exist($meth, $path, $desc = '') is export {
-    my $req = Bailador::Request.new_for_request($meth, $path);
-    ok !Bailador::App.current.find_route($req), $desc;
-}
+#obsolete methods
+#sub route-exists($meth, $path, $desc = '') is export {
+#    my $req = Bailador::Request.new_for_request($meth, $path);
+#    ok Bailador::App.current.find_route($req), $desc;
+#}
+#
+#sub route-doesnt-exist($meth, $path, $desc = '') is export {
+#    my $req = Bailador::Request.new_for_request($meth, $path);
+#    ok !Bailador::App.current.find_route($req), $desc;
+#}
 
 sub response-status-is($meth, $path, $status, $desc = '') is export {
     my $resp = get-response($meth, $path);
