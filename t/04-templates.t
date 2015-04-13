@@ -3,8 +3,11 @@ use Bailador;
 Bailador::import;
 use Bailador::Test;
 
-plan 1;
+plan 3;
 
 get '/' => sub { template 'simple.tt', 'bar' }
 
-is_deeply get-psgi-response('GET',  '/'),  [200, ["Content-Type" => "text/html"], "a happy bar\n"],   'route GET / returns content';
+my $resp = get-psgi-response('GET',  '/');
+is $resp[0], 200;
+is_deeply $resp[1], ["Content-Type" => "text/html"];
+ok $resp[2] ~~ /'a happy bar'\r?\n/;
