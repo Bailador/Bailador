@@ -11,7 +11,7 @@
         "Bailador::Response" : "lib/Bailador/Response.pm",
         "Bailador::Test"     : "lib/Bailador/Test.pm",
         "Bailador::Template" : "lib/Bailador/Template.pm",
-        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm"
+        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
         "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm"
     },
     "source-url"  : "git://github.com/tadzik/Bailador.git"
