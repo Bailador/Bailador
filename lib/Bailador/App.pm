@@ -6,7 +6,7 @@ class Bailador::App {
     has %.routes  = GET => [], 'POST' => [];
     my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
-    has Bailador::Template $!renderer = Bailador::Template::Mojo.new;
+    has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
 
     method request  { $.context.request  }
     method response { $.context.response }

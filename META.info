@@ -2,7 +2,7 @@
     "name"        : "Bailador",
     "version"     : "*",
     "description" : "A bare-bones Dancer port",
-    "depends"     : [ "HTTP::Easy", "Template::Mojo", "URI" ],
+    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI" ],
     "provides" : {
         "Bailador" : "lib/Bailador.pm",
         "Bailador::App"      : "lib/Bailador/App.pm",
@@ -11,7 +11,8 @@
         "Bailador::Response" : "lib/Bailador/Response.pm",
         "Bailador::Test"     : "lib/Bailador/Test.pm",
         "Bailador::Template" : "lib/Bailador/Template.pm",
-        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm"
+        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
+        "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm"
     },
     "source-url"  : "git://github.com/tadzik/Bailador.git"
 }
