@@ -3,7 +3,7 @@ use Bailador;
 use Bailador::Request;
 use URI;
 
-module Bailador::Test;
+unit module Bailador::Test;
 
 # preparing a environment variale for PSGI
 sub get-psgi-response($meth, $url, $data = '') is export {

@@ -4,7 +4,7 @@ use Bailador::Response;
 use Bailador::Context;
 use HTTP::Easy::PSGI;
 
-module Bailador;
+unit module Bailador;
 
 my $app = Bailador::App.current;
 

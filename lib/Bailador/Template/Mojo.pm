@@ -1,6 +1,6 @@
 use Bailador::Template;
 
-class Bailador::Template::Mojo does Bailador::Template;
+unit class Bailador::Template::Mojo does Bailador::Template;
 use Template::Mojo;
 
 has $!engine = Template::Mojo;
