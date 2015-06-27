@@ -13,5 +13,5 @@ Bailador::App.current.renderer = Bailador::Template::Mustache.new;
 
 my $resp = get-psgi-response('GET',  '/');
 is $resp[0], 200;
-is_deeply $resp[1], ["Content-Type" => "text/html"];
+is-deeply $resp[1], ["Content-Type" => "text/html"];
 ok $resp[2] ~~ /'a happy bar'\r?\n/;
