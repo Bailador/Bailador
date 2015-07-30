@@ -6,4 +6,5 @@ perl6:
   - latest
   - 2015.07
 install:
+  - rakudobrew build-panda
   - panda install URI::Escape
