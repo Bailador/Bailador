@@ -1,0 +1,72 @@
+use v6;
+
+multi sub MAIN(Bool :$help) {
+	usage();
+}
+
+multi sub MAIN(Str $name) {
+#	if not $name -> {
+#		usage("Project-Name is a required parameter");
+#	}
+	say "Generating $name";
+	if $name.IO.e {
+		say "$name already exists. Exiting.";
+		exit;
+	}
+	mkdir $name;
+	mkdir "$name/views";
+	my $fh = open "$name/app.pl", :w;
+	$fh.print(skeleton('app.pl'));
+
+}
+
+sub usage(Str $msg?) {
+	if $msg {
+		say $msg;
+		say '';
+	}
+	say "Usage:";
+	say "    $*PROGRAM-NAME --help         (shows this help)";
+	say "    $*PROGRAM-NAME Project-Name   (creates a directory called Project-Name with a skeleton application)";
+	exit();
+}
+
+sub skeleton($name) {
+	my %skeleton;
+%skeleton{'app.pl'} =
+q{use Bailador;
+
+my $version = '0.01';
+
+get '/' => sub {
+    template 'index.tt', { version => $version }
+}
+
+baile;
+};
+
+
+%skeleton{'views/index.tt'} = 
+q{
+% (%h) = @_;
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bailador App</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+  </head>
+  <body>
+    <h1>Bailador App</h1>
+    <div>
+      Version <%= %h{'version'} %>
+    </div>
+  </body>
+</html>
+};
+
+	return %skeleton{$name};
+}
+
