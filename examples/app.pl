@@ -1,6 +1,7 @@
 use lib 'lib';
 
 use Bailador;
+Bailador::import; # for the template to work
 
 # simple cases
 get '/' => sub {
