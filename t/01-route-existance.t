@@ -2,7 +2,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 9;
+plan 17;
 
 get '/foo' => sub { }
 get '/echo' => sub { return 'Echo: ' ~ (request.params<text> // '')}
@@ -21,4 +21,23 @@ is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo2/foo'),          
 is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo2/foo?text=bar'), [200, ["Content-Type" => "text/html"], 'Echo2: foo-bar--bar'], 'echo with text';
 
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:1234/echo3/foo?text=bar', 'text=zorg'), [200, ["Content-Type" => "text/html"], 'Echo3: foo-zorg-zorg-bar'], 'echo with text';
+
+# request methods
+get '/a' => sub { 'port=' ~ request.port }
+get '/b' => sub { 'request_uri=' ~ request.request_uri }
+get '/c' => sub { 'uri=' ~ request.uri }
+get '/d' => sub { 'path=' ~ request.path }
+get '/e' => sub { 'method=' ~ request.method }
+get '/f' => sub { join '-', request.is_get, request.is_post, request.is_put, request.is_delete, request.is_head, request.is_patch }
+get '/g' => sub { request.content_type }
+get '/h' => sub { request.content_length }
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/a?text=bar'), [200, ["Content-Type" => "text/html"], 'port=1234'], 'port';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/b?text=bar'), [200, ["Content-Type" => "text/html"], 'request_uri=/b?text=bar'], 'request_uri';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/c?text=bar'), [200, ["Content-Type" => "text/html"], 'uri=/c?text=bar'], 'uri';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/d?text=bar'), [200, ["Content-Type" => "text/html"], 'path=/d'], 'path';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/e?text=bar'), [200, ["Content-Type" => "text/html"], 'method=GET'], 'method';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/f?text=bar'), [200, ["Content-Type" => "text/html"], 'True-False-False-False-False-False'], 'is';
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/g?text=bar'), [200, ["Content-Type" => "text/html"], Any], 'content_type';  # ???
+is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/h?text=bar'), [200, ["Content-Type" => "text/html"], Any], 'content_length';  # ???
+
 
