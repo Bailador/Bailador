@@ -14,10 +14,19 @@ multi sub MAIN(Str $name) {
 		exit;
 	}
 	mkdir $name;
-	mkdir "$name/views";
-	my $fh = open "$name/app.pl", :w;
-	$fh.print(skeleton('app.pl'));
+	my %skeleton = skeleton();
+	#say %skeleton;
 
+	for %skeleton.keys -> $file {
+		say $file;
+		my $dir = '';
+		try {my $sep = $file.rindex('/'); $dir = $file.substr(0, $sep) }
+		say $dir;
+		mkdir "$name/$dir";
+		my $fh = open "$name/$file", :w;
+		$fh.print(%skeleton{$file});
+		$fh.close;
+	}
 }
 
 sub usage(Str $msg?) {
@@ -31,10 +40,11 @@ sub usage(Str $msg?) {
 	exit();
 }
 
-sub skeleton($name) {
+sub skeleton() {
 	my %skeleton;
 %skeleton{'app.pl'} =
 q{use Bailador;
+Bailador::import();
 
 my $version = '0.01';
 
@@ -48,7 +58,7 @@ baile;
 
 %skeleton{'views/index.tt'} = 
 q{
-% (%h) = @_;
+% my ($h) = @_;
 <!DOCTYPE html>
 <html>
   <head>
@@ -61,12 +71,12 @@ q{
   <body>
     <h1>Bailador App</h1>
     <div>
-      Version <%= %h{'version'} %>
+      Version <%= $h<version> %>
     </div>
   </body>
 </html>
 };
 
-	return %skeleton{$name};
+	return %skeleton;
 }
 
