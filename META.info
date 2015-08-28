@@ -14,5 +14,24 @@
         "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
         "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm"
     },
+    "authors" : [
+        "Tadeusz “tadzik” Sośnierz",
+        "Anthony Parsons",
+        "Carl Masak",
+        "Gabor Szabo",
+        "GlitchMr",
+        "Moritz Lenz",
+        "Panu Ervamaa",
+        "Paul Cochrane",
+        "Solomon Foster",
+        "Sterling Hanenkamp",
+        "Tobias Leich",
+        "ugexe",
+        "vendethiel"
+    ],
+    "support" : {
+        "bugtracker" : "https://github.com/tadzik/Bailador/issues",
+        "source" : "git://github.com/tadzik/Bailador.git"
+    },
     "source-url"  : "git://github.com/tadzik/Bailador.git"
 }
