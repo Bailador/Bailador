@@ -20,10 +20,10 @@ post '/new_paste' => sub {
     my $fh = open "data/$t", :w;
     $fh.print: $c;
     $fh.close;
-    return "New paste available at paste/$t";
+    return qq{New paste available at <a href="/paste/$t">paste/$t\</a>};
 }
 
-get /paste\/(.+)/ => sub ($tag) {
+get /paste\/(\d+)$/ => sub ($tag) {
     content_type 'text/plain';
     if "data/$tag".IO.f {
         return slurp "data/$tag"
