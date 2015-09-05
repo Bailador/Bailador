@@ -4,6 +4,6 @@ class Bailador::Response {
     has @.content  is rw;
 
     method psgi {
-        [ $.code, [ %.headers.list ], @.content ]
+        [ $.code, [ %.headers.list ], |@.content ]
     }
 }

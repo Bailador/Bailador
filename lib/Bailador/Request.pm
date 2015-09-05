@@ -6,7 +6,7 @@ class Bailador::Request {
     multi method params () {
         # Dancer2 also mixes GET and POST params and overwrites the GET params by the POST params
         my %ret = self.params('query');
-        %ret = %ret, self.params('body');
+        %ret = |%ret, self.params('body');
 
         return %ret;
     }
