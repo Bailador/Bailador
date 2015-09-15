@@ -3,7 +3,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 12;
+plan 14;
 
 get '/cook1' => sub {
     cookie("flavour", "chocolate");
@@ -66,6 +66,16 @@ get '/multi1' => sub {
     "multiple";
 }
 
+get '/escape1' => sub {
+    cookie("key", "value;", :secure);
+    "escape";
+}
+
+get '/escape2' => sub {
+    cookie("the=key", "value", path => "/");
+    "escape";
+}
+
 is-deeply get-psgi-response('GET', '/cook1'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => "flavour=chocolate"], "cookie test #1" ], 'ROUTE GET /cook1 sets a cookie';
 
 is-deeply get-psgi-response('GET', '/cook2'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => "flavour=chocolate; Domain=example.com"], "cookie test #2" ], 'ROUTE GET /cook2 sets a cookie with a domain';
@@ -97,3 +107,7 @@ is-deeply get-psgi-response('GET', '/multi1'),
             "Set-Cookie" => "forceHTTPS=true; Path=/; Expires=Thu, 15 Oct 2015 15:12:40 GMT; HttpOnly"
         ], "multiple" 
     ], 'ROUTE GET /multi1 sets multiple cookies';
+
+is-deeply get-psgi-response('GET', '/escape1'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => 'key=value%3B; Secure'], "escape" ], 'ROUTE GET /escape1 sends a cookie with a URI encoded value';
+
+is-deeply get-psgi-response('GET', '/escape2'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => 'the%3Dkey=value; Path=/'], "escape" ], 'ROUTE GET /escape2 sends a cookie with a URI encoded key';

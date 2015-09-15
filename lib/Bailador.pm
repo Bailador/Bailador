@@ -3,6 +3,7 @@ use Bailador::Request;
 use Bailador::Response;
 use Bailador::Context;
 use HTTP::Easy::PSGI;
+use URI::Escape;
 
 unit module Bailador;
 
@@ -74,7 +75,7 @@ sub header(Str $name, Cool $value) is export {
 
 sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
         DateTime :$expires, Bool :$http-only; Bool :$secure) is export {
-    my $c = "$value";
+    my $c = uri_escape($value);
     if $path    { $c ~= "; Path=$path" }
     if $domain  { $c ~= "; Domain=$domain" }
     if $expires {
@@ -109,7 +110,7 @@ sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
     }
     if $secure    { $c ~= "; Secure" }
     if $http-only { $c ~= "; HttpOnly" }
-    $app.response.cookies.push: "$name=$c";
+    $app.response.cookies.push: uri_escape($name) ~ "=$c";
 }
 
 sub status(Int $code) is export {
