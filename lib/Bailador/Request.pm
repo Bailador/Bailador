@@ -37,6 +37,17 @@ class Bailador::Request {
         return %ret;
     }
 
+    method cookies () {
+        my %ret;
+        if $.env<HTTP_COOKIE> {
+            for $.env<HTTP_COOKIE>.split('; ') {
+                my ($name, $value) = $_.split('=', 2);
+                %ret{uri_unescape($name)} = uri_unescape($value);
+            }
+        }
+        return %ret;
+    }
+
     method new_for_request($meth, $path) {
         my $path_info = $path.split('?')[0];
         self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path, PATH_INFO => $path_info }
