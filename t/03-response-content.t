@@ -2,7 +2,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 11;
+plan 498;
 
 get '/foo' => sub { "foo text" }
 post '/bar' => sub { "peti bar" }
@@ -20,6 +20,10 @@ get '/header1' => sub {
 get '/header2' => sub {
     header("X-Again", "header2");
     "added header X-Again";
+}
+
+post '/utf8' => sub {
+    request.params<text>;
 }
 
 is-deeply get-psgi-response('GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
@@ -44,3 +48,21 @@ is-deeply $res[2], { foo => "bar", baz => 5 }; # this should be json, right?
 is-deeply get-psgi-response('GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
 
 is-deeply get-psgi-response('GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
+
+my @hex = ('A'..'F', 'a'..'f', 0..9).flat;
+for @hex -> $first {
+    for @hex -> $second {
+        lives-ok { get-psgi-response('POST', 'http://127.0.0.1/utf8',
+            'text=%' ~ $first ~ $second); }, "decoding \%$first$second works";
+    }
+}
+
+{
+my $res0 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C3%86');
+my $res1 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C6');
+my $res2 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C3%86%C6');
+
+is $res0[2], chr(198), 'utf8 encoding was correct';
+is $res1[2], chr(198), 'fallback encoding was correct';
+is $res2[2], chr(0xC3) ~ chr(0x86) ~ chr(0xC6), 'non-UTF8 encoding caused a fallback';
+}

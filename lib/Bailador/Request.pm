@@ -1,7 +1,20 @@
 class Bailador::Request {
-    use URI::Escape;
 
     has $.env is rw;
+
+    sub uri_unescape ($uri) {
+        use URI::Escape;
+        my $decoded;
+        try {
+            $decoded = uri_unescape($uri);
+            CATCH {
+                when X::AdHoc {
+                    $decoded = uri_unescape($uri, :no_utf8);
+                }
+            }
+        }
+        $decoded;
+    }
 
     multi method params () {
         # Dancer2 also mixes GET and POST params and overwrites the GET params by the POST params
