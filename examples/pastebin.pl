@@ -20,7 +20,7 @@ post '/new_paste' => sub {
     my $fh = open "data/$t", :w;
     $fh.print: $c;
     $fh.close;
-    return qq{New paste available at <a href="/paste/$t">paste/$t\</a>};
+    return qq{New paste available at <a href="paste/$t">paste/$t\</a>};
 }
 
 get /paste\/(\d+)$/ => sub ($tag) {
