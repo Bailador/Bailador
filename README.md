@@ -1,7 +1,7 @@
 ###Status
 [![Build Status](https://travis-ci.org/tadzik/Bailador.png)](https://travis-ci.org/tadzik/Bailador)
 
-Bailador is a port of the Perl Dancer web development framework
+A light-weight route-based web application framework for Perl 6
 ==============================================
 
     use Bailador;
