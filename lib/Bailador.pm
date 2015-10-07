@@ -140,7 +140,9 @@ sub dispatch($env) {
             }
             CATCH {
                 default {
-                    $app.request.env<p6sgi.errors>.say(.gist);
+                    my $env = $app.request.env;
+                    my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<psgi.errors>;
+                    $err.say(.gist);
                     status 500;
                     content_type 'text/plain';
                     $app.response.content = 'Internal Server Error';

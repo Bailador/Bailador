@@ -5,16 +5,27 @@ use URI;
 
 unit module Bailador::Test;
 
+# It would be nice to have IO::String here instead
+my class IO::Null is IO::Handle {
+    method print(*@what) {
+        # noop
+    }
+
+    method print-nl(*@what) {
+        # noop
+    }
+}
+
 # preparing a environment variale for PSGI
 sub get-psgi-response($meth, $url, $data = '') is export {
     die "Invalid method '$meth'" if $meth ne 'GET' and $meth ne 'POST';
-	# prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
+    # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
     my $env = {
         "psgi.multiprocess"    => Bool::False,
         "psgi.multithread"     => Bool::False,
-        "psgi.errors"          => IO::Handle.new(path => IO::Special.new(what => "<STDERR>"), ins => 0, chomp => Bool::True),
+        "psgi.errors"          => IO::Null.new,
         "psgi.streaming"       => Bool::False,
         "psgi.nonblocking"     => Bool::False,
         "psgi.version"         => [1, 0],
