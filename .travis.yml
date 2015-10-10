@@ -4,7 +4,7 @@ branches:
 language: perl6
 perl6:
   - latest
-#  - 2015.07 stopped working
+  - 2015.09
 install:
   - rakudobrew build-panda
   - panda install URI Template::Mojo HTTP::Easy Template::Mustache
