@@ -35,8 +35,8 @@ class Bailador::Request {
                 }
             }
             when 'body' {
-                if $!env<psgi.input> {
-                    for $.env<psgi.input>.decode.split('&') -> $p {
+                if $!env<p6sgi.input> {
+                    for $.env<p6sgi.input>.decode.split('&') -> $p {
                         my $pair = $p.split('=', 2);
                         %ret{$pair[0]} = uri_unescape $pair[1];
                     }
@@ -83,5 +83,5 @@ class Bailador::Request {
     method content_length { $.env<CONTENT_LENGTH> }
 
     # TODO Shouldn't ignore Content-Type
-    method body           { $.env<psgi.input>.decode }
+    method body           { $.env<p6sgi.input>.decode }
 }
