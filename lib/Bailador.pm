@@ -155,7 +155,7 @@ sub dispatch($env) {
 }
 
 our sub dispatch-psgi($env) {
-    return dispatch($env).p6sgi;
+    return dispatch($env).psgi;
 }
 
 sub baile($port = 3000) is export {
