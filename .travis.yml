@@ -5,8 +5,7 @@ language: perl6
 sudo: false
 perl6:
   - latest
-  - 2015.09
-# https://github.com/travis-ci/travis-ci/issues/4910
+  - v6.c
 install:
   - rakudobrew build-panda
   - panda install URI Template::Mojo HTTP::Easy Template::Mustache
