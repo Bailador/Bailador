@@ -144,8 +144,12 @@ sub dispatch($env) {
                     my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
                     $err.say(.gist);
                     status 500;
-                    content_type 'text/plain';
-                    $app.response.content = 'Internal Server Error';
+                    if 'views/500.html'.IO ~~ :e {
+                      $app.response.content = slurp('views/500.html');
+                    } else {
+                      content_type 'text/plain';
+                      $app.response.content = 'Internal Server Error';
+                    }
                 }
             }
         }
