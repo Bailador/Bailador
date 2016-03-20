@@ -27,7 +27,7 @@ class Bailador::Request {
     }
     multi method params ($source) {
         my %ret;
-        my $source_data = '';
+        my Str $source_data;
         given $source {
             when 'query' {
                 $source_data = $.env<QUERY_STRING> if $!env<QUERY_STRING>;
@@ -39,7 +39,7 @@ class Bailador::Request {
                 die "unknown source '$source'";
             }
         }
-        return %ret unless $source_data.chars;
+        return %ret unless $source_data.defined;
 
         for $source_data.split('&') -> $p {
             my @pair = $p.split('=', 2);
