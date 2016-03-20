@@ -59,7 +59,7 @@ class Bailador::Request {
         for $.env.keys.grep(rx:i/^[HTTP||CONTENT]/) -> $key {
             my $field = $key;
             $field ~~ s:i/^HTTPS?_//;
-            %!headers{$field} = $.env{$key};
+            %!headers{$field.uc} = $.env{$key};
         }
         return %!headers;
     }
@@ -79,8 +79,8 @@ class Bailador::Request {
     }
 
     method is_ajax returns Bool {
-        return True if $.header<X-Requested-With>:exists
-                    && $.header<X-Requested-With> eq 'XMLHttpRequest';
+        return True if $.header<X-REQUESTED-WITH>:exists
+                    && $.header<X-REQUESTED-WITH> eq 'XMLHttpRequest';
         return False;
     }
 
