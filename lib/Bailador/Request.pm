@@ -1,6 +1,8 @@
 class Bailador::Request {
 
     has $.env is rw;
+    has %!cookies;
+    has %!headers;
 
     sub uri_unescape ($uri) {
         use URI::Escape;
@@ -25,40 +27,60 @@ class Bailador::Request {
     }
     multi method params ($source) {
         my %ret;
+        my Str $source_data;
         given $source {
             when 'query' {
-                if $!env<QUERY_STRING> {
-                    for $.env<QUERY_STRING>.split('&') -> $p {
-                        my $pair = $p.split('=', 2);
-                        %ret{$pair[0]} = uri_unescape $pair[1];
-                    }
-                }
+                $source_data = $.env<QUERY_STRING> if $!env<QUERY_STRING>;
             }
             when 'body' {
-                if $!env<p6sgi.input> {
-                    for $.env<p6sgi.input>.decode.split('&') -> $p {
-                        my $pair = $p.split('=', 2);
-                        %ret{$pair[0]} = uri_unescape $pair[1];
-                    }
-                }
+                $source_data = $.env<p6sgi.input>.decode if $!env<p6sgi.input>;
             }
             default {
                 die "unknown source '$source'";
+            }
+        }
+        return %ret unless $source_data.defined;
+
+        for $source_data.split('&') -> $p {
+            my @pair = $p.split('=', 2);
+            if (%ret{@pair[0]}:exists) {
+                %ret.push((@pair[0] => |uri_unescape(@pair[1])));
+            }
+            else {
+                %ret{@pair[0]} = uri_unescape @pair[1];
             }
         }
 
         return %ret;
     }
 
-    method cookies () {
-        my %ret;
-        if $.env<HTTP_COOKIE> {
-            for $.env<HTTP_COOKIE>.split('; ') {
-                my ($name, $value) = $_.split('=', 2);
-                %ret{uri_unescape($name)} = uri_unescape($value);
-            }
+    method headers () {
+        return %!headers if %!headers;
+        for $.env.keys.grep(rx:i/^[HTTP||CONTENT]/) -> $key {
+            my $field = S:i/HTTPS?_// given $key;
+            %!headers{$field.uc} = $.env{$key};
         }
-        return %ret;
+        return %!headers;
+    }
+
+    method cookies () {
+        return %!cookies if %!cookies || !$.env<HTTP_COOKIE>;
+        for $.env<HTTP_COOKIE>.split(/<[;,]>\s/) -> $cookie {
+            my ($name, $value) = $cookie.trim.split(/\s*\=\s*/, 2);
+            my @values;
+            if $value {
+                @values = $value.split(/<[&;]>/).map: { uri_unescape($_) };
+            }
+            # TODO: build Bailador::Cookie object :)
+            %!cookies{uri_unescape($name)} = @values;
+        }
+        return %!cookies;
+    }
+
+    method is_ajax returns Bool {
+        return True if $.header<X-REQUESTED-WITH>:exists
+                    && $.header<X-REQUESTED-WITH> eq 'XMLHttpRequest';
+        return False;
     }
 
     method new_for_request($meth, $path) {
@@ -77,11 +99,20 @@ class Bailador::Request {
     method is_put      { self.method eq 'PUT'    }
     method is_delete   { self.method eq 'DELETE' }
     method is_head     { self.method eq 'HEAD'   }
-    method is_patch    { self.method eq 'PATCH' }
+    method is_patch    { self.method eq 'PATCH'  }
 
     method content_type   { $.env<CONTENT_TYPE>   }
     method content_length { $.env<CONTENT_LENGTH> }
 
     # TODO Shouldn't ignore Content-Type
     method body           { $.env<p6sgi.input>.decode }
+
+    # in Dancer2, these are inherited from Plack::Request
+    method user_agent  { $.headers<USER_AGENT>    }
+    method referer     { $.headers<REFERER>       }
+    method address     { $.env<REMOTE_ADDR>      }
+    method remote_host { $.env<REMOTE_HOST>      }
+    method protocol    { $.env<SERVER_PROTOCOL>  }
+    method user        { $.env<REMOTE_USER>      }
+    method script_name { $.env<SCRIPT_NAME>      }
 }
