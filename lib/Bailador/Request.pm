@@ -57,8 +57,7 @@ class Bailador::Request {
     method headers () {
         return %!headers if %!headers;
         for $.env.keys.grep(rx:i/^[HTTP||CONTENT]/) -> $key {
-            my $field = $key;
-            $field ~~ s:i/^HTTPS?_//;
+            my $field = S:i/HTTPS?_// given $key;
             %!headers{$field.uc} = $.env{$key};
         }
         return %!headers;
