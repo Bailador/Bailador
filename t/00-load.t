@@ -4,9 +4,6 @@ use lib 'lib';
 
 use Test;
 
-plan 2;
-
-use Bailador;
-ok 1, "'use Bailador' worked !";
+plan 1;
 
 use-ok 'Bailador';
