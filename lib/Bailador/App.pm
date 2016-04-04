@@ -1,12 +1,16 @@
 use Bailador::Request;
 use Bailador::Context;
 use Bailador::Template::Mojo;
+use Bailador::Sessions;
+use Bailador::Sessions::Config;
 
 class Bailador::App {
     has %.routes  = GET => [], 'POST' => [];
     my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
+    has Bailador::Sessions::Config $.sessions-config = Bailador::Sessions::Config.new;
+    has Bailador::Sessions $!sessions;
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -36,5 +40,17 @@ class Bailador::App {
 
     method add_route($meth, Pair $route) {
         %.routes{$meth}.push: $route;
+    }
+
+    method session() {
+        unless $!sessions.defined {
+            $!sessions = Bailador::Sessions.new(:$.sessions-config);
+        }
+        $!sessions.load(self.request);
+    }
+
+    method done-rendering() {
+        # store session according to session engine
+        $!sessions.store(self.response, self.request.env);
     }
 }
