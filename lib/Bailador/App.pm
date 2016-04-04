@@ -15,11 +15,6 @@ class Bailador::App {
         $!renderer.render(slurp("$_location/views/$tmpl"), @params);
     }
 
-    my $current = Bailador::App.new;
-
-    method set-current(Bailador::App $app) { $current = $app }
-    method current                         { $current        }
-
     multi method find_route(Bailador::Request $req) {
         self._find_route: $req.method, $req.path
     }
@@ -30,7 +25,7 @@ class Bailador::App {
     }
 
     method _find_route($meth, $uri) {
-        for $current.routes{$meth}.list -> $r {
+        for %.routes{$meth}.list -> $r {
             next unless $r;
             if $uri ~~ $r.key {
                 return $r, $/;
@@ -40,6 +35,6 @@ class Bailador::App {
     }
 
     method add_route($meth, Pair $route) {
-        $current.routes{$meth}.push: $route;
+        %.routes{$meth}.push: $route;
     }
 }
