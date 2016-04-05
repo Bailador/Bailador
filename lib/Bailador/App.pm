@@ -1,12 +1,16 @@
 use Bailador::Request;
 use Bailador::Context;
 use Bailador::Template::Mojo;
+use Bailador::Sessions;
+use Bailador::Sessions::Config;
 
 class Bailador::App {
     has %.routes  = GET => [], 'POST' => [];
     my $_location;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
+    has Bailador::Sessions::Config $.sessions-config = Bailador::Sessions::Config.new;
+    has Bailador::Sessions $!sessions;
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -14,11 +18,6 @@ class Bailador::App {
     method template(Str $tmpl, @params) {
         $!renderer.render(slurp("$_location/views/$tmpl"), @params);
     }
-
-    my $current = Bailador::App.new;
-
-    method set-current(Bailador::App $app) { $current = $app }
-    method current                         { $current        }
 
     multi method find_route(Bailador::Request $req) {
         self._find_route: $req.method, $req.path
@@ -30,7 +29,7 @@ class Bailador::App {
     }
 
     method _find_route($meth, $uri) {
-        for $current.routes{$meth}.list -> $r {
+        for %.routes{$meth}.list -> $r {
             next unless $r;
             if $uri ~~ $r.key {
                 return $r, $/;
@@ -40,6 +39,18 @@ class Bailador::App {
     }
 
     method add_route($meth, Pair $route) {
-        $current.routes{$meth}.push: $route;
+        %.routes{$meth}.push: $route;
+    }
+
+    method session() {
+        unless $!sessions.defined {
+            $!sessions = Bailador::Sessions.new(:$.sessions-config);
+        }
+        $!sessions.load(self.request);
+    }
+
+    method done-rendering() {
+        # store session according to session engine
+        $!sessions.store(self.response, self.request.env);
     }
 }
