@@ -73,7 +73,7 @@ sub header(Str $name, Cool $value) is export {
     $app.response.headers{$name} = ~$value;
 }
 
-sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
+our sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
         DateTime :$expires, Bool :$http-only; Bool :$secure) is export {
     my $c = uri_escape($value);
     if $path    { $c ~= "; Path=$path" }
@@ -121,6 +121,18 @@ sub template(Str $tmpl, *@params) is export {
     $app.template($tmpl, @params);
 }
 
+sub session is export {
+    return $app.session();
+}
+
+sub session-delete is export {
+    return $app.session-delete();
+}
+
+sub sessions-config is export {
+    return $app.sessions-config;
+}
+
 our sub dispatch_request(Bailador::Request $r) {
     return dispatch($r.env);
 }
@@ -131,7 +143,6 @@ sub renderer(Bailador::Template $renderer) is export {
 
 sub dispatch($env) {
     $app.context.env = $env;
-
     my ($r, $match) = $app.find_route($env);
 
     if $r {
@@ -142,11 +153,14 @@ sub dispatch($env) {
             } else {
                 $app.response.content = $r.value.();
             }
+
+            $app.done-rendering();
             CATCH {
                 default {
                     my $env = $app.request.env;
                     my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
                     $err.say(.gist);
+                    .gist.say;
                     status 500;
                     content_type 'text/plain';
                     $app.response.content = 'Internal Server Error';

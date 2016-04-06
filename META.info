@@ -2,17 +2,21 @@
     "name"        : "Bailador",
     "version"     : "*",
     "description" : "A bare-bones Dancer port",
-    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI" ],
+    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest" ],
     "provides" : {
-        "Bailador" : "lib/Bailador.pm",
-        "Bailador::App"      : "lib/Bailador/App.pm",
-        "Bailador::Context"  : "lib/Bailador/Context.pm",
-        "Bailador::Request"  : "lib/Bailador/Request.pm",
-        "Bailador::Response" : "lib/Bailador/Response.pm",
-        "Bailador::Test"     : "lib/Bailador/Test.pm",
-        "Bailador::Template" : "lib/Bailador/Template.pm",
-        "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
-        "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm"
+        "Bailador"                          : "lib/Bailador.pm",
+        "Bailador::App"                     : "lib/Bailador/App.pm",
+        "Bailador::Context"                 : "lib/Bailador/Context.pm",
+        "Bailador::Request"                 : "lib/Bailador/Request.pm",
+        "Bailador::Response"                : "lib/Bailador/Response.pm",
+        "Bailador::Test"                    : "lib/Bailador/Test.pm",
+        "Bailador::Template"                : "lib/Bailador/Template.pm",
+        "Bailador::Template::Mojo"          : "lib/Bailador/Template/Mojo.pm",
+        "Bailador::Template::Mustache"      : "lib/Bailador/Template/Mustache.pm",
+        "Bailador::Sessions"                : "lib/Bailador/Sessions.pm",
+        "Bailador::Sessions::Config"        : "lib/Bailador/Sessions/Config.pm",
+        "Bailador::Sessions::Store"         : "lib/Bailador/Sessions/Store.pm",
+        "Bailador::Sessions::Store::Memory" : "lib/Bailador/Sessions/Store/Memory.pm"
     },
     "authors" : [
         "Tadeusz “tadzik” Sośnierz",
@@ -27,7 +31,8 @@
         "Sterling Hanenkamp",
         "Tobias Leich",
         "ugexe",
-        "vendethiel"
+        "vendethiel",
+        "Martin Barth (ufobat) "
     ],
     "support" : {
         "bugtracker" : "https://github.com/tadzik/Bailador/issues",

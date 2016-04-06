@@ -32,6 +32,10 @@ Addes A Route for get, post, put or delete requests.
 
 Sets the Renderer that's being used to render your templates. See the Template section for more details.
 
+### `sessions-config()`
+
+Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
+
 ### `baile()`
 
 Lets enter the dance floor. ¡Olé!
@@ -62,6 +66,10 @@ Sets the status code of a response.
 ### `template(Str $template-name, *@params)`
 
 Calls the template which is a file in the views folder. For more details see the Template section. Should only be used within the code block of a route.
+
+### `session()`
+
+Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
 Routing
 =======
@@ -95,6 +103,37 @@ the template (or in other words the file views/template.tt) gets invoked "as a s
     <html ... codes goes here ...>
         <h1><% $name %></h1>
     <html>
+
+    
+Sessions
+========
+
+Sessions are implemented using a Session Cookie. If the browser rejects cookies, Bailador is not able to handle sessions.
+
+In order to create a session just call the subroutine
+
+    session()
+    
+inside the code block of a route. This subroutine returns a Hash in which you can just toss in all data or objects that should be be in the session context.
+After your route code is finished the session will be stored automatically. How this should be done can be configured.
+The handling of sessions can be influencend if you call
+
+    sessions-config()
+    
+inside the bailador script before you call baile. As soon as you have requested the first session it is of no use to change the configure any further.
+Following config options are available. Most of them should be self explaining.
+
+* cookie-name = 'bailador';
+* cookie-path = '/';
+* cookie-expiration = 3600;
+* hmac-key = 'changeme';
+* backend = "Bailador::Sessions::Store::Memory";
+
+The Session-ID contains a HMAC to check if someone's trying to guess a Session-ID in order to hijack a session. This case it will create a warning which is printed to standard error.
+
+The Session Data itself is stored by default in the memory, if you want to store the data on the disk or database of wherever, just implement a class which does the role Bailador::Sessions::Store
+and set backend to this class name.
+
 
 Bailador-based applications
 ===========================
