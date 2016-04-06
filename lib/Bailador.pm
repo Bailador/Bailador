@@ -7,7 +7,7 @@ use URI::Escape;
 
 unit module Bailador;
 
-my $app = Bailador::App.current;
+my $app = Bailador::App.new;
 
 our sub import {
     my $file = callframe(1).file;
@@ -123,6 +123,10 @@ sub template(Str $tmpl, *@params) is export {
 
 our sub dispatch_request(Bailador::Request $r) {
     return dispatch($r.env);
+}
+
+sub renderer(Bailador::Template $renderer) is export {
+    $app.renderer = $renderer;
 }
 
 sub dispatch($env) {
