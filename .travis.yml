@@ -8,4 +8,4 @@ perl6:
   - v6.c
 install:
   - rakudobrew build-panda
-  - panda install URI Template::Mojo HTTP::Easy Template::Mustache
+  - panda installdeps .

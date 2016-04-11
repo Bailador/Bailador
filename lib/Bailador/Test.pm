@@ -17,7 +17,7 @@ my class IO::Null is IO::Handle {
 }
 
 # preparing a environment variale for PSGI
-sub get-psgi-response($meth, $url, $data = '') is export {
+sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
     die "Invalid method '$meth'" if $meth ne 'GET' and $meth ne 'POST';
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
@@ -45,7 +45,7 @@ sub get-psgi-response($meth, $url, $data = '') is export {
         "PATH_INFO"            => $uri.path,
         "SERVER_PORT"          => $uri.port,
         "SERVER_NAME"          => "0.0.0.0",
-        "HTTP_COOKIE"          => "",
+        "HTTP_COOKIE"          => $http_cookie,
         "QUERY_STRING"         => $uri.query,
     };
     #my $req = Bailador::Request.new($env);
