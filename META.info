@@ -1,6 +1,7 @@
 {
     "name"        : "Bailador",
     "version"     : "*",
+    "perl"        : "6.c",
     "description" : "A bare-bones Dancer port",
     "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest" ],
     "provides" : {
