@@ -1,22 +1,26 @@
-### Status
-[![Build Status](https://travis-ci.org/tadzik/Bailador.png)](https://travis-ci.org/tadzik/Bailador)
+# Bailador
+
+[![Build Status](https://travis-ci.org/ufobat/Bailador.png)](https://travis-ci.org/ufobat/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/ufobat/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/master)
 
 A light-weight route-based web application framework for Perl 6
-==============================================
 
-    use Bailador;
+## Example
+
+```Perl6
+use Bailador;
     
-    # simple cases
-    get '/' => sub {
-        "hello world"
-    }
+# simple cases
+get '/' => sub {
+    "hello world"
+}
     
-    baile;
+baile;
+```
 
-For more examples see the examples/ folder.
+For more examples, pleasee see the [examples](examples) folder.
 
-Exported subs
-================
+## Exported subs
+
 
 Subroutines for your Application
 --------------------------------
@@ -71,8 +75,7 @@ Calls the template which is a file in the views folder. For more details see the
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
-Routing
-=======
+## Routing
 
 Routes are easily created with a subroutine that is called like the HTTP method you want to use followed by a code block or anything that is "Callable".
 The return value of the code block or Callable is content of the response that's been sent back to the browser. If you want to send cookies or headers use
@@ -82,8 +85,7 @@ The return value of the code block or Callable is content of the response that's
     
 as described in the methods above.
 
-Templates
-=========
+## Templates
 
 Currently there are 2 different engines supported out of the box: Template::Mojo and Template::Mustache.
 Where Template::Mojo is the default engine but if you want to switch to Template::Mustache you just call
@@ -105,8 +107,7 @@ the template (or in other words the file views/template.tt) gets invoked "as a s
     <html>
 
     
-Sessions
-========
+## Sessions
 
 Sessions are implemented using a Session Cookie. If the browser rejects cookies, Bailador is not able to handle sessions.
 
@@ -135,12 +136,15 @@ The Session Data itself is stored by default in the memory, if you want to store
 and set backend to this class name.
 
 
-Bailador-based applications
-===========================
+## Bailador-based applications
+
 * https://github.com/szabgab/Perl6-Maven serving http://perl6maven.com/
 * https://github.com/perl6/cpandatesters.perl6.org/ used to serve http://testers.p6c.org/ but currently not in use
 
 
-Articles about Bailador
-========================
+## Articles about Bailador
 http://perl6maven.com/bailador
+
+## License
+
+MIT License
