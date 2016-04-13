@@ -10,13 +10,7 @@ unit module Bailador;
 my $app = Bailador::App.new;
 
 our sub import {
-    my $file = callframe(1).file;
-    my $slash = $file.rindex('/');
-    if $slash {
-        $app.location = $file.substr(0, $file.rindex('/'));
-    } else {
-        $app.location = '.';
-    }
+    $app.location = callframe(1).file.IO.dirname;
 }
 
 sub route_to_regex($route) {
