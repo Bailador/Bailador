@@ -1,7 +1,6 @@
 use Bailador::App;
 use Bailador::Request;
-use Bailador::Response;
-use Bailador::Context;
+use Bailador::Template;
 use HTTP::Easy::PSGI;
 use URI::Escape;
 
