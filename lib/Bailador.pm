@@ -141,11 +141,9 @@ sub dispatch($env) {
     if $r {
         try {
             status 200;
-            if $match {
-                $app.response.content = $r.value.(|$match.list);
-            } else {
-                $app.response.content = $r.value.();
-            }
+            my @params = $match.list
+                if $match;
+            $app.response.content = $r.value(|@params);
 
             $app.done-rendering();
             CATCH {
