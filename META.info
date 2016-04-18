@@ -10,6 +10,8 @@
         "Bailador::Context"                 : "lib/Bailador/Context.pm",
         "Bailador::Request"                 : "lib/Bailador/Request.pm",
         "Bailador::Response"                : "lib/Bailador/Response.pm",
+        "Bailador::Route"                   : "lib/Bailador/Route.pm",
+        "Bailador::Routing"                 : "lib/Bailador/Route.pm",
         "Bailador::Test"                    : "lib/Bailador/Test.pm",
         "Bailador::Template"                : "lib/Bailador/Template.pm",
         "Bailador::Template::Mojo"          : "lib/Bailador/Template/Mojo.pm",

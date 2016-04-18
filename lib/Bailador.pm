@@ -12,47 +12,23 @@ our sub import {
     $app.location = callframe(1).file.IO.dirname;
 }
 
-sub route_to_regex($route) {
-    $route.split('/').map({
-        my $r = $_;
-        if $_.substr(0, 1) eq ':' {
-            $r = q{(<-[\/\.]>+)};
-        }
-        $r
-    }).join("'/'");
-}
-
-multi parse_route(Str $route) {
-    my $r = route_to_regex($route);
-    return "/ ^ $r \$ /".EVAL;
-}
-
-multi parse_route($route) {
-    # do nothing
-    $route
-}
-
 sub get(Pair $x) is export {
-    my $p = parse_route($x.key) => $x.value;
-    $app.add_route: 'GET', $p;
+    $app.add_route: 'GET', $x;
     return $x;
 }
 
 sub post(Pair $x) is export {
-    my $p = parse_route($x.key) => $x.value;
-    $app.add_route: 'POST', $p;
+    $app.add_route: 'POST', $x;
     return $x;
 }
 
 sub put(Pair $x) is export {
-    my $p = parse_route($x.key) => $x.value;
-    $app.add_route: 'PUT', $p;
+    $app.add_route: 'PUT', $x;
     return $x;
 }
 
 sub delete(Pair $x) is export {
-    my $p = parse_route($x.key) => $x.value;
-    $app.add_route: 'DELETE', $p;
+    $app.add_route: 'DELETE', $x;
     return $x;
 }
 
@@ -143,7 +119,7 @@ sub dispatch($env) {
             status 200;
             my @params = $match.list
                 if $match;
-            $app.response.content = $r.value.(|@params);
+            $app.response.content = $r.code.(|@params);
 
             $app.done-rendering();
             CATCH {
