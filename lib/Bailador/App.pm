@@ -37,4 +37,32 @@ class Bailador::App does Bailador::Routing {
         # store session according to session engine
         self!sessions.store(self.response, self.request.env);
     }
+
+    method dispatch($env) {
+        self.context.env = $env;
+        my ($r, $match) = self.find_route($env);
+
+        if $r {
+            try {
+                self.response.code = 200;
+                my @params = $match.list
+                    if $match;
+                self.response.content = $r.code.(|@params);
+
+                self.done-rendering();
+                CATCH {
+                    default {
+                        my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
+                        $err.say(.gist);
+                        .gist.say;
+                        self.response.code = 500;
+                        self.response.headers<Content-Type> = 'text/plain';
+                        self.response.content = 'Internal Server Error';
+                    }
+                }
+            }
+        }
+
+        return self.response;
+    }
 }

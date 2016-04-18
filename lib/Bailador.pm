@@ -111,32 +111,7 @@ sub renderer(Bailador::Template $renderer) is export {
 }
 
 sub dispatch($env) {
-    $app.context.env = $env;
-    my ($r, $match) = $app.find_route($env);
-
-    if $r {
-        try {
-            status 200;
-            my @params = $match.list
-                if $match;
-            $app.response.content = $r.code.(|@params);
-
-            $app.done-rendering();
-            CATCH {
-                default {
-                    my $env = $app.request.env;
-                    my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
-                    $err.say(.gist);
-                    .gist.say;
-                    status 500;
-                    content_type 'text/plain';
-                    $app.response.content = 'Internal Server Error';
-                }
-            }
-        }
-    }
-
-    return $app.response;
+    $app.dispatch($env);
 }
 
 our sub dispatch-psgi($env) {
