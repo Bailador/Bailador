@@ -5,6 +5,7 @@ class Bailador::Context {
     has $!env;
     has Bailador::Request  $.request  = Bailador::Request.new;
     has Bailador::Response $.response = Bailador::Response.new;
+    has Bool $.autorender is rw = True;
 
     method env {
         Proxy.new(
@@ -19,6 +20,7 @@ class Bailador::Context {
                 $!request.env = $!env = $value;
                 $!request.cookies = ();
                 $!request.headers = ();
+                $!autorender = True;
             },
         );
     }

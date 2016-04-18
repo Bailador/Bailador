@@ -3,6 +3,7 @@ use Bailador::Route;
 use Bailador::Template::Mojo;
 use Bailador::Sessions;
 use Bailador::Sessions::Config;
+use Bailador::Exceptions;
 
 class Bailador::App does Bailador::Routing {
     has Str $.location is rw;
@@ -15,6 +16,12 @@ class Bailador::App does Bailador::Routing {
     method response { $.context.response }
     method template(Str $tmpl, *@params) {
         $!renderer.render(slurp("$.location/views/$tmpl"), @params);
+    }
+
+    method render($result) {
+        $.context.autorender = False;
+        self.response.code = 200;
+        self.response.content = $result;
     }
 
     method !sessions() {
@@ -39,25 +46,32 @@ class Bailador::App does Bailador::Routing {
 
     method dispatch($env) {
         self.context.env = $env;
-        my ($r, $match) = self.find_route($env);
+        try {
+            my $result = self.recurse-on-routes($env);
+            self.render: $result if $.context.autorender;
 
-        if $r {
-            try {
-                self.response.code = 200;
-                my @params = $match.list
-                    if $match;
-                self.response.content = $r.code.(|@params);
-
+            LEAVE {
                 self.done-rendering();
-                CATCH {
-                    default {
-                        my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
-                        $err.say(.gist);
-                        .gist.say;
-                        self.response.code = 500;
-                        self.response.headers<Content-Type> = 'text/plain';
-                        self.response.content = 'Internal Server Error';
-                    }
+            }
+
+            CATCH {
+                when X::Bailador::ControllerReturnedNoResult {
+                    self.response.code = 200;
+                    self.response.headers<Content-Type> = 'text/html';
+                    self.response.content = Any;
+                }
+                when X::Bailador::NoRouteFound {
+                    self.response.code = 404;
+                    self.response.headers<Content-Type> = 'text/html';
+                    self.response.content = 'Not found';
+                }
+                default {
+                    my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
+                    $err.say(.gist);
+                    .gist.say;
+                    self.response.code = 500;
+                    self.response.headers<Content-Type> = 'text/plain';
+                    self.response.content = 'Internal Server Error';
                 }
             }
         }

@@ -71,7 +71,7 @@ class Bailador::Sessions {
         }
     }
 
-    multi method delete-session(Str $session-id) {
+    multi method delete-session(Str:D $session-id) {
         $.sessions-store.delete-session($session-id);
         %!session-expiration{$session-id}:delete;
     }
@@ -80,6 +80,6 @@ class Bailador::Sessions {
         my Str $session-id = self!get-session-id($r);
         $r.env<bailador.session-id>:delete;
         $r.env<bailador.session>:delete;
-        self.delete-session($session-id);
+        self.delete-session($session-id) if $session-id;
     }
 }

@@ -1,29 +1,44 @@
 use v6;
 
 use Bailador::Request;
+use Bailador::Exceptions;
 
 class Bailador::Route { ... }
 
 role Bailador::Routing {
     has Bailador::Route @.routes;
-    multi method find_route(Bailador::Request $req) {
-        self._find_route: $req.method, $req.path
-    }
 
-    # a simplier version to avoid creation of short-living objects
-    multi method find_route($env) {
-        self._find_route: $env<REQUEST_METHOD>, $env<PATH_INFO>
-    }
+    method recurse-on-routes($env) {
+        my $method = $env<REQUEST_METHOD>;
+        my $uri    = $env<PATH_INFO>;
 
-    method _find_route($meth, $uri) {
         for @.routes -> $r {
-            if $r.match: $meth, $uri -> $match {
-                return ($r, $match);
+            if $r.match: $method, $uri -> $match {
+
+                my @params = $match.list
+                    if $match;
+
+                my $result = $r.code.(|@params);
+
+                if $result ~~ Failure {
+                    $result.exception.throw;
+                }
+                elsif !defined $result {
+                    die X::Bailador::ControllerReturnedNoResult.new(:$method, :$uri);
+                }
+                elsif $result eqv True {
+                    return $r.recurse-on-routes($env)
+                }
+                elsif $result eqv False {
+                    # continue with the next route
+                }
+                else {
+                    return $result;
+                }
             }
         }
-        return False;
+        die X::Bailador::NoRouteFound.new;
     }
-
 
     multi method add_route(Bailador::Route $route) {
         @.routes.push($route);
