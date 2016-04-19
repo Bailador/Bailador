@@ -66,7 +66,7 @@ class Bailador::Sessions {
         if $env<bailador.session-id>:exists and $env<bailador.session>:exists {
             my $session-id = $env<bailador.session-id>;
             my $session = $env<bailador.session>;
-            Bailador::cookie($.sessions-config.cookie-name, $session-id, :path($.sessions-config.cookie-path));
+            $r.cookie($.sessions-config.cookie-name, $session-id, :path($.sessions-config.cookie-path));
             $.sessions-store.store-session($session-id, $session);
         }
     }
