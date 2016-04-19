@@ -16,9 +16,18 @@ my class IO::Null is IO::Handle {
     }
 }
 
-# preparing a environment variale for PSGI
-sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
-    die "Invalid method '$meth'" if $meth ne 'GET' and $meth ne 'POST';
+    # preparing a environment variale for PSGI
+multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "") is export {
+    my $env = get-psgi-env($meth, $url, $data, $http_cookie);
+    return $app.dispatch($env).psgi;
+}
+
+multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
+    my $env = get-psgi-env($meth, $url, $data, $http_cookie);
+    return Bailador::dispatch-psgi($env);
+}
+
+sub get-psgi-env($meth, $url, $data, $http_cookie) {
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
@@ -48,14 +57,14 @@ sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
         "HTTP_COOKIE"          => $http_cookie,
         "QUERY_STRING"         => $uri.query,
     };
-    #my $req = Bailador::Request.new($env);
-    return Bailador::dispatch-psgi($env);
+
 }
 
-sub get-response($meth, $path) {
-    my $req = Bailador::Request.new_for_request($meth, $path);
-    Bailador::dispatch_request($req);
-}
+
+#sub get-response($meth, $path) {
+#    my $req = Bailador::Request.new_for_request($meth, $path);
+#    Bailador::dispatch_request($req);
+#}
 
 #obsolete methods
 #sub route-exists($meth, $path, $desc = '') is export {
