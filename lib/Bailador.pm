@@ -6,40 +6,49 @@ use URI::Escape;
 
 unit module Bailador;
 
-my $app = Bailador::App.new;
+my $app;
+
+multi sub app {
+    $app = Bailador::App.new unless $app;
+    return $app;
+}
+
+multi sub app(Bailador::App $myapp) is export {
+    $app = $myapp;
+}
 
 our sub import {
-    $app.location = callframe(1).file.IO.dirname;
+    app.location = callframe(1).file.IO.dirname;
 }
 
 sub get(Pair $x) is export {
-    $app.add_route: 'GET', $x;
+    app.add_route: 'GET', $x;
     return $x;
 }
 
 sub post(Pair $x) is export {
-    $app.add_route: 'POST', $x;
+    app.add_route: 'POST', $x;
     return $x;
 }
 
 sub put(Pair $x) is export {
-    $app.add_route: 'PUT', $x;
+    app.add_route: 'PUT', $x;
     return $x;
 }
 
 sub delete(Pair $x) is export {
-    $app.add_route: 'DELETE', $x;
+    app.add_route: 'DELETE', $x;
     return $x;
 }
 
 sub request is export { $app.context.request }
 
 sub content_type(Str $type) is export {
-    $app.response.headers<Content-Type> = $type;
+    app.response.headers<Content-Type> = $type;
 }
 
 sub header(Str $name, Cool $value) is export {
-    $app.response.headers{$name} = ~$value;
+    app.response.headers{$name} = ~$value;
 }
 
 our sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
@@ -79,27 +88,27 @@ our sub cookie(Str $name, Str $value, Str :$domain, Str :$path,
     }
     if $secure    { $c ~= "; Secure" }
     if $http-only { $c ~= "; HttpOnly" }
-    $app.response.cookies.push: uri_escape($name) ~ "=$c";
+    app.response.cookies.push: uri_escape($name) ~ "=$c";
 }
 
 sub status(Int $code) is export {
-    $app.response.code = $code;
+    app.response.code = $code;
 }
 
 sub template(Str $tmpl, *@params) is export {
-    $app.template($tmpl, @params);
+    app.template($tmpl, @params);
 }
 
 sub session is export {
-    return $app.session();
+    return app.session();
 }
 
 sub session-delete is export {
-    return $app.session-delete();
+    return app.session-delete();
 }
 
 sub sessions-config is export {
-    return $app.sessions-config;
+    return app.sessions-config;
 }
 
 our sub dispatch_request(Bailador::Request $r) {
@@ -107,11 +116,11 @@ our sub dispatch_request(Bailador::Request $r) {
 }
 
 sub renderer(Bailador::Template $renderer) is export {
-    $app.renderer = $renderer;
+    app.renderer = $renderer;
 }
 
 sub dispatch($env) {
-    $app.dispatch($env);
+    app.dispatch($env);
 }
 
 our sub dispatch-psgi($env) {
