@@ -5,7 +5,7 @@ use Bailador::Sessions;
 use Bailador::Sessions::Config;
 
 class Bailador::App does Bailador::Routing {
-    my $_location;
+    has Str $.location is rw;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
     has Bailador::Sessions::Config $.sessions-config = Bailador::Sessions::Config.new;
@@ -13,9 +13,8 @@ class Bailador::App does Bailador::Routing {
 
     method request  { $.context.request  }
     method response { $.context.response }
-    method location is rw { return-rw $_location }
-    method template(Str $tmpl, @params) {
-        $!renderer.render(slurp("$_location/views/$tmpl"), @params);
+    method template(Str $tmpl, *@params) {
+        $!renderer.render(slurp("$.location/views/$tmpl"), @params);
     }
 
     method !sessions() {
