@@ -18,10 +18,15 @@ class Bailador::App does Bailador::Routing {
         $!renderer.render(slurp("$.location/views/$tmpl"), @params);
     }
 
-    method render($result) {
+    multi method render($result) {
+        self.render(content => $result);
+    }
+
+    multi method render(Int :$status = 200, Str :$type = 'text/html', :$content!) {
         $.context.autorender = False;
-        self.response.code = 200;
-        self.response.content = $result;
+        self.response.code = $status;
+        self.response.headers<Content-Type> = $type;
+        self.response.content = $content;
     }
 
     method !sessions() {
@@ -56,22 +61,15 @@ class Bailador::App does Bailador::Routing {
 
             CATCH {
                 when X::Bailador::ControllerReturnedNoResult {
-                    self.response.code = 200;
-                    self.response.headers<Content-Type> = 'text/html';
-                    self.response.content = Any;
+                    self.render(content => Any);
                 }
                 when X::Bailador::NoRouteFound {
-                    self.response.code = 404;
-                    self.response.headers<Content-Type> = 'text/html';
-                    self.response.content = 'Not found';
                 }
                 default {
                     my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
                     $err.say(.gist);
                     .gist.say;
-                    self.response.code = 500;
-                    self.response.headers<Content-Type> = 'text/plain';
-                    self.response.content = 'Internal Server Error';
+                    self.render(status => 500, type => 'text/plain', content => 'Internal Server Error');
                 }
             }
         }

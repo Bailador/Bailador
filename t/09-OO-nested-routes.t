@@ -3,7 +3,7 @@ use Bailador::App;
 use Bailador::Route;
 use Bailador::Test;
 
-plan 8;
+plan 10;
 
 class MyOwnWebApp is Bailador::App {
 
@@ -28,7 +28,7 @@ class MyOwnWebApp is Bailador::App {
             return False;
         };
         $route.get: '/app/something' => sub {
-            self.render: "no need to check if we're logged in";
+            self.render: status => 200, content => "no need to check if we're logged in", type => 'text/plain';
         };
         $route.get: '/logout' => sub {
             self.session-delete;
@@ -61,6 +61,8 @@ my $session-id = $value.split(/<[;&]>/)[0];
 
 $response = get-psgi-response($app, 'GET', '/app/something', http_cookie => "$session-cookie-name=$session-id");
 is $response[0], 200, "login successful - statuscode 200";
+is $response[1][0].key, "Content-Type", "Content-Type found";
+is $response[1][0].value, "text/plain", "Content-Type is text/plain";
 is $response[2], "no need to check if we're logged in", "access to the app without checking session in the route";
 
 $response = get-psgi-response($app, 'GET', '/logout', http_cookie => "$session-cookie-name=$session-id");
