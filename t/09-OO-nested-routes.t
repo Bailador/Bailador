@@ -27,9 +27,7 @@ class MyOwnWebApp is Bailador::App {
             # go to a next route that matches the request
             return False;
         };
-        $route.get: '/app/something' => sub {
-            self.render: status => 200, content => "no need to check if we're logged in", type => 'text/plain';
-        };
+        $route.get: '/app/something' => self.curry: 'something';
         $route.get: '/logout' => sub {
             self.session-delete;
             self.render: "logged out";
@@ -41,6 +39,10 @@ class MyOwnWebApp is Bailador::App {
             self.session-delete;
             self.render: "this is the login page / catch all route";
         };
+    }
+
+    method something {
+        self.render: status => 200, content => "no need to check if we're logged in", type => 'text/plain';
     }
 }
 

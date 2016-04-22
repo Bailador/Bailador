@@ -76,4 +76,8 @@ class Bailador::App does Bailador::Routing {
 
         return self.response;
     }
+
+    method curry(Str:D $method, *@args) {
+        return self.^method_table{$method}.assuming(self, |@args);
+    }
 }
