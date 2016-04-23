@@ -8,11 +8,11 @@ unit module Bailador::Test;
 # It would be nice to have IO::String here instead
 my class IO::Null is IO::Handle {
     method print(*@what) {
-        # noop
+        diag @what;
     }
 
     method print-nl(*@what) {
-        # noop
+        diag @what;
     }
 }
 

@@ -66,9 +66,13 @@ class Bailador::App does Bailador::Routing {
                 when X::Bailador::NoRouteFound {
                 }
                 default {
-                    my $err = $env<p6sgi.version>:exists ?? $env<p6sgi.errors> !! $env<p6sgi.errors>;
-                    $err.say(.gist);
-                    .gist.say;
+                    if ($env<p6sgi.errors>:exists) {
+                        my $err = $env<p6sgi.errors>;
+                        $err.say(.gist);
+                    }
+                    else {
+                        note .gist;
+                    }
                     self.render(status => 500, type => 'text/plain', content => 'Internal Server Error');
                 }
             }
