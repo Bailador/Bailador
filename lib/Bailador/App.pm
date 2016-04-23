@@ -82,6 +82,7 @@ class Bailador::App does Bailador::Routing {
     }
 
     method curry(Str:D $method, *@args) {
+        die "Method $method not found on class " ~ self.WHAT.gist unless self.^method_table{$method}:exists;
         return self.^method_table{$method}.assuming(self, |@args);
     }
 }
