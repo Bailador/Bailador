@@ -75,20 +75,12 @@ sub sessions-config is export {
     return app.sessions-config;
 }
 
-our sub dispatch_request(Bailador::Request $r) {
-    return dispatch($r.env);
-}
-
 sub renderer(Bailador::Template $renderer) is export {
     app.renderer = $renderer;
 }
 
-sub dispatch($env) {
-    app.dispatch($env);
-}
-
 our sub dispatch-psgi($env) {
-    return dispatch($env).psgi;
+    return app.dispatch($env).psgi;
 }
 
 sub baile($port = 3000) is export {
