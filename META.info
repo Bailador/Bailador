@@ -19,7 +19,8 @@
         "Bailador::Template"                      : "lib/Bailador/Template.pm",
         "Bailador::Template::Mojo"                : "lib/Bailador/Template/Mojo.pm",
         "Bailador::Template::Mustache"            : "lib/Bailador/Template/Mustache.pm",
-        "Bailador::Test"                          : "lib/Bailador/Test.pm"
+        "Bailador::Test"                          : "lib/Bailador/Test.pm",
+        "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm"
     },
     "authors" : [
         "Tadeusz “tadzik” Sośnierz",
