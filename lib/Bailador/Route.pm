@@ -17,7 +17,6 @@ role Bailador::Routing {
 
                 my @params = $match.list
                     if $match;
-
                 my $result = $r.code.(|@params);
 
                 if $result ~~ Failure {
@@ -75,7 +74,7 @@ class Bailador::Route does Bailador::Routing {
     subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT> }
     has HttpMethod $.method;
     has Regex $.path is required;
-    has Callable $.code is required;
+    has Callable $.code is required is rw;
 
     sub route_to_regex($route) {
         $route.split('/').map({
