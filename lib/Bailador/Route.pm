@@ -8,13 +8,10 @@ class Bailador::Route { ... }
 role Bailador::Routing {
     has Bailador::Route @.routes;
 
-    method recurse-on-routes($env) {
-        my $method = $env<REQUEST_METHOD>;
-        my $uri    = $env<PATH_INFO>;
+    method recurse-on-routes(Str $method, Str $uri) {
 
         for @.routes -> $r {
             if $r.match: $method, $uri -> $match {
-
                 my @params = $match.list
                     if $match;
                 my $result = $r.code.(|@params);
@@ -22,11 +19,15 @@ role Bailador::Routing {
                 if $result ~~ Failure {
                     $result.exception.throw;
                 }
-                elsif !defined $result {
-                    die X::Bailador::ControllerReturnedNoResult.new(:$method, :$uri);
-                }
                 elsif $result eqv True {
-                    return $r.recurse-on-routes($env)
+                    try {
+                        return $r.recurse-on-routes($method, $uri);
+                        CATCH {
+                            when X::Bailador::NoRouteFound {
+                                # continue with the next route
+                            }
+                        }
+                    }
                 }
                 elsif $result eqv False {
                     # continue with the next route

@@ -67,8 +67,18 @@ class Bailador::App does Bailador::Routing {
     method dispatch($env) {
         self.context.env = $env;
         try {
-            my $result = self.recurse-on-routes($env);
-            self.render: $result if $.context.autorender;
+            my $method = $env<REQUEST_METHOD>;
+            my $uri    = $env<PATH_INFO>;
+            my $result = self.recurse-on-routes($method, $uri);
+
+            if $.context.autorender {
+                if $result.defined {
+                    self.render: $result;
+                }
+                else {
+                    die X::Bailador::ControllerReturnedNoResult.new(:$method, :$uri);
+                }
+            }
 
             LEAVE {
                 self.done-rendering();
@@ -79,6 +89,7 @@ class Bailador::App does Bailador::Routing {
                     self.render(content => Any);
                 }
                 when X::Bailador::NoRouteFound {
+                    # render 404
                 }
                 default {
                     if ($env<p6sgi.errors>:exists) {
