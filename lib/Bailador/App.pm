@@ -24,7 +24,7 @@ class Bailador::App does Bailador::Routing {
     multi method render($result) {
         if $result ~~ IO::Path {
             my $type = $.content-types.detect-type($result);
-            self.render: content => $result.slurp, :$type;
+            self.render: content => $result.slurp(:bin), :$type;
         }
         else {
             self.render(content => $result);
