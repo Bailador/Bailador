@@ -12,6 +12,7 @@
         "Bailador::Request"                       : "lib/Bailador/Request.pm",
         "Bailador::Response"                      : "lib/Bailador/Response.pm",
         "Bailador::Route"                         : "lib/Bailador/Route.pm",
+        "Bailador::Route::StaticFile"             : "lib/Bailador/Route/StaticFile.pm",
         "Bailador::Sessions"                      : "lib/Bailador/Sessions.pm",
         "Bailador::Sessions::Config"              : "lib/Bailador/Sessions/Config.pm",
         "Bailador::Sessions::Store"               : "lib/Bailador/Sessions/Store.pm",
