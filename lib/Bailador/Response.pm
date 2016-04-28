@@ -9,7 +9,7 @@ class Bailador::Response {
     method psgi {
         my @headers = %.headers.list;
         for @.cookies { @headers.push("Set-Cookie" => $_) }
-        [ $.code, [ @headers ], |@.content ]
+        [ $.code, [ @headers ], Supply.from-list(@.content) ]
     }
 
     method cookie(Str $name, Str $value, Str :$domain, Str :$path,

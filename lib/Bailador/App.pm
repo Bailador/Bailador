@@ -64,6 +64,19 @@ class Bailador::App does Bailador::Routing {
         self!sessions.store(self.response, self.request.env);
     }
 
+    method get-psgi-app {
+        # quotes from https://github.com/zostay/P6SGI
+        # draft 0.7
+        # * A P6SGI application is a Perl 6 routine that expects to receive an environment from an application server and returns a response each time it is called by the server.
+        # * An application MUST return a Promise
+        # * The message payload MUST be a sane Supply or an object that coerces into a sane Supply.
+        return sub (%env) {
+            start {
+                self.dispatch(%env).psgi;
+            }
+        }
+    }
+
     method dispatch($env) {
         self.context.env = $env;
         try {

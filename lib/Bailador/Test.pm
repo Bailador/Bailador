@@ -19,12 +19,27 @@ my class IO::Null is IO::Handle {
     # preparing a environment variale for PSGI
 multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "") is export {
     my $env = get-psgi-env($meth, $url, $data, $http_cookie);
-    return $app.dispatch($env).psgi;
+    my $psgi-app = $app.get-psgi-app(),
+    my $promise = $psgi-app.($env);
+    return de-supply-response $promise.result;
 }
 
 multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
     my $env = get-psgi-env($meth, $url, $data, $http_cookie);
-    return Bailador::dispatch-psgi($env);
+    my $psgi-app = get-psgi-app();
+    my $promise = $psgi-app.($env);
+    return de-supply-response $promise.result;
+}
+
+sub de-supply-response($response) {
+    my $body = $response[2];
+    if $body ~~ Supply {
+        my @result;
+        $body.tap(-> $c {@result.push($c);});
+        $body.wait;
+        return [$response[0], $response[1], |@result];
+    }
+    die "body must be a Supply";
 }
 
 sub get-psgi-env($meth, $url, $data, $http_cookie) {
