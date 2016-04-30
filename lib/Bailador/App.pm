@@ -31,10 +31,10 @@ class Bailador::App does Bailador::Routing {
         }
     }
 
-    multi method render(Int :$status = 200, Str :$type = 'text/html', :$content!) {
+    multi method render(Int :$status = 200, Str :$type, :$content!) {
         $.context.autorender = False;
         self.response.code = $status;
-        self.response.headers<Content-Type> = $type;
+        self.response.headers<Content-Type> = $type if $type;
         self.response.content = $content;
     }
 
