@@ -59,8 +59,8 @@ sub status(Int $code) is export {
     app.response.code = $code;
 }
 
-sub template(Str $tmpl, *@params) is export {
-    app.template($tmpl, @params);
+sub template(Str $tmpl, *@params, *%params) is export {
+    app.template($tmpl, @params, |%params);
 }
 
 sub session is export {
