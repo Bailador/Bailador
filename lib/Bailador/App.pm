@@ -17,8 +17,8 @@ class Bailador::App does Bailador::Routing {
 
     method request  { $.context.request  }
     method response { $.context.response }
-    method template(Str $tmpl, *@params) {
-        $!renderer.render(slurp("$.location/views/$tmpl"), @params);
+    method template(Str $tmpl, *@params, *%params) {
+        $!renderer.render(slurp("$.location/views/$tmpl"), @params, |%params);
     }
 
     multi method render($result) {
