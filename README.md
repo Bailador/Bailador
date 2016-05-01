@@ -19,71 +19,126 @@ baile;
 
 For more examples, pleasee see the [examples](examples) folder.
 
-## Exported subs
+## How to Write Web Apps
 
+Bailador offers two different approaches to write web applications. The first and classical approach is using the subs that are exported that you get when you `use Bailador`. This API is ment to be stable and should not change much.
 
-Subroutines for your Application
---------------------------------
+New features like nested routes and whatever is yet to come are implemented in `Bailador::App` and can be used through the object oriented interface. Your own web application just inherits from `Bailador::App`.
 
-### `get(Pair $x)`
-### `post(Pair $x)`
-### `put(Pair $x)`
-### `delete(Pair $x)`
+### Classic Approach
 
-Addes A Route for get, post, put or delete requests.
+#### Subroutines for your Application
 
-### `renderer(Bailador::Template $renderer)`
+##### `get(Pair $x)`
+##### `post(Pair $x)`
+##### `put(Pair $x)`
+##### `delete(Pair $x)`
+
+Adds a route for get, post, put or delete requests. The key of the `Pair` is either a `Str` or a `Regex`. If a string is passed it is automatically converted into a regex. The value of the pair must be a `Callable`. Whenever the route matches on the requested URL the callable is invoked with the list of the `Match` as its parameters. The return value of the callable will be autorendered. So it is the content of your response.
+
+##### `renderer(Bailador::Template $renderer)`
 
 Sets the Renderer that's being used to render your templates. See the Template section for more details.
 
-### `sessions-config()`
+##### `sessions-config()`
 
 Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
 
-### `baile()`
+##### `baile()`
 
 Lets enter the dance floor. ¡Olé!
 
-Subroutines that sould only be used inside the Code block of a Route
--------------------------------------------------------------------
+##### `get-psgi-app`
 
-### `content_type(Str $type)`
+Returns a PSGI / P6SGI / P6W app which should be able to run on different Servers.
+
+#### Subroutines that sould only be used inside the Code block of a Route
+
+##### `content_type(Str $type)`
 
 Sets the Content Type for the response to $type.
 
-### `request()`
+##### `request()`
 
 Gets current the Request.
 
-### `header(Str $name, Cool $value)`
+##### `header(Str $name, Cool $value)`
 
 Adds a Header to the Repsonse.
 
-### `cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`
+##### `cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`
 
 Adds a Cookie to the response.
 
-### `status(Int $code)`
+##### `status(Int $code)`
 
 Sets the status code of a response.
 
-### `template(Str $template-name, *@params)`
+#####  `template(Str $template-name, *@params)`
 
 Calls the template which is a file in the views folder. For more details see the Template section. Should only be used within the code block of a route.
 
-### `session()`
+##### `session()`
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
-## Routing
+## Web Applications via Inheriting from `Bailador::App`
 
-Routes are easily created with a subroutine that is called like the HTTP method you want to use followed by a code block or anything that is "Callable".
-The return value of the code block or Callable is content of the response that's been sent back to the browser. If you want to send cookies or headers use
+```Perl6
+class MyWebApp is Bailador::App {
+    submethod BUILD(|) {
+        my $rootdir = $?FILE.IO.parent.parent;
+        self.location = $rootdir.child("views").dirname;
+        self.sessions-config.cookie-expiration = 180;
 
-    cookie()
-    header()
-    
-as described in the methods above.
+        self.get:  '/login' => sub { self.session-delete; self.template: 'login.tt' };
+        self.post: '/login' => self.curry: 'login-post';
+
+        my $only-if-loggedin = Bailador::Route.new: path => /.*/, code => sub {
+            return True if self.session<user>;
+            return False;
+        };
+        $only-if-loggedin.get:  '/the/app'  => sub { ... };
+        self.add_route: $only-if-loggedin;
+
+        self.add_route: Bailador::Route::StaticFile.new: path => / (<[\w\.]>+ '/' <[\w\.\-]>+)/, directory => $rootdir.child("public");
+        self.get: / .* / => sub {self.redirect: '/login' };
+
+    }
+    method login-post { ... }
+}
+```
+
+### Nested Routes
+
+Routes can be nested and structured in a tree. If you just use the methods get, post, etc from the Bailador::App all the routes that you add are placed on the first level of the tree, so nothing is nested so far.
+Nesting routes make sense if you want to enter routes just under conditions. The most perfect example when nested routes become handy is when you want to serve content just when someone is logged in. Instead of having the same check spread over and over in each and every sub you just create a `Bailador::Route` and add it with `self.add_route`. So the return value of the route now determines what to do.
+
+### Return Values of Routes
+
+  * `False`
+    The callable of a route works as a conditional check and the nested routes will not be checked nor invoked. It behaves as if the route would not have matched at all. So it will continue to look for a route that matches your request.
+
+  * `True`
+    The callable of a route works as a conditional check and allows to go deeper into the tree. In case nothing in the tree matches the request an exception is thrown. That causes to leave the nested routes and continue checking for other routes. Of course, if this happens in the first level of the tree a `404` is created
+
+  * `Failure`s and `Exception`s
+    This will cause a HTTP `500`
+
+  * _Nothing_
+    It is fine if a route returns nothing as long as you have rendered something within the callable of the route.
+
+  * _Something_
+    If something is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn of auto rendering.
+
+### Bailador::Route::StaticFile
+
+```Perl6
+my $files = Bailador::Route::StaticFile.new: directory => $dir, path => '/public/:file';
+self.add_route: $files;
+```
+
+A static file route can be used to serve files in a directory. The `path` `Regex` or `Str` must return a single match which will be turned into a `.Str`. If there is a file in the directory with that name it will be rendered otherwise the route returns a `False`, so in the end the route is left and maybe other routes can handle your request.
 
 ## Templates
 
