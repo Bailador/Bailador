@@ -17,7 +17,7 @@ get '/' => sub {
 baile;
 ```
 
-For more examples, pleasee see the [examples](examples) folder.
+For more examples, please see the [examples](examples) folder.
 
 ## How to Write Web Apps
 
