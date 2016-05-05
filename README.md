@@ -138,7 +138,7 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
 
   * anything that is `defined`
 
-    If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn of auto rendering.
+    If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn off auto rendering.
 
 ### Bailador::Route::StaticFile
 
