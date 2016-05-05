@@ -121,18 +121,23 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
 ### Return Values of Routes
 
   * `False`
+
     The callable of a route works as a conditional check and the nested routes will not be checked nor invoked. It behaves as if the route would not have matched at all. So it will continue to look for a route that matches your request.
 
   * `True`
+
     The callable of a route works as a conditional check and allows to go deeper into the tree. In case nothing in the tree matches the request an exception is thrown. That causes to leave the nested routes and continue checking for other routes. Of course, if this happens in the first level of the tree a `404` is created.
 
   * `Failure`s and `Exception`s
+
     This will cause a HTTP `500`
 
   * anything that is not `defined`
+
     It is fine if a route returns nothing (e.g. `Nil` or `Any`) or anything that is not defined as long as you have rendered something within the callable of the route.
 
   * anything that is `defined`
+
     If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn of auto rendering.
 
 ### Bailador::Route::StaticFile
