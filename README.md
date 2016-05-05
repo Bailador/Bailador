@@ -25,7 +25,7 @@ Bailador offers two different approaches to write web applications. The first an
 
 New features like nested routes and whatever is yet to come are implemented in `Bailador::App` and can be used through the object oriented interface. Your own web application just inherits from `Bailador::App`.
 
-### Classic Approach
+### Classical Approach
 
 #### Subroutines for your Application
 
@@ -114,22 +114,26 @@ class MyWebApp is Bailador::App {
 Routes can be nested and structured in a tree. If you just use the methods get, post, etc from the Bailador::App all the routes that you add are placed on the first level of the tree, so nothing is nested so far.
 Nesting routes make sense if you want to enter routes just under conditions. The most perfect example when nested routes become handy is when you want to serve content just when someone is logged in. Instead of having the same check spread over and over in each and every sub you just create a `Bailador::Route` and add it with `self.add_route`. So the return value of the route now determines what to do.
 
+### Auto Rendering
+
+Auto rendering means that whatever (except `True` and `False`) the return value of the sub is, it will be rendered. Using `self.render` will turn of auto rendering, because you obviously have rendered something manually. In the classical approach auto rendering is always used.
+
 ### Return Values of Routes
 
   * `False`
     The callable of a route works as a conditional check and the nested routes will not be checked nor invoked. It behaves as if the route would not have matched at all. So it will continue to look for a route that matches your request.
 
   * `True`
-    The callable of a route works as a conditional check and allows to go deeper into the tree. In case nothing in the tree matches the request an exception is thrown. That causes to leave the nested routes and continue checking for other routes. Of course, if this happens in the first level of the tree a `404` is created
+    The callable of a route works as a conditional check and allows to go deeper into the tree. In case nothing in the tree matches the request an exception is thrown. That causes to leave the nested routes and continue checking for other routes. Of course, if this happens in the first level of the tree a `404` is created.
 
   * `Failure`s and `Exception`s
     This will cause a HTTP `500`
 
-  * _Nothing_
-    It is fine if a route returns nothing as long as you have rendered something within the callable of the route.
+  * anything that is not `defined`
+    It is fine if a route returns nothing (e.g. `Nil` or `Any`) or anything that is not defined as long as you have rendered something within the callable of the route.
 
-  * _Something_
-    If something is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn of auto rendering.
+  * anything that is `defined`
+    If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn of auto rendering.
 
 ### Bailador::Route::StaticFile
 
