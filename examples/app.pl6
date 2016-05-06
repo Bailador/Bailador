@@ -23,13 +23,8 @@ get /foo(.+)/ => sub ($x) {
     "regexes! I got $x"
 }
 
-get / '/' (.+) '-' (.+)/ => sub ($x, $y) {
+get rx{ '/' (.+) '-' (.+) } => sub ($x, $y) {
     "$x and $y"
-}
-
-# junctions work too
-get any('/h', '/help', '/halp') => sub {
-    "junctions are cool"
 }
 
 # templates!
