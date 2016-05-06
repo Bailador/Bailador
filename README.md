@@ -4,6 +4,38 @@
 
 A light-weight route-based web application framework for Perl 6
 
+# TABLE OF CONTENTS
+- [Example](#example)
+- [How to Write Web Apps](#how-to-write-web-apps)
+    - [Classical Approach](#classical-approach)
+        - [Subroutines for your Application](#subroutines-for-your-application)
+            - [`get(Pair $x)`](#getpair-x)
+            - [`post(Pair $x)`](#postpair-x)
+            - [`put(Pair $x)`](#putpair-x)
+            - [`delete(Pair $x)`](#deletepair-x)
+            - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
+            - [`sessions-config()`](#sessions-config)
+            - [`baile()`](#baile)
+            - [`get-psgi-app`](#get-psgi-app)
+        - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
+            - [`content_type(Str $type)`](#content_typestr-type)
+            - [`request()`](#request)
+            - [`header(Str $name, Cool $value)`](#headerstr-name-cool-value)
+            - [`cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`](#cookiestr-name-str-value-str-domain-str-path-datetime-expires-bool-http-only-bool-secure)
+            - [`status(Int $code)`](#statusint-code)
+            - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
+            - [`session()`](#session)
+- [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
+    - [Nested Routes](#nested-routes)
+    - [Auto Rendering](#auto-rendering)
+    - [Return Values of Routes](#return-values-of-routes)
+    - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
+- [Templates](#templates)
+- [Sessions](#sessions)
+- [Bailador-based applications](#bailador-based-applications)
+- [Articles about Bailador](#articles-about-bailador)
+- [License](#license)
+
 ## Example
 
 ```Perl6
