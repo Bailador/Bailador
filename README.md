@@ -8,7 +8,9 @@ A light-weight route-based web application framework for Perl 6
 - [Example](#example)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Classical Approach](#classical-approach)
+        - [Mixing both Approaches](#mixing-both-approaches)
         - [Subroutines for your Application](#subroutines-for-your-application)
+            - [`app(Bailador::App $app)`](#appbailadorapp-app)
             - [`get(Pair $x)`](#getpair-x)
             - [`post(Pair $x)`](#postpair-x)
             - [`put(Pair $x)`](#putpair-x)
@@ -57,9 +59,27 @@ Bailador offers two different approaches to write web applications. The first an
 
 New features like nested routes and whatever is yet to come are implemented in `Bailador::App` and can be used through the object oriented interface. Your own web application just inherits from `Bailador::App`.
 
+### Mixing both Approaches
+
+When you write your own application, but still want to use the exported subs described in [this](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route) section you MUST set your `$app` to be the default app.
+
+```Perl6
+use Bailador;
+use Bailador::App;
+
+class MyWebApp is Bailador::App { ... }
+my $app = MyWebApp.new;
+
+app $app;
+```
+
 ### Classical Approach
 
 #### Subroutines for your Application
+
+#### `app(Bailador::App $app)`
+
+Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route).
 
 ##### `get(Pair $x)`
 ##### `post(Pair $x)`
