@@ -88,6 +88,12 @@ class Bailador::Request {
         self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path, PATH_INFO => $path_info }
     }
 
+    method reset ($env) {
+        $!env = $env;
+        %!cookies = ();
+        %!headers = ();
+    }
+
     method port        { $.env<SERVER_PORT>      }
     method request_uri { $.env<REQUEST_URI>      }
     method uri         { self.request_uri        }

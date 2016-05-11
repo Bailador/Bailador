@@ -17,9 +17,8 @@ class Bailador::Context {
                 $!response.headers = {};
                 $!response.headers<Content-Type> = 'text/html';
                 $!response.cookies = ();
-                $!request.env = $!env = $value;
-                $!request.cookies = ();
-                $!request.headers = ();
+                $!env = $value;
+                $!request.reset($!env);
                 $!autorender = True;
             },
         );
