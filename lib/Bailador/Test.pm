@@ -42,7 +42,7 @@ sub de-supply-response($response) {
     die "body must be a Supply";
 }
 
-sub get-psgi-env($meth, $url, $data, $http_cookie) {
+sub get-psgi-env($meth, $url, $data, $http_cookie,) {
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
