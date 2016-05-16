@@ -102,7 +102,12 @@ class Bailador::App does Bailador::Routing {
                     self.render(content => Any);
                 }
                 when X::Bailador::NoRouteFound {
-                    my $err-page = "$.location/views/404.tt".IO.e ?? self.template("404.tt", []) !! 'Page Not Found';
+                    my $err-page;
+                    if $!location.defined {
+                        $err-page = "$!location/views/404.tt".IO.e ?? self.template("404.tt", []) !! 'Not found';
+                    } else {
+                        $err-page = 'Not found';
+                    }
                     self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
                 }
                 default {
@@ -113,7 +118,12 @@ class Bailador::App does Bailador::Routing {
                     else {
                         note .gist;
                     }
-                    my $err-page = "$.location/views/500.tt".IO.e ?? self.template("500.tt", []) !! 'Internal Server Error';
+                    my $err-page;
+                    if $!location.defined {
+                        $err-page = "$!location/views/500.tt".IO.e ?? self.template("404.tt", []) !! 'Internal Server Error';
+                    } else {
+                        $err-page = 'Internal Server Error';
+                    }
                     self.render(status => 500, type => 'text/html, charset=utf-8', content => $err-page);
                 }
             }

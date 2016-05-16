@@ -15,6 +15,6 @@ class MyOwnWebApp is Bailador::App {
 
 my $app = MyOwnWebApp.new;
 
-is-deeply get-psgi-response($app, 'GET', '/die'),        [500, ["Content-Type" => "text/plain"], 'Internal Server Error'], 'route GET handles die';
-is-deeply get-psgi-response($app, 'GET', '/fail'),       [500, ["Content-Type" => "text/plain"], 'Internal Server Error'], 'route GET handles fail';
-is-deeply get-psgi-response($app, 'GET', '/exception'),  [500, ["Content-Type" => "text/plain"], 'Internal Server Error'], 'route GET handles thrown exception';
+is-deeply get-psgi-response($app, 'GET', '/die'),        [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles die';
+is-deeply get-psgi-response($app, 'GET', '/fail'),       [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles fail';
+is-deeply get-psgi-response($app, 'GET', '/exception'),  [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles thrown exception';
