@@ -1,0 +1,10 @@
+% my ($h) = @_;
+<html>
+    <head>
+        <title>Custom 404 page</title>
+	<meta charset="UTF-8">
+    </head>
+    <body>
+        <h1>Hello, this is 404 for you.</h1>
+    </body>
+</html>
