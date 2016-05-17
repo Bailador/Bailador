@@ -33,6 +33,7 @@ A light-weight route-based web application framework for Perl 6
     - [Return Values of Routes](#return-values-of-routes)
     - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
 - [Templates](#templates)
+    - [Error Templates](#error-templates)
 - [Sessions](#sessions)
 - [Bailador-based applications](#bailador-based-applications)
 - [Articles about Bailador](#articles-about-bailador)
@@ -222,6 +223,9 @@ the template (or in other words the file views/template.tt) gets invoked "as a s
         <h1><% $name %></h1>
     <html>
 
+### Error Templates
+
+In order to customize the error pages drop a template file with the filename of the HTTP status code and the suffix `.xx` in your views directory. Curently there only two different error codes: `404` and `500`.
     
 ## Sessions
 
