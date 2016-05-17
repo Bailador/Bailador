@@ -102,7 +102,13 @@ class Bailador::App does Bailador::Routing {
                     self.render(content => Any);
                 }
                 when X::Bailador::NoRouteFound {
-                    # render 404
+                    my $err-page;
+                    if $!location.defined {
+                        $err-page = "$!location/views/404.tt".IO.e ?? self.template("404.tt", []) !! 'Not found';
+                    } else {
+                        $err-page = 'Not found';
+                    }
+                    self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
                 }
                 default {
                     if ($env<p6sgi.errors>:exists) {
@@ -112,7 +118,13 @@ class Bailador::App does Bailador::Routing {
                     else {
                         note .gist;
                     }
-                    self.render(status => 500, type => 'text/plain', content => 'Internal Server Error');
+                    my $err-page;
+                    if $!location.defined {
+                        $err-page = "$!location/views/500.tt".IO.e ?? self.template("404.tt", []) !! 'Internal Server Error';
+                    } else {
+                        $err-page = 'Internal Server Error';
+                    }
+                    self.render(status => 500, type => 'text/html, charset=utf-8', content => $err-page);
                 }
             }
         }
