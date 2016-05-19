@@ -7,8 +7,8 @@ A light-weight route-based web application framework for Perl 6
 # TABLE OF CONTENTS
 - [Example](#example)
 - [How to Write Web Apps](#how-to-write-web-apps)
+    - [Mixing both Approaches](#mixing-both-approaches)
     - [Classical Approach](#classical-approach)
-        - [Mixing both Approaches](#mixing-both-approaches)
         - [Subroutines for your Application](#subroutines-for-your-application)
             - [`app(Bailador::App $app)`](#appbailadorapp-app)
             - [`get(Pair $x)`](#getpair-x)
@@ -27,11 +27,11 @@ A light-weight route-based web application framework for Perl 6
             - [`status(Int $code)`](#statusint-code)
             - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
             - [`session()`](#session)
-- [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
-    - [Nested Routes](#nested-routes)
-    - [Auto Rendering](#auto-rendering)
-    - [Return Values of Routes](#return-values-of-routes)
-    - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
+    - [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
+        - [Nested Routes](#nested-routes)
+        - [Auto Rendering](#auto-rendering)
+        - [Return Values of Routes](#return-values-of-routes)
+        - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
 - [Templates](#templates)
     - [Error Templates](#error-templates)
 - [Sessions](#sessions)
@@ -135,7 +135,7 @@ Calls the template which is a file in the views folder. For more details see the
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
-## Web Applications via Inheriting from `Bailador::App`
+### Web Applications via Inheriting from `Bailador::App`
 
 ```Perl6
 class MyWebApp is Bailador::App {
@@ -162,16 +162,16 @@ class MyWebApp is Bailador::App {
 }
 ```
 
-### Nested Routes
+#### Nested Routes
 
 Routes can be nested and structured in a tree. If you just use the methods get, post, etc from the Bailador::App all the routes that you add are placed on the first level of the tree, so nothing is nested so far.
 Nesting routes make sense if you want to enter routes just under conditions. The most perfect example when nested routes become handy is when you want to serve content just when someone is logged in. Instead of having the same check spread over and over in each and every sub you just create a `Bailador::Route` and add it with `self.add_route`. So the return value of the route now determines what to do.
 
-### Auto Rendering
+#### Auto Rendering
 
 Auto rendering means that whatever (except `True` and `False`) the return value of the sub is, it will be rendered. Using `self.render` will turn of auto rendering, because you obviously have rendered something manually. In the classical approach auto rendering is always used.
 
-### Return Values of Routes
+#### Return Values of Routes
 
   * `False`
 
@@ -193,7 +193,7 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
 
     If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. Using `self.render` will turn off auto rendering.
 
-### Bailador::Route::StaticFile
+#### Bailador::Route::StaticFile
 
 ```Perl6
 my $files = Bailador::Route::StaticFile.new: directory => $dir, path => '/public/:file';
