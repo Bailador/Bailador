@@ -15,6 +15,7 @@ A light-weight route-based web application framework for Perl 6
             - [`post(Pair $x)`](#postpair-x)
             - [`put(Pair $x)`](#putpair-x)
             - [`delete(Pair $x)`](#deletepair-x)
+            - [`redirect(Str $location)`](#redirectstr-location)
             - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
             - [`sessions-config()`](#sessions-config)
             - [`baile()`](#baile)
@@ -88,6 +89,10 @@ Sets a Bailador::App to be the default app for all the other exported subs descr
 ##### `delete(Pair $x)`
 
 Adds a route for get, post, put or delete requests. The key of the `Pair` is either a `Str` or a `Regex`. If a string is passed it is automatically converted into a regex. The value of the pair must be a `Callable`. Whenever the route matches on the requested URL the callable is invoked with the list of the `Match` as its parameters. The return value of the callable will be autorendered. So it is the content of your response.
+
+##### `redirect(Str $location)`
+
+Redirect to the specified location, can be relative or absolute URL. Adds Location-header to response and sets status code to 302.
 
 ##### `renderer(Bailador::Template $renderer)`
 
