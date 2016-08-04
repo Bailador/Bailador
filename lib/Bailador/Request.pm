@@ -40,9 +40,10 @@ class Bailador::Request {
             }
             when 'body' {
                 my $headers = self.headers;
+                say $headers.perl;
                 my regex bcharnospace { <[0..9]> || <[ a..z  A..Z]> || "'" || '(' || ')' || '+' || '_' || ',' || '-' || '.'  || '/' || ':' || '=' || '?' };
                 if not $headers<CONTENT_TYPE>:exists or $headers<CONTENT_TYPE>:exists and $headers<CONTENT_TYPE>.starts-with("application/x-www-form-urlencoded") {
-                    %ret = self!parse-urlencoded: $.env<p6sgi.input>.decode if $!env<p6sgi.input>;
+                    %ret = self!parse-urlencoded: input-to-buf($.env.p6w-input);
                 }
                 # boundary according to RFC 1341
                 #
@@ -59,7 +60,7 @@ class Bailador::Request {
 
                 elsif $headers<CONTENT_TYPE>:exists and $headers<CONTENT_TYPE> ~~ / 'multipart/form-data;'  .* 'boundary' '=' '"' ? ( <bcharnospace> ** 0..69  ) \s* '"' ? / {
                     my $boundary = $/[0].Str;
-                    %ret = self!parse-multipart: $.env<p6sgi.input>, $boundary.encode;
+                    %ret = self!parse-multipart: input-to-buf($.env.p6w-input), $boundary.encode;
                 }
             }
             default {
@@ -69,7 +70,30 @@ class Bailador::Request {
         return %ret;
     }
 
-    method !parse-urlencoded(Str $encoded) {
+    sub input-to-buf($input) {
+        if $input ~~ Supply {
+            my Blob $buff = Blob.new;
+            $input.tap(
+                -> $v {
+                    say "tapped from sup: ";
+                    say $v.WHAT;
+                    say $v.perl;
+                    my $add_me = $v;
+                    say "adding";
+                    say $add_me.WHAT;
+                    $buff ~= $add_me;
+                },
+                done => sub { say "sup done" }
+            );
+            $input.wait;
+            return $buff;
+           #return $input.list.reduce: sub {$^a ~ $^b};
+        }
+        return $input;
+    }
+
+    method !parse-urlencoded(Blob $buf) {
+        my $encoded = $buf.decode;
         my %ret;
         for $encoded.split('&') -> $p {
             my @pair = $p.split('=', 2);

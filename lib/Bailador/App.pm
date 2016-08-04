@@ -4,6 +4,7 @@ use Bailador::Template::Mojo;
 use Bailador::Sessions;
 use Bailador::Sessions::Config;
 use Bailador::Exceptions;
+use Bailador::Environment;
 use Bailador::ContentTypes;
 
 class Bailador::App does Bailador::Routing {
@@ -71,13 +72,18 @@ class Bailador::App does Bailador::Routing {
         # * An application MUST return a Promise
         # * The message payload MUST be a sane Supply or an object that coerces into a sane Supply.
         return sub (%env) {
+            #say %env.perl;
             start {
                 self.dispatch(%env).psgi;
             }
         }
     }
 
-    method dispatch($env) {
+    multi method dispatch(Hash $env) {
+        self.dispatch(Bailador::Environment.new.push(%$env));
+    }
+
+    multi method dispatch(Bailador::Environment $env) {
         self.context.env = $env;
         try {
             my $method = $env<REQUEST_METHOD>;
@@ -111,12 +117,13 @@ class Bailador::App does Bailador::Routing {
                     self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
                 }
                 default {
-                    if ($env<p6sgi.errors>:exists) {
-                        my $err = $env<p6sgi.errors>;
-                        $err.say(.gist);
-                    }
-                    else {
-                        note .gist;
+                    my $errors = $.context.env.p6w-errors;
+                    if ($errors ~~ Supplier) {
+                        $errors.emit(.gist);
+                    } elsif ($errors ~~ IO::Handle) {
+                        $errors.say(.gist);
+                    } else {
+                            note .gist;
                     }
                     my $err-page;
                     if $!location.defined {

@@ -1,8 +1,9 @@
 use Bailador::Request;
 use Bailador::Response;
+use Bailador::Environment;
 
 class Bailador::Context {
-    has $!env;
+    has Bailador::Environment $!env;
     has Bailador::Request  $.request  = Bailador::Request.new;
     has Bailador::Response $.response = Bailador::Response.new;
     has Bool $.autorender is rw = True;
