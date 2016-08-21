@@ -8,3 +8,6 @@ perl6:
 install:
   - rakudobrew build-panda
   - panda installdeps .
+branches:
+  only:
+  - master
