@@ -7,7 +7,7 @@ use Bailador::Exceptions;
 use Bailador::ContentTypes;
 
 class Bailador::App does Bailador::Routing {
-    has Str $.location is rw;
+    has Str $.location is rw = '.';
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
