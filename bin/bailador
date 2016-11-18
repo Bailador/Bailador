@@ -20,13 +20,13 @@ multi sub MAIN(Str $name) {
 
 	for %skeleton.keys -> $file {
 		say $file;
-		my $dir = '';
-		try {my $sep = $file.rindex('/'); $dir = $file.substr(0, $sep) }
-		say $dir;
-		mkdir "$name/$dir";
-		my $fh = open "$name/$file", :w;
-		$fh.print(%skeleton{$file});
-		$fh.close;
+		if $file.rindex('/')
+		{
+			my $sep = $file.rindex('/');
+			my $dir = $file.substr(0, $sep);
+			mkdir "$name/$dir";
+		}
+		spurt "$name/$file", %skeleton{$file};
 	}
 }
 
