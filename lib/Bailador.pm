@@ -40,6 +40,11 @@ sub delete(Pair $x) is export {
     return $x;
 }
 
+sub patch(Pair $x) is export {
+    app.add_route: 'PATCH', $x;
+    return $x;
+}
+
 sub request is export { $app.context.request }
 
 sub content_type(Str $type) is export {
