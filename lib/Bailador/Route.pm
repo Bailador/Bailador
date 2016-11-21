@@ -69,10 +69,15 @@ role Bailador::Routing {
         self.add_route: 'DELETE', $x;
         return $x;
     }
+
+    method patch(Pair $x) {
+        self.add_route: 'PATCH', $x;
+        return $x;
+    }
 }
 
 class Bailador::Route does Bailador::Routing {
-    subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT> }
+    subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }
     has HttpMethod $.method;
     has Regex $.path is required;
     has Callable $.code is required is rw;
