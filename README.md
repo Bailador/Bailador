@@ -225,7 +225,7 @@ the template (or in other words the file views/template.tt) gets invoked "as a s
 
     % my ($name, $something) = @_;
     <html ... codes goes here ...>
-        <h1><% $name %></h1>
+        <h1><%= $name %></h1>
     <html>
 
 ### Error Templates
