@@ -20,6 +20,14 @@ our sub import {
     app.location = callframe(1).file.IO.dirname;
 }
 
+sub prefix(Str $p) is export {
+    app.prefix: $p;
+}
+
+sub noprefix is export {
+    app.noprefix;
+}
+
 sub get(Pair $x) is export {
     app.add_route: 'GET', $x;
     return $x;

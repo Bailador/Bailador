@@ -7,6 +7,7 @@ class Bailador::Route { ... }
 
 role Bailador::Routing {
     has Bailador::Route @.routes;
+    has Str $!prefix;
 
     method recurse-on-routes(Str $method, Str $uri) {
 
@@ -45,8 +46,23 @@ role Bailador::Routing {
     }
 
     multi method add_route(Str $method, Pair $x) {
-        my $route = Bailador::Route.new($method, $x);
+        my $path;
+        if $!prefix {
+            $path = $!prefix ~ $x.key;
+        } else {
+            $path = $x.key;
+        }
+
+        my $route = Bailador::Route.new($method, $path, $x.value);
         @.routes.push($route);
+    }
+
+    multi method prefix(Str $new-prefix) {
+        $!prefix = $new-prefix;
+    }
+
+    multi method noprefix {
+        $!prefix = '';
     }
 
     ## syntactic sugar!
