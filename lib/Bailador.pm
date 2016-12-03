@@ -20,8 +20,14 @@ our sub import {
     app.location = callframe(1).file.IO.dirname;
 }
 
-sub prefix(Str $p) is export {
+multi sub prefix(Str $p) is export {
     app.prefix: $p;
+}
+
+multi sub prefix( Str $p, Code $c ) {
+    app.prefix: $p;
+    $c();
+    noprefix;
 }
 
 sub noprefix is export {
