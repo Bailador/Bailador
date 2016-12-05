@@ -45,6 +45,14 @@ sub patch(Pair $x) is export {
     return $x;
 }
 
+sub prefix(Pair $x) is export {
+    app.prefix($x);
+}
+
+sub prefix-enter(Callable $code) is export {
+    app.prefix-enter($code);
+}
+
 sub request is export { $app.context.request }
 
 sub content_type(Str $type) is export {

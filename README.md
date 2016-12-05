@@ -15,6 +15,8 @@ A light-weight route-based web application framework for Perl 6
             - [`post(Pair $x)`](#postpair-x)
             - [`put(Pair $x)`](#putpair-x)
             - [`delete(Pair $x)`](#deletepair-x)
+            - [`prefix(Str $prefix, Callable $code)`](#prefixstr-prefix-callable-code)
+            - [`prefix-enter(Callable $code)`](#prefix-entercallable-code)
             - [`redirect(Str $location)`](#redirectstr-location)
             - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
             - [`sessions-config()`](#sessions-config)
@@ -89,6 +91,21 @@ Sets a Bailador::App to be the default app for all the other exported subs descr
 ##### `delete(Pair $x)`
 
 Adds a route for get, post, put or delete requests. The key of the `Pair` is either a `Str` or a `Regex`. If a string is passed it is automatically converted into a regex. The value of the pair must be a `Callable`. Whenever the route matches on the requested URL the callable is invoked with the list of the `Match` as its parameters. The return value of the callable will be autorendered. So it is the content of your response.
+
+##### `prefix(Str $prefix, Callable $code)`
+##### `prefix-enter(Callable $code)`
+
+The prefix sets up a [Nested Route](#nested-routes). All other routes that will be added within the $code will in fact be added to this nested route. With prefix-enter you can define code that will called whenever the prefix matches your HTTP request. Only if this code returns True the routes within the prefix can be reached during request dispatching. Without using prefix-enter the routes in the prefix are reachable - this means the default code for a prefix route is ``` sub { True } ```.
+
+```Perl6
+    prefix "/foo", sub {
+        prefix-enter sub {
+            ... something that returns True or False ...
+        }
+        get "/bar" => sub { ... }
+        get "/baz" => sub { ... }
+    }
+```
 
 ##### `redirect(Str $location)`
 

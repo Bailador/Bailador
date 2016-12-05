@@ -1,3 +1,5 @@
+use v6;
+
 use Bailador::Context;
 use Bailador::Route;
 use Bailador::Template::Mojo;
@@ -6,7 +8,7 @@ use Bailador::Sessions::Config;
 use Bailador::Exceptions;
 use Bailador::ContentTypes;
 
-class Bailador::App does Bailador::Routing {
+class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;

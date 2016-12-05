@@ -18,16 +18,15 @@ class MyOwnWebApp is Bailador::App {
             $session<user> = $user;
             self.render: "logged in";
         }
-        my $route = Bailador::Route.new: path => /.*/, code => sub {
+        my $route = Bailador::Route.new('ANY', '/app', sub {
             my $session = self.session;
-
             # go deeper into the nested routes
             return True if self.session<user>;
 
             # go to a next route that matches the request
             return False;
-        };
-        $route.get: '/app/something' => self.curry: 'something';
+        });
+        $route.get: '/something' => self.curry: 'something';
         $route.get: '/logout' => sub {
             self.session-delete;
             self.render: "logged out";
@@ -67,10 +66,10 @@ is $response[1][0].key, "Content-Type", "Content-Type found";
 is $response[1][0].value, "text/plain", "Content-Type is text/plain";
 is $response[2], "no need to check if we're logged in", "access to the app without checking session in the route";
 
-$response = get-psgi-response($app, 'GET', '/logout', http_cookie => "$session-cookie-name=$session-id");
+$response = get-psgi-response($app, 'GET', '/app/logout', http_cookie => "$session-cookie-name=$session-id");
 is-deeply $response, [200, [:Content-Type("text/html")], "logged out"] , "logged out";
 
 # get the login page again, because we're not logged in -> catch all again
-$response = get-psgi-response($app, 'GET', '/logout', http_cookie => "$session-cookie-name=$session-id");
+$response = get-psgi-response($app, 'GET', '/app/logout', http_cookie => "$session-cookie-name=$session-id");
 is-deeply $response, [200, [:Content-Type("text/html")], "this is the login page / catch all route"], "logout 2nd time - catchall";
 
