@@ -1,3 +1,4 @@
+use v6.c;
 use Bailador::App;
 use Bailador::Request;
 use Bailador::Template;
@@ -86,6 +87,10 @@ sub session-delete is export {
 
 sub sessions-config is export {
     return app.sessions-config;
+}
+
+sub uri-for(Str $path) is export {
+    return app.request.uri-for($path);
 }
 
 sub renderer(Bailador::Template $renderer) is export {

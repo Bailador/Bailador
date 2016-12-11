@@ -25,6 +25,7 @@ A light-weight route-based web application framework for Perl 6
         - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
             - [`content_type(Str $type)`](#content_typestr-type)
             - [`request()`](#request)
+            - [`uri-for(Str $path)`](#uri-forstr-path)
             - [`header(Str $name, Cool $value)`](#headerstr-name-cool-value)
             - [`cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`](#cookiestr-name-str-value-str-domain-str-path-datetime-expires-bool-http-only-bool-secure)
             - [`status(Int $code)`](#statusint-code)
@@ -136,6 +137,10 @@ Sets the Content Type for the response to $type.
 ##### `request()`
 
 Gets current the Request.
+
+##### `uri-for(Str $path)`
+
+Constructs a URI String from the base and the passed $path.
 
 ##### `header(Str $name, Cool $value)`
 

@@ -1,3 +1,4 @@
+use v6.c;
 use HTTP::MultiPartParser;
 use Bailador::Request::Multipart;
 
@@ -157,6 +158,14 @@ class Bailador::Request {
         self.new: env => { REQUEST_METHOD => $meth, REQUEST_URI => $path, PATH_INFO => $path_info }
     }
 
+    method uri-for(Str $path is copy) {
+        my $base-url = self.scheme ~ '://' ~ self.server ~ ':' ~ self.port;
+        my $url-path = self.script_name ?? self.script_name !! '/';
+        $url-path ~~ s/ '/' $ //;
+        $path ~~ s/ ^ '/' //;
+        return $base-url ~ $url-path ~ '/' ~ $path;
+    }
+
     method reset ($env) {
         $!env = $env;
         %!cookies = ();
@@ -165,6 +174,7 @@ class Bailador::Request {
     }
 
     method port        { $.env<SERVER_PORT>      }
+    method server      { $.env<SERVER_NAME>      }
     method request_uri { $.env<REQUEST_URI>      }
     method uri         { self.request_uri        }
     method path        { $.env<PATH_INFO>        }
@@ -180,6 +190,8 @@ class Bailador::Request {
     method content_type   { $.env<CONTENT_TYPE>   }
     method content_length { $.env<CONTENT_LENGTH> }
 
+    method script_name { $.env<SCRIPT_NAME>      }
+
     # TODO Shouldn't ignore Content-Type
     method body           { $.env<p6sgi.input>.decode }
 
@@ -190,5 +202,6 @@ class Bailador::Request {
     method remote_host { $.env<REMOTE_HOST>      }
     method protocol    { $.env<SERVER_PROTOCOL>  }
     method user        { $.env<REMOTE_USER>      }
-    method script_name { $.env<SCRIPT_NAME>      }
+    method scheme      { $.env<p6sgi.url-scheme> || 'http' }
+    method secure      { so self.scheme eq 'https' }
 }

@@ -1,8 +1,9 @@
+use v6.c;
 use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 27;
+plan 30;
 
 my %env = (
         'psgi.url_scheme'    => 'http',
@@ -37,10 +38,11 @@ is $req.request_uri,           '/foo/bar/baz';
 is $req.uri,                   '/foo/bar/baz';
 is $req.user,                  'sukria';
 is $req.script_name,           '/foo';
-skip '$req.scheme not implemented yet', 1;
-# is $req.scheme,                'http';
-skip '$req.secure not implemented yet', 1;
-#ok( !$req.secure );
+is $req.server,                'localhost', 'server is localhost';
+is $req.scheme,                'http', 'scheme is http';
+ok !$req.secure,               'connection is not secure';
+is $req.uri-for('/bar'),       'http://localhost:5000/foo/bar';
+is $req.uri-for('foo'),        'http://localhost:5000/foo/foo';
 is $req.referer,     Any, 'referer is not defined';
 is $req.method,     'GET', 'got the right method';
 ok $req.is_get,     'is_get() is true for GET request';
