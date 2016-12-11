@@ -20,7 +20,7 @@ class Bailador::App is Bailador::Route {
     method request  { $.context.request  }
     method response { $.context.response }
     method template(Str $tmpl, *@params, *%params) {
-        $!renderer.render(slurp("$.location/views/$tmpl"), @params, |%params);
+        $!renderer.render-file("$.location/views/$tmpl", @params, |%params);
     }
 
     multi method render($result) {

@@ -1,3 +1,4 @@
+use v6.c;
 use Bailador::Template;
 
 unit class Bailador::Template::Mojo does Bailador::Template;
