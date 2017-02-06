@@ -6,7 +6,7 @@ class Bailador::Template::Mustache does Bailador::Template {
 
     has $.engine = Template::Mustache.new;
 
-    method render($template, @params) {
-        $!engine.render($template, |@params);
+    method render(Str $template-name, @params) {
+        $!engine.render($template-name.IO.slurp, |@params);
     }
 }
