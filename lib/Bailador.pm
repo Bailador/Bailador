@@ -113,5 +113,3 @@ sub baile($port = 3000) is export {
         .run;
     }
 }
-
-# vim: filetype=perl6

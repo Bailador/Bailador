@@ -139,5 +139,3 @@ class Bailador::App is Bailador::Route {
         return self.^method_table{$method}.assuming(self, |@args);
     }
 }
-
-# vim: filetype=perl6
