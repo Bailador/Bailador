@@ -91,7 +91,25 @@ Sets a Bailador::App to be the default app for all the other exported subs descr
 ##### `put(Pair $x)`
 ##### `delete(Pair $x)`
 
-Adds a route for get, post, put or delete requests. The key of the `Pair` is either a `Str` or a `Regex`. If a string is passed it is automatically converted into a regex. The value of the pair must be a `Callable`. Whenever the route matches on the requested URL the callable is invoked with the list of the `Match` as its parameters. The return value of the callable will be autorendered. So it is the content of your response.
+Adds a route for get, post, put or delete requests. The key of the
+`Pair` is either a `Str` or a `Regex`. If a string is passed it is
+automatically converted into a regex. The value of the pair must be a
+`Callable`. Whenever the route matches on the requested URL the
+callable is invoked with the list of the `Match` as its
+parameters. The return value of the callable will be autorendered. So
+it is the content of your response. The request is available via the
+appropriately named variable `request`; `request.params` will contain
+the route parameters, for instance; `request.params<q>` will yield the
+value for param `q`. 
+
+The strings captured by the regular expression are available as
+subroutine parameters.
+
+```Perl6
+    get "/foo/(.+)" => sub ( $route ) {
+		return "What a $route";
+    }
+```
 
 ##### `prefix(Str $prefix, Callable $code)`
 ##### `prefix-enter(Callable $code)`
