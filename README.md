@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ufobat/Bailador.png)](https://travis-ci.org/ufobat/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/ufobat/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/master)
 
-A light-weight route-based web application framework for Perl 6
+A light-weight route-based web application framework for Perl 6.
 
 # TABLE OF CONTENTS
 - [Example](#example)
@@ -122,7 +122,7 @@ Returns the Sessions-config. You can influence how sessions work. See the Sessio
 
 ##### `baile()`
 
-Lets enter the dance floor. ¡Olé!
+Let's enter the dance floor. ¡Olé!
 
 ##### `get-psgi-app`
 
