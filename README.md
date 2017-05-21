@@ -56,7 +56,7 @@ get '/' => sub {
 baile;
 ```
 
-For more examples, please see the [examples](examples) folder.
+This will install the Bailador server in default port 3000. For more examples, please see the [examples](examples) folder.
 
 ## How to Write Web Apps
 
@@ -138,7 +138,7 @@ Sets the Renderer that's being used to render your templates. See the Template s
 
 Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
 
-##### `baile()`
+##### `baile( [$port=3000] )`
 
 Let's enter the dance floor. ¡Olé!
 
