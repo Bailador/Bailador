@@ -32,4 +32,5 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     template 'tmpl.tt', { name => $x }
 }
 
-baile(%*ENV<PORT>);
+my $port = %*ENV<PORT>??%*ENV<PORT>!!3000;
+baile($port);
