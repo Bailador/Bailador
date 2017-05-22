@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/ufobat/Bailador.png)](https://travis-ci.org/ufobat/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/ufobat/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/master)
 
-A light-weight route-based web application framework for Perl 6
+A light-weight route-based web application framework for Perl 6.
 
 # TABLE OF CONTENTS
 - [Example](#example)
@@ -56,7 +56,7 @@ get '/' => sub {
 baile;
 ```
 
-For more examples, please see the [examples](examples) folder.
+This will install the Bailador server in default port 3000. For more examples, please see the [examples](examples) folder.
 
 ## How to Write Web Apps
 
@@ -91,7 +91,25 @@ Sets a Bailador::App to be the default app for all the other exported subs descr
 ##### `put(Pair $x)`
 ##### `delete(Pair $x)`
 
-Adds a route for get, post, put or delete requests. The key of the `Pair` is either a `Str` or a `Regex`. If a string is passed it is automatically converted into a regex. The value of the pair must be a `Callable`. Whenever the route matches on the requested URL the callable is invoked with the list of the `Match` as its parameters. The return value of the callable will be autorendered. So it is the content of your response.
+Adds a route for get, post, put or delete requests. The key of the
+`Pair` is either a `Str` or a `Regex`. If a string is passed it is
+automatically converted into a regex. The value of the pair must be a
+`Callable`. Whenever the route matches on the requested URL the
+callable is invoked with the list of the `Match` as its
+parameters. The return value of the callable will be autorendered. So
+it is the content of your response. The request is available via the
+appropriately named variable `request`; `request.params` will contain
+the route parameters, for instance; `request.params<q>` will yield the
+value for param `q`. 
+
+The strings captured by the regular expression are available as
+subroutine parameters.
+
+```Perl6
+    get "/foo/(.+)" => sub ( $route ) {
+		return "What a $route";
+    }
+```
 
 ##### `prefix(Str $prefix, Callable $code)`
 ##### `prefix-enter(Callable $code)`
@@ -120,9 +138,9 @@ Sets the Renderer that's being used to render your templates. See the Template s
 
 Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
 
-##### `baile()`
+##### `baile( [$port=3000] )`
 
-Lets enter the dance floor. ¡Olé!
+Let's enter the dance floor. ¡Olé!
 
 ##### `get-psgi-app`
 
@@ -268,7 +286,7 @@ The handling of sessions can be influencend if you call
 
     sessions-config()
     
-inside the bailador script before you call baile. As soon as you have requested the first session it is of no use to change the configure any further.
+inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
 Following config options are available. Most of them should be self explaining.
 
 * cookie-name = 'bailador';
@@ -290,6 +308,7 @@ and set backend to this class name.
 
 
 ## Articles about Bailador
+
 http://perl6maven.com/bailador
 
 ## License
