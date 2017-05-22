@@ -286,7 +286,7 @@ The handling of sessions can be influencend if you call
 
     sessions-config()
     
-inside the bailador script before you call baile. As soon as you have requested the first session it is of no use to change the configure any further.
+inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
 Following config options are available. Most of them should be self explaining.
 
 * cookie-name = 'bailador';
@@ -308,6 +308,7 @@ and set backend to this class name.
 
 
 ## Articles about Bailador
+
 http://perl6maven.com/bailador
 
 ## License
