@@ -7,12 +7,19 @@ unit module Bailador::Test;
 
 # It would be nice to have IO::String here instead
 my class IO::Null is IO::Handle {
-    method print(*@what) {
-        diag @what;
+    multi method print(Str:D \string ) { diag string }
+    multi method print(**@args is raw) { diag join '', @args.map: *.Str }
+
+    method print-nl { diag $.nl-out }
+
+    multi method put(Str:D \string)  { diag string ~ $.nl-out }
+    multi method put(**@args is raw) {
+        diag join '', @args.map(*.Str), $.nl-out
     }
 
-    method print-nl(*@what) {
-        diag @what;
+    multi method say(Str:D \string)  { diag string ~ $.nl-out }
+    multi method say(**@args is raw) {
+        diag join '', @args.map(*.gist), $.nl-out
     }
 }
 
