@@ -10,6 +10,7 @@ use Bailador::ContentTypes;
 
 class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';
+    has Bool $.debug is rw = False;
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
@@ -120,8 +121,11 @@ class Bailador::App is Bailador::Route {
                     else {
                         note .gist;
                     }
+
                     my $err-page;
-                    if $!location.defined {
+                    if $!debug {
+                        $err-page = "This should be a nice error page, but for now at least we have the exception:<pre>" ~ .gist ~ "</pre>";
+                    } elsif $!location.defined {
                         $err-page = "$!location/views/500.xx".IO.e ?? self.template("500.xx", []) !! 'Internal Server Error';
                     } else {
                         $err-page = 'Internal Server Error';

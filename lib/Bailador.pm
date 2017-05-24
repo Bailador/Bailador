@@ -105,7 +105,8 @@ sub redirect(Str $location) is export {
     app.redirect($location);
 }
 
-sub baile($port = 3000, $host = '127.0.0.1') is export {
+sub baile($port = 3000, $host = '127.0.0.1', :$debug = False) is export {
+    app.debug = $debug;
     my $psgi-app = app.get-psgi-app();
     given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
         .app($psgi-app);
