@@ -7,7 +7,7 @@ perl6:
   - latest
 install:
   - rakudobrew build-zef
-  - zef --debug install .
+  - zef --depsonly install .
 branches:
   only:
   - master
