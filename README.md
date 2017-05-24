@@ -4,6 +4,8 @@
 
 A light-weight route-based web application framework for Perl 6.
 
+Talk to the developers at https://perl6-bailador.slack.com/
+
 # TABLE OF CONTENTS
 - [Example](#example)
 - [How to Write Web Apps](#how-to-write-web-apps)
@@ -310,6 +312,10 @@ and set backend to this class name.
 ## Articles about Bailador
 
 http://perl6maven.com/bailador
+
+## Book about Bailador
+
+In the planning phase, currently crowdfunding it: https://leanpub.com/bailador
 
 ## License
 
