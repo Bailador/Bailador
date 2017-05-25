@@ -302,6 +302,19 @@ The Session-ID contains a HMAC to check if someone's trying to guess a Session-I
 The Session Data itself is stored by default in the memory, if you want to store the data on the disk or database of wherever, just implement a class which does the role Bailador::Sessions::Store
 and set backend to this class name.
 
+## Configuration
+
+Using the `BAILADOR` environment variable we can configure various aspects how Bailador will run.
+Currently available parameters:
+
+* debug       (turns on debug mode)
+* port:PORT   (defaults to 3000)
+* host:HOST   (defaults to 127.0.0.1)
+
+```
+BAILADOR=debug,host:0.0.0.0,port:5000
+```
+
 
 ## Bailador-based applications
 
