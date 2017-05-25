@@ -11,6 +11,11 @@ class Bailador::Template::Mojo does Bailador::Template {
         $engine.render(|@params)
     }
 
+    method render-string(Str $template-content, @params) {
+        my $engine = Template::Mojo.new($template-content);
+        $engine.render(|@params)
+    }
+
     method !get-engine(Str $template-name) {
         unless %.template-cache{$template-name}:exists {
             %.template-cache{$template-name} = Template::Mojo.new($template-name.IO.slurp);

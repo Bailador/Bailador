@@ -17,6 +17,23 @@ class Bailador::App is Bailador::Route {
     has Bailador::Sessions::Config $.sessions-config = Bailador::Sessions::Config.new;
     has Bailador::Sessions $!sessions;
 
+    my $error-template = q{
+% my ($h) = @_;
+<html>
+<head>
+  <title>Error in Bailador</title>
+</head>
+<body>
+  <h1>An error has occured</h1>
+  In the future this will be a nice error page. First we'll try to make it at least informative.
+
+  <h2>Exception</h2>
+  <pre>
+    <%= $h<exception> %>
+  </pre>
+</body>
+</html>
+};
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -124,7 +141,7 @@ class Bailador::App is Bailador::Route {
 
                     my $err-page;
                     if $!debug {
-                        $err-page = "This should be a nice error page, but for now at least we have the exception:<pre>" ~ .gist ~ "</pre>";
+                        $err-page = $!renderer.render-string($error-template, [exception => .gist] );
                     } elsif $!location.defined {
                         $err-page = "$!location/views/500.xx".IO.e ?? self.template("500.xx", []) !! 'Internal Server Error';
                     } else {
