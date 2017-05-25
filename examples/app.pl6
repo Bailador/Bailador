@@ -10,6 +10,11 @@ get '/' => sub {
     "hello world"
 }
 
+get '/die' => sub {
+    die 'This is an exception so you can see how it is handled';
+    "hello world"
+}
+
 get '/about' => sub {
     "about me"
 }
