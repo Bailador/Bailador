@@ -140,7 +140,7 @@ Sets the Renderer that's being used to render your templates. See the Template s
 
 Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
 
-##### `baile( [$port=3000] )`
+##### `baile( [$port=3000, $host=0.0.0.0] )`
 
 Let's enter the dance floor. ¡Olé!
 
