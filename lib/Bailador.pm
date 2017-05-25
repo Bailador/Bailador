@@ -126,7 +126,7 @@ sub baile($port is copy = 3000, $host is copy = '127.0.0.1', :$debug = False) is
     my $psgi-app = app.get-psgi-app();
     given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
         .app($psgi-app);
-        say "Entering the development dance floor: http://$host:$port";
+        say "Entering the development dance floor{app.debug ?? ' in debug mode' !! ''}: http://$host:$port";
         .run;
     }
 }
