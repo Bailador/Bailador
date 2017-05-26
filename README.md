@@ -62,7 +62,7 @@ This will install the Bailador server in default port 3000. For more examples, p
 
 ## How to Write Web Apps
 
-Bailador offers two different approaches to write web applications. The first and classical approach is using the subs that are exported that you get when you `use Bailador`. This API is ment to be stable and should not change much.
+Bailador offers two different approaches to write web applications. The first and classical approach is using the subs that are exported that you get when you `use Bailador`. This API is meant to be stable and should not change much.
 
 New features like nested routes and whatever is yet to come are implemented in `Bailador::App` and can be used through the object oriented interface. Your own web application just inherits from `Bailador::App`.
 
@@ -86,7 +86,7 @@ app $app;
 
 #### `app(Bailador::App $app)`
 
-Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route).
+Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route).
 
 ##### `get(Pair $x)`
 ##### `post(Pair $x)`
@@ -98,7 +98,7 @@ Adds a route for get, post, put or delete requests. The key of the
 automatically converted into a regex. The value of the pair must be a
 `Callable`. Whenever the route matches on the requested URL the
 callable is invoked with the list of the `Match` as its
-parameters. The return value of the callable will be autorendered. So
+parameters. The return value of the callable will be auto rendered. So
 it is the content of your response. The request is available via the
 appropriately named variable `request`; `request.params` will contain
 the route parameters, for instance; `request.params<q>` will yield the
@@ -164,7 +164,7 @@ Constructs a URI String from the base and the passed $path.
 
 ##### `header(Str $name, Cool $value)`
 
-Adds a Header to the Repsonse.
+Adds a Header to the Response.
 
 ##### `cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`
 
@@ -284,7 +284,7 @@ In order to create a session just call the subroutine
     
 inside the code block of a route. This subroutine returns a Hash in which you can just toss in all data or objects that should be be in the session context.
 After your route code is finished the session will be stored automatically. How this should be done can be configured.
-The handling of sessions can be influencend if you call
+The handling of sessions can be influenced if you call
 
     sessions-config()
     
