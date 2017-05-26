@@ -18,19 +18,71 @@ class Bailador::App is Bailador::Route {
     has Bailador::Sessions $!sessions;
 
     my $error-template = q{
-% my ($h) = @_;
-<html>
+% my (%h) = @_;
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
   <title>Error in Bailador</title>
+<style>
+td {
+   border: solid 1px;
+}
+#exception {
+   background-color: #f4b541;
+}
+</style>
 </head>
 <body>
   <h1>An error has occured</h1>
-  In the future this will be a nice error page. First we'll try to make it at least informative.
+  In the future this will be a nice error page. For now we try to make it at least informative.
+  You see this detailed error message because Bailador is in debug-mode. In production mode a 500 error will be sent to the client that you can customize.
 
   <h2>Exception</h2>
-  <pre>
-    <%= $h<exception> %>
+  <pre id="exception">
+    <%= %h<exception> %>
   </pre>
+
+  <h2>Request</h2>
+  <table>
+% for <
+%       address
+%       content_length
+%       content_type
+%       method
+%       path
+%       port
+%       protocol
+%       referer
+%       remote_host
+%       request_uri
+%       scheme
+%       script_name
+%       secure
+%       server
+%       uri
+%       user
+%       user_agent
+%     > -> $f {
+          <tr><td><%= $f %></td><td><%= %h<request>."$f"() %></td></tr>
+% }
+  </table>
+
+<h2>Perl</h2>
+<table>
+  <tr><td>$*PROGRAM-NAME</td><td><%= %h<PROGRAM-NAME> %></td></tr>
+  <tr><td>$*EXECUTABLE</td><td><%= %h<EXECUTABLE> %></td></tr>
+</table>
+
+<h2>ENV</h2>
+   <table>
+% for %*ENV -> $p {
+     <tr><td><%= $p.key %></td><td><%= $p.value %></td></tr>
+% }
+   </table>
+
 </body>
 </html>
 };
@@ -141,7 +193,8 @@ class Bailador::App is Bailador::Route {
 
                     my $err-page;
                     if $!debug {
-                        $err-page = $!renderer.render-string($error-template, [exception => .gist] );
+						my %h = (exception => .gist, request => self.request());
+                        $err-page = $!renderer.render-string($error-template, %h);
                     } elsif $!location.defined {
                         $err-page = "$!location/views/500.xx".IO.e ?? self.template("500.xx", []) !! 'Internal Server Error';
                     } else {
