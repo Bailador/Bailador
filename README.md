@@ -7,6 +7,7 @@ A light-weight route-based web application framework for Perl 6.
 Talk to the developers at https://perl6-bailador.slack.com/
 
 # TABLE OF CONTENTS
+- [Install](#install)
 - [Example](#example)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
@@ -44,6 +45,16 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Bailador-based applications](#bailador-based-applications)
 - [Articles about Bailador](#articles-about-bailador)
 - [License](#license)
+
+## Install
+
+Once you have [Rakudo Star]() installed open a terminal (or command line on Windows) and type:
+```
+zef update
+zef install Bailador
+```
+This should download and install Bailador.
+
 
 ## Example
 
