@@ -43,8 +43,8 @@
         "Martin Barth (ufobat) "
     ],
     "support" : {
-        "bugtracker" : "https://github.com/ufobat/Bailador/issues",
-        "source" : "git://github.com/ufobat/Bailador.git"
+        "bugtracker" : "https://github.com/Bailador/Bailador/issues",
+        "source" : "git://github.com/Bailador/Bailador.git"
     },
-    "source-url"  : "git://github.com/ufobat/Bailador.git"
+    "source-url"  : "git://github.com/Bailador/Bailador.git"
 }
