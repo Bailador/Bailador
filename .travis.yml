@@ -8,6 +8,6 @@ perl6:
 install:
   - rakudobrew build-zef
   - zef --depsonly install .
-branches:
-  only:
-  - master
+#branches:
+#  only:
+#  - master
