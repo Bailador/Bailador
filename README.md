@@ -8,6 +8,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 
 # TABLE OF CONTENTS
 - [Install](#install)
+- [Contribution](#contribution)
 - [Example](#example)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
@@ -55,6 +56,21 @@ zef install Bailador
 ```
 This should download and install Bailador.
 
+## Contribution
+
+If you'd like to contribute to Bailador you need to `fork` the [GitHub](https://github.com/Bailador/Bailador) repository and clone the forked repo to your hard disk. Then you need to install all the dependencies of Bailador:
+
+```
+cd Bailador
+zef --depsonly install .
+```
+
+Run the tests that come with Bailador to make sure everything passes *before* your start making changes. Run:
+```
+prove6 -l
+```
+
+The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
 
 ## Example
 
