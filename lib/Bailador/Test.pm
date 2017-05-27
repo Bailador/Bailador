@@ -5,34 +5,70 @@ use URI;
 
 unit module Bailador::Test;
 
-# It would be nice to have IO::String here instead
+my class ErrorBuffer does Stringy {
+    has @.buf;
+    method Str()  { @.buf.join: '' }
+    method gist() { self.Str }
+    method wipe() { @.buf.splice(0, @.buf.elems).join: '' }
+    method add(Str:D $data) { @.buf.push($data) }
+}
+
 my class IO::Null is IO::Handle {
-    multi method print(Str:D \string ) { diag string }
-    multi method print(**@args is raw) { diag join '', @args.map: *.Str }
+    has ErrorBuffer $.error-buf;
 
-    method print-nl { diag $.nl-out }
+    multi method print(Str:D \string ) { self!add-string( string ) }
+    multi method print(**@args is raw) { self!add-string( join '', @args.map: *.Str ) }
 
-    multi method put(Str:D \string)  { diag string ~ $.nl-out }
+    method print-nl { self.add-string( $.nl-out ) }
+
+    multi method put(Str:D \string)  { self!add-string( string ~ $.nl-out ) }
     multi method put(**@args is raw) {
-        diag join '', @args.map(*.Str), $.nl-out
+        self!add-string( join '', @args.map(*.Str), $.nl-out )
     }
 
-    multi method say(Str:D \string)  { diag string ~ $.nl-out }
+    multi method say(Str:D \string)  { self!add-string( string ~ $.nl-out ) }
     multi method say(**@args is raw) {
-        diag join '', @args.map(*.gist), $.nl-out
+        self!add-string( join '', @args.map(*.gist), $.nl-out )
+    }
+
+    method !add-string(Str:D $str) {
+        if $.error-buf {
+            $.error-buf.add($str);
+        } else {
+            diag $str;
+        }
     }
 }
 
-    # preparing a environment variale for PSGI
-multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "") is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie);
+multi sub run-psgi-request(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = '' ) is export {
+    my $error-buf = ErrorBuffer.new;
+    my $response  = get-psgi-response($app, $meth, $url, $data, :$http_cookie, :$error-buf),
+
+    return {
+        err      => $error-buf.Str,
+        response => $response;
+    };
+}
+
+multi sub run-psgi-request($meth, $url, $data = '', :$http_cookie = '' ) is export {
+    my $error-buf = ErrorBuffer.new;
+    my $response  = get-psgi-response($meth, $url, $data, :$http_cookie, :$error-buf),
+
+    return {
+        err      => $error-buf.Str,
+        response => $response;
+    };
+}
+
+multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
     my $psgi-app = $app.get-psgi-app(),
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
 
-multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "") is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie);
+multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
     my $psgi-app = get-psgi-app();
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
@@ -49,14 +85,14 @@ sub de-supply-response($response) {
     die "body must be a Supply";
 }
 
-sub get-psgi-env($meth, $url, $data, $http_cookie,) {
+sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
     my $env = {
         "p6w.multiprocess"     => Bool::False,
         "p6w.multithread"      => Bool::False,
-        "p6w.errors"           => IO::Null.new,
+        "p6w.errors"           => IO::Null.new( :$error-buf ),
         "p6w.streaming"        => Bool::False,
         "p6w.nonblocking"      => Bool::False,
         "p6w.version"          => [1, 0],

@@ -2,7 +2,7 @@ use Test;
 use Bailador::App;
 use Bailador::Test;
 
-plan 3;
+plan 6;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
@@ -14,7 +14,16 @@ class MyOwnWebApp is Bailador::App {
 }
 
 my $app = MyOwnWebApp.new;
+my %data;
 
-is-deeply get-psgi-response($app, 'GET', '/die'),        [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles die';
-is-deeply get-psgi-response($app, 'GET', '/fail'),       [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles fail';
-is-deeply get-psgi-response($app, 'GET', '/exception'),  [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles thrown exception';
+%data = run-psgi-request($app, 'GET', '/die');
+is-deeply %data<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles die';
+like %data<err>, rx:s/oh no\!/, 'stderr';
+
+%data = run-psgi-request($app, 'GET', '/fail');
+is-deeply %data<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles fail';
+like %data<err>, rx:s/oh no\!/, 'stderr';
+
+%data = run-psgi-request($app, 'GET', '/exception');
+is-deeply %data<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET handles thrown exception';
+like %data<err>, rx:s/NYI not yet implemented\. Sorry\./, 'stderr';
