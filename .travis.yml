@@ -11,3 +11,5 @@ install:
 #branches:
 #  only:
 #  - master
+notifications:
+    slack: perl6-bailador:FuFG55nk94k5BSOeGMNO5nDh
