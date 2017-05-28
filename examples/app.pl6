@@ -37,4 +37,13 @@ get / ^ '/template/' (.+) $ / => sub ($x) {
     template 'tmpl.tt', { name => $x }
 }
 
+get '/env' => sub {
+    my Str $result;
+    for request.env.sort(*.key)>>.kv -> ($k, $v) {
+        $result ~= "$k\t" ~ $v.perl ~ "\n";
+    }
+    app.render: content => $result, type => 'text/plain';
+    $result;
+}
+
 baile();
