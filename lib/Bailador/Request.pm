@@ -43,7 +43,7 @@ class Bailador::Request {
                 my $headers = self.headers;
                 my regex bcharnospace { <[0..9]> || <[ a..z  A..Z]> || "'" || '(' || ')' || '+' || '_' || ',' || '-' || '.'  || '/' || ':' || '=' || '?' };
                 if not $headers<CONTENT_TYPE>:exists or $headers<CONTENT_TYPE>:exists and $headers<CONTENT_TYPE>.starts-with("application/x-www-form-urlencoded") {
-                    %ret = self!parse-urlencoded: $.env<p6sgi.input>.decode if $!env<p6sgi.input>;
+                    %ret = self!parse-urlencoded: $.env<p6w.input>.decode if $!env<p6w.input>;
                 }
                 # boundary according to RFC 1341
                 #
@@ -60,7 +60,7 @@ class Bailador::Request {
 
                 elsif $headers<CONTENT_TYPE>:exists and $headers<CONTENT_TYPE> ~~ / 'multipart/form-data;'  .* 'boundary' '=' '"' ? ( <bcharnospace> ** 0..69  ) \s* '"' ? / {
                     my $boundary = $/[0].Str;
-                    %ret = self!parse-multipart: $.env<p6sgi.input>, $boundary.encode;
+                    %ret = self!parse-multipart: $.env<p6w.input>, $boundary.encode;
                 }
             }
             default {
@@ -193,7 +193,7 @@ class Bailador::Request {
     method script_name { $.env<SCRIPT_NAME>      }
 
     # TODO Shouldn't ignore Content-Type
-    method body           { $.env<p6sgi.input>.decode }
+    method body           { $.env<p6w.input>.decode }
 
     # in Dancer2, these are inherited from Plack::Request
     method user_agent  { $.headers<USER_AGENT>    }
@@ -202,6 +202,6 @@ class Bailador::Request {
     method remote_host { $.env<REMOTE_HOST>      }
     method protocol    { $.env<SERVER_PROTOCOL>  }
     method user        { $.env<REMOTE_USER>      }
-    method scheme      { $.env<p6sgi.url-scheme> || 'http' }
+    method scheme      { $.env<p6w.url-scheme> || 'http' }
     method secure      { so self.scheme eq 'https' }
 }

@@ -183,8 +183,8 @@ td {
                     self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
                 }
                 default {
-                    if ($env<p6sgi.errors>:exists) {
-                        my $err = $env<p6sgi.errors>;
+                    if ($env<p6w.errors>:exists) {
+                        my $err = $env<p6w.errors>;
                         $err.say(.gist);
                     }
                     else {
