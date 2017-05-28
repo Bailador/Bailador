@@ -46,6 +46,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Bailador-based applications](#bailador-based-applications)
 - [Articles about Bailador](#articles-about-bailador)
 - [License](#license)
+- [Rebailador](#rebailador)
 
 ## Install
 
@@ -360,3 +361,22 @@ In the planning phase, currently crowdfunding it: https://leanpub.com/bailador
 ## License
 
 MIT License
+
+## Rebailador
+
+`rebailador` will watch the source code of your Bailador app for changes and automatically restart the app.
+
+
+    rebailador bin/your-bailador-app.p6
+
+    rebailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+
+### `--w`
+
+Takes comma-separated list of directories to watch. By default,
+will watch `lib` and `bin` directories.
+
+If you have to watch a directory with a comma in its name, prefix it with a backslash:
+
+    rebailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+

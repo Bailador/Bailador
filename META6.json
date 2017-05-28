@@ -3,7 +3,7 @@
     "version"     : "*",
     "perl"        : "6.c",
     "description" : "A bare-bones Dancer port",
-    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest", "HTTP::MultiPartParser" ],
+    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest", "HTTP::MultiPartParser", "File::Find" ],
     "tags"        : [ "Web", "HTTP", "Net" ],
     "license"     : "MIT",
     "provides" : {
