@@ -193,7 +193,7 @@ td {
 
                     my $err-page;
                     if $!debug {
-						my %h = (exception => .gist, request => self.request());
+                        my %h = (exception => .gist, request => self.request());
                         $err-page = $!renderer.render-string($error-template, %h);
                     } elsif $!location.defined {
                         $err-page = "$!location/views/500.xx".IO.e ?? self.template("500.xx", []) !! 'Internal Server Error';
