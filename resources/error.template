@@ -1,0 +1,66 @@
+% my ($exception, $request) = @_;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+  <title>Error in Bailador</title>
+<style>
+td {
+   border: solid 1px;
+}
+#exception {
+   background-color: #f4b541;
+}
+</style>
+</head>
+<body>
+  <h1>An error has occured</h1>
+  In the future this will be a nice error page. For now we try to make it at least informative.
+  You see this detailed error message because Bailador is in debug-mode. In production mode a 500 error will be sent to the client that you can customize.
+
+  <h2>Exception</h2>
+  <pre id="exception">
+    <%= $exception.gist %>
+  </pre>
+
+  <h2>Request</h2>
+  <table>
+% for <
+%       content_length
+%       content_type
+%       method
+%       path
+%       port
+%       protocol
+%       referer
+%       remote_host
+%       request_uri
+%       scheme
+%       script_name
+%       secure
+%       server
+%       uri
+%       user
+%       user_agent
+%     > -> $f {
+          <tr><td><%= $f %></td><td><%= $request."$f"() // '' %></td></tr>
+% }
+  </table>
+
+<h2>Perl</h2>
+<table>
+  <tr><td>$*PROGRAM-NAME</td><td><%= $*PROGRAM-NAME %></td></tr>
+  <tr><td>$*EXECUTABLE</td><td><%= $*EXECUTABLE %></td></tr>
+</table>
+
+<h2>ENV</h2>
+   <table>
+% for %*ENV -> $p {
+     <tr><td><%= $p.key %></td><td><%= $p.value %></td></tr>
+% }
+   </table>
+
+</body>
+</html>

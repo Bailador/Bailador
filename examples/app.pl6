@@ -46,4 +46,8 @@ get '/env' => sub {
     $result;
 }
 
+get '/die' => sub {
+    die 'died for love';
+}
+
 baile();

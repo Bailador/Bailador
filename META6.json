@@ -26,6 +26,9 @@
         "Bailador::Test"                          : "lib/Bailador/Test.pm",
         "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm"
     },
+    "resources" : [
+        "error.template"
+    ],
     "authors" : [
         "Tadeusz “tadzik” Sośnierz",
         "Anthony Parsons",
