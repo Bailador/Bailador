@@ -105,6 +105,10 @@ sub redirect(Str $location) is export {
     app.redirect($location);
 }
 
+sub config(Str $key, $value) is export {
+    app."$key"() = $value;
+}
+
 sub baile($port is copy = 3000, $host is copy = '127.0.0.1', :$debug = False) is export {
     app.debug = $debug;
 
