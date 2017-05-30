@@ -10,6 +10,10 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Install](#install)
 - [Contribution](#contribution)
 - [Example](#example)
+- [How to Start Apps](#how-to-start-apps)
+    - [Rebailador](#rebailador)
+    - [Crust](#crust)
+    - [Baile](#baile)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
     - [Classical Approach](#classical-approach)
@@ -46,7 +50,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Bailador-based applications](#bailador-based-applications)
 - [Articles about Bailador](#articles-about-bailador)
 - [License](#license)
-- [Rebailador](#rebailador)
 
 ## Install
 
@@ -79,6 +82,57 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
 
 ## Example
 
+For more examples, please see the [examples](examples) folder.
+
+## How to Start Apps
+
+### Crust
+
+When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of 
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`. 
+
+#### Example
+
+Store this Example in a file called `example.p6w`
+
+```Perl6
+use Bailador;
+
+# simple cases
+get '/' => sub {
+    "hello world"
+}
+
+app.to-psgi-app;
+```
+
+and then type this in your shell:
+
+`crustup --server HTTP:::Easy example.p6w`
+
+### Rebailador
+
+`rebailador` will watch the source code of your Bailador app for changes and automatically restart the app.
+
+
+    rebailador bin/your-bailador-app.p6
+
+    rebailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+
+#### `--w`
+
+Takes comma-separated list of directories to watch. By default,
+will watch `lib` and `bin` directories.
+
+If you have to watch a directory with a comma in its name, prefix it with a backslash:
+
+    rebailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+
+
+### Baile
+
+In order to invoke the Bailador App directly, you could simply call baile() in your script.
+
 ```Perl6
 use Bailador;
     
@@ -90,7 +144,7 @@ get '/' => sub {
 baile;
 ```
 
-This will install the Bailador server in default port 3000. For more examples, please see the [examples](examples) folder.
+This will install the Bailador server in default port 3000.
 
 ## How to Write Web Apps
 
@@ -365,22 +419,3 @@ In the planning phase, currently crowdfunding it: https://leanpub.com/bailador
 ## License
 
 MIT License
-
-## Rebailador
-
-`rebailador` will watch the source code of your Bailador app for changes and automatically restart the app.
-
-
-    rebailador bin/your-bailador-app.p6
-
-    rebailador --w=lib,bin,views,public   bin/your-bailador-app.p6
-
-### `--w`
-
-Takes comma-separated list of directories to watch. By default,
-will watch `lib` and `bin` directories.
-
-If you have to watch a directory with a comma in its name, prefix it with a backslash:
-
-    rebailador --w=x\\,y bin/app.p6  # watches directory "x,y"
-
