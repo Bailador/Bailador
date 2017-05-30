@@ -4,14 +4,12 @@ use Bailador::Test;
 
 plan 7;
 
-%*ENV<BAILADOR_TESTING> = "yes";
-
 my $app = EVALFILE "examples/app.pl6";
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/');
-	is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'hello world'], 'route GET /';
+	is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /';
     is %data<err>, '';
 }, '/';
 

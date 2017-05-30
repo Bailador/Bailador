@@ -1,3 +1,4 @@
+use v6;
 use Test;
 use Bailador;
 use Bailador::Request;
@@ -40,7 +41,7 @@ my class IO::Null is IO::Handle {
     }
 }
 
-multi sub run-psgi-request(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = '' ) is export {
+multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $url, $data = '', :$http_cookie = '' ) is export {
     my $error-buf = ErrorBuffer.new;
     my $response  = get-psgi-response($app, $meth, $url, $data, :$http_cookie, :$error-buf),
 
@@ -58,6 +59,12 @@ multi sub run-psgi-request($meth, $url, $data = '', :$http_cookie = '' ) is expo
         err      => $error-buf.Str,
         response => $response;
     };
+}
+
+multi sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
+    my $promise = $psgi-app.($env);
+    return de-supply-response $promise.result;
 }
 
 multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
