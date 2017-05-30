@@ -121,6 +121,9 @@ class Bailador::Route {
 
     multi method add_route(Bailador::Route $route) {
         my $curr = self!get_current_route();
+        # avoid obvious duplicate routes
+        my $matches = $curr.routes.grep({ $_.method.Str eq $route.method.Str and $_.path.perl eq $route.path.perl });
+        die "duplicate route: {$route.method.Str} {$route.path.perl}" if $matches;
         $curr.routes.push($route);
     }
 
