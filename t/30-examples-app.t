@@ -2,7 +2,7 @@ use v6;
 use Test;
 use Bailador::Test;
 
-plan 6;
+plan 7;
 
 %*ENV<BAILADOR_TESTING> = "yes";
 
@@ -49,6 +49,21 @@ subtest {
 	is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'regexes! I got /and/more'], 'route GET /foo/and/more';
     is %data<err>, '';
 }, '/foo/and/more';
+
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/two-parts');
+	is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'two and parts'], 'route GET /two-parts';
+    is %data<err>, '';
+}, '/two-parts';
+
+#subtest {
+#    plan 2;
+#    my %data = run-psgi-request($app, 'GET', '/template/Camelia');
+#	is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /template/Camelia';
+#    is %data<err>, '';
+#}, '/template/Camelia';
 
 
 
