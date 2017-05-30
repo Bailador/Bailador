@@ -44,7 +44,8 @@ sub usage(Str $msg?) {
 sub skeleton() {
 	my %skeleton;
 %skeleton{'app.pl'} =
-q{use Bailador;
+q{use v6;
+use Bailador;
 Bailador::import();
 
 my $version = '0.01';
