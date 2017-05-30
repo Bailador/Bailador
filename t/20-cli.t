@@ -36,7 +36,7 @@ app.pl
     is-deeply @main_dir.map(*.Str), ('App-Name',);
 
     my @app_dir = dir('App-Name');
-    is-deeply @app_dir.map(*.Str), ('App-Name/app.pl', 'App-Name/views');
+    is-deeply @app_dir.map(*.Str).sort, ('App-Name/app.pl', 'App-Name/views');
 
     my @views_dir = dir('App-Name/views');
     is-deeply @views_dir.map(*.Str), ('App-Name/views/index.tt',);
