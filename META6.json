@@ -9,6 +9,8 @@
     "provides" : {
         "Bailador"                                : "lib/Bailador.pm",
         "Bailador::App"                           : "lib/Bailador/App.pm",
+        "Bailador::Configuration"                 : "lib/Bailador/Configuration.pm"
+        "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm"
         "Bailador::Context"                       : "lib/Bailador/Context.pm",
         "Bailador::Exceptions"                    : "lib/Bailador/Exceptions.pm",
         "Bailador::Request"                       : "lib/Bailador/Request.pm",
@@ -17,14 +19,12 @@
         "Bailador::Route"                         : "lib/Bailador/Route.pm",
         "Bailador::Route::StaticFile"             : "lib/Bailador/Route/StaticFile.pm",
         "Bailador::Sessions"                      : "lib/Bailador/Sessions.pm",
-        "Bailador::Sessions::Config"              : "lib/Bailador/Sessions/Config.pm",
         "Bailador::Sessions::Store"               : "lib/Bailador/Sessions/Store.pm",
         "Bailador::Sessions::Store::Memory"       : "lib/Bailador/Sessions/Store/Memory.pm",
         "Bailador::Template"                      : "lib/Bailador/Template.pm",
         "Bailador::Template::Mojo"                : "lib/Bailador/Template/Mojo.pm",
         "Bailador::Template::Mustache"            : "lib/Bailador/Template/Mustache.pm",
         "Bailador::Test"                          : "lib/Bailador/Test.pm",
-        "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm"
     },
     "resources" : [
         "error.template"

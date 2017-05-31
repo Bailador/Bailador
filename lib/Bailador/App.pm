@@ -4,19 +4,18 @@ use Bailador::Context;
 use Bailador::Route;
 use Bailador::Template::Mojo;
 use Bailador::Sessions;
-use Bailador::Sessions::Config;
 use Bailador::Exceptions;
 use Bailador::ContentTypes;
+use Bailador::Configuration;
 use Template::Mojo;
 
 class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';
-    has Bool $.debug is rw = False;
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
-    has Bailador::Sessions::Config $.sessions-config = Bailador::Sessions::Config.new;
     has Bailador::Sessions $!sessions;
+    has Bailador::Configuration $.config = Bailador::Configuration.new;
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -49,7 +48,7 @@ class Bailador::App is Bailador::Route {
 
     method !sessions() {
         unless $!sessions.defined {
-            $!sessions = Bailador::Sessions.new(:$.sessions-config);
+            $!sessions = Bailador::Sessions.new(:$!config);
         }
         return $!sessions;
     }
@@ -123,7 +122,7 @@ class Bailador::App is Bailador::Route {
                     }
 
                     my $err-page;
-                    if $!debug {
+                    if $!config.mode eq 'development' {
                         state $error-template = Template::Mojo.new(%?RESOURCES<error.template>.IO.slurp);
                         $err-page = $error-template.render($_, self.request());
                     } elsif $!location.defined {

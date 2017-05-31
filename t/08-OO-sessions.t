@@ -7,7 +7,7 @@ plan 5;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
-        self.sessions-config.cookie-expiration = 5;
+        self.config.cookie-expiration = 5;
         self.get: '/setsession' => sub {
             my $session = self.session;
             $session<key> = 'value';

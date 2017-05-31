@@ -27,7 +27,8 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`prefix-enter(Callable $code)`](#prefix-entercallable-code)
             - [`redirect(Str $location)`](#redirectstr-location)
             - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
-            - [`sessions-config()`](#sessions-config)
+            - [`config()`](#config)
+            - [`set(Str $key, $value)`](#setstr-key-value)
             - [`baile()`](#baile)
             - [`get-psgi-app`](#get-psgi-app)
         - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
@@ -222,9 +223,21 @@ Redirect to the specified location, can be relative or absolute URL. Adds Locati
 
 Sets the Renderer that's being used to render your templates. See the Template section for more details.
 
-##### `sessions-config()`
+##### `config()`
 
-Returns the Sessions-config. You can influence how sessions work. See the Sessions section for details.
+Returns the configuration. You can influence how sessions work, the mode, port and host of your Bailador app.
+See the Sessions and Configuration section for details.
+
+##### `set(Str $key, $value)`
+
+This is a Dancer2 like way to set values to the config.
+
+```perl6
+    # this:
+    set("foo", True);
+    # is doing exactly the same as this:
+    config.foo = True;
+```
 
 ##### `baile( [$port=3000, $host=0.0.0.0] )`
 
@@ -370,9 +383,9 @@ In order to create a session just call the subroutine
     
 inside the code block of a route. This subroutine returns a Hash in which you can just toss in all data or objects that should be be in the session context.
 After your route code is finished the session will be stored automatically. How this should be done can be configured.
-The handling of sessions can be influenced if you call
+The handling of sessions can be influenced with settings of Bailador::Configuration.
 
-    sessions-config()
+    config()
     
 inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
 Following config options are available. Most of them should be self explaining.
@@ -393,9 +406,14 @@ and set backend to this class name.
 Using the `BAILADOR` environment variable we can configure various aspects how Bailador will run.
 Currently available parameters:
 
-* debug       (turns on debug mode)
-* port:PORT   (defaults to 3000)
-* host:HOST   (defaults to 127.0.0.1)
+* mode:MODE         (defaults to 'production')
+* port:PORT         (defaults to 3000)
+* host:HOST         (defaults to 127.0.0.1)
+* cookie-name       (defaults to 'bailador')
+* cookie-path       (defaults to = '/)
+* cookie-expiration (defaults to 3600)
+* hmac-key          (defaults to 'changeme')
+* backend           (defaults to "Bailador::Sessions::Store::Memory")
 
 ```
 BAILADOR=debug,host:0.0.0.0,port:5000

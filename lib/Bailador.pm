@@ -85,10 +85,6 @@ sub session-delete is export {
     return app.session-delete();
 }
 
-sub sessions-config is export {
-    return app.sessions-config;
-}
-
 sub uri-for(Str $path) is export {
     return app.request.uri-for($path);
 }
@@ -105,32 +101,34 @@ sub redirect(Str $location) is export {
     app.redirect($location);
 }
 
-sub config(Str $key, $value) is export {
-    app."$key"() = $value;
+# for Dancer2 compatibility
+sub set(Str $key, $value) is export {
+    app.config."$key"() = $value;
 }
 
-sub baile($port is copy = 3000, $host is copy = '127.0.0.1', :$debug = False) is export {
-    app.debug = $debug;
+sub config() is export {
+    return app.config;
+}
 
-    if %*ENV<BAILADOR> {
-        my @pairs = %*ENV<BAILADOR>.split(',');
-        for @pairs -> $p {
-            my ($k, $v) = $p.split(/<[:=]>/);
-            if $k eq 'debug' {
-                app.debug = True;
-            }
-            if $k eq 'port' {
-                $port = $v.Int;
-            }
-            if $k eq 'host' {
-                $host = $v;
-            }
-        }
-    }
+multi sub baile() is export {
+    my $port = app.config.port;
+    my $host = app.config.host;
+    baile($port, $host);
+}
+multi sub baile(Int $port) is export {
+    my $host = app.config.host;
+    baile($port, $host);
+}
+multi sub baile(Str $host) is export {
+    my $port = app.config.port;
+    baile($port, $host);
+}
+multi sub baile(Int $port, Str $host, Bool :$development-mode = False ) is export {
+    app.config.mode = "development" if $development-mode;
     my $psgi-app = app.get-psgi-app();
     given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
         .app($psgi-app);
-        say "Entering the development dance floor{app.debug ?? ' in debug mode' !! ''}: http://$host:$port";
+        say "Entering the development dance floor{ app.config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
         .run;
     }
 }

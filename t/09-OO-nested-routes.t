@@ -1,3 +1,4 @@
+use v6;
 use Test;
 use Bailador::App;
 use Bailador::Route;
@@ -9,7 +10,7 @@ class MyOwnWebApp is Bailador::App {
 
     submethod BUILD(|) {
         # config
-        self.sessions-config.cookie-expiration = 5;
+        self.config.cookie-expiration = 5;
 
         # routes
         self.post: '/login/:user' => sub {

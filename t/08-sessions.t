@@ -3,7 +3,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-sessions-config.cookie-expiration = 5;
+config.cookie-expiration = 5;
 
 plan 5;
 

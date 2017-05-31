@@ -1,3 +1,4 @@
+use v6;
 use Test;
 use Bailador;
 use Bailador::Test;
@@ -31,7 +32,7 @@ subtest {
 
 subtest {
     plan 3;
-    config 'debug', True;
+    config.mode = 'development';
     my %data = run-psgi-request('GET', '/die');
     my $html = %data<response>[2];
     like $html, rx:s/In the future this will be a nice error page\. For now we try to make it at least informative\./;

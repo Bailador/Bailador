@@ -3,27 +3,27 @@ use v6;
 use Digest;
 use Digest::HMAC;
 
-use Bailador::Sessions::Config;
+use Bailador::Configuration;
 use Bailador::Sessions::Store;
 use Bailador::Request;
 use Bailador::Response;
 
 class Bailador::Sessions {
-    has Bailador::Sessions::Config $.sessions-config;
+    has Bailador::Configuration $!config;
     has Bailador::Sessions::Store $.sessions-store;
 
     has %!session-expiration;
 
-    submethod BUILD(:$!sessions-config) {
-        require ::($!sessions-config.backend);
-        $!sessions-store := ::($!sessions-config.backend).new;
+    submethod BUILD(:$!config) {
+        require ::($!config.backend);
+        $!sessions-store := ::($!config.backend).new;
     }
 
     method !get-session-id(Bailador::Request $r) {
         my $cookies = $r.cookies();
         my Str $unchecked-session-id;
-        if $cookies{ $.sessions-config.cookie-name }:exists {
-            $unchecked-session-id = $cookies{$.sessions-config.cookie-name}[0];
+        if $cookies{ $!config.cookie-name }:exists {
+            $unchecked-session-id = $cookies{$!config.cookie-name}[0];
         }
         return $unchecked-session-id;
     }
@@ -36,7 +36,7 @@ class Bailador::Sessions {
 
             # validate session
             my ($data, $hmac) = $unchecked-session-id.split(/\-\-/, 2);
-            my $check-hmac = hmac-hex($.sessions-config.hmac-key, $data, &md5);
+            my $check-hmac = hmac-hex($!config.hmac-key, $data, &md5);
             if $hmac eq $check-hmac {
                 if %!session-expiration{$unchecked-session-id}:exists and %!session-expiration{$unchecked-session-id} < DateTime.now {
                     # TODO after the timeout its better to delete them right now
@@ -51,10 +51,10 @@ class Bailador::Sessions {
 
         unless $session-id {
             my $data = md5($*PID ~ now.Rat ~ rand).list.fmt('%02x', '');
-            my $hmac = hmac-hex($.sessions-config.hmac-key, $data, &md5);
+            my $hmac = hmac-hex($!config.hmac-key, $data, &md5);
             $session-id = $data ~ '--' ~ $hmac;
         }
-        my DateTime $expires = DateTime.now.later( second => $.sessions-config.cookie-expiration );
+        my DateTime $expires = DateTime.now.later( second => $!config.cookie-expiration );
         %!session-expiration{$session-id} = $expires;
         my $session = $.sessions-store.fetch-session($session-id);
         $r.env<bailador.session-id> = $session-id;
@@ -66,7 +66,7 @@ class Bailador::Sessions {
         if $env<bailador.session-id>:exists and $env<bailador.session>:exists {
             my $session-id = $env<bailador.session-id>;
             my $session = $env<bailador.session>;
-            $r.cookie($.sessions-config.cookie-name, $session-id, :path($.sessions-config.cookie-path));
+            $r.cookie($!config.cookie-name, $session-id, :path($!config.cookie-path));
             $.sessions-store.store-session($session-id, $session);
         }
     }
