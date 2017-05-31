@@ -33,7 +33,7 @@ my sub bootup-app ($app) {
 my sub watch-recursive(@dirs) {
     supply {
         my sub watch-it($p) {
-	        if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
+            if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
                 say "Skipping .precomp dir [$p]";
                 return;
             }
