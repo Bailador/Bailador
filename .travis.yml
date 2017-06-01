@@ -8,6 +8,7 @@ perl6:
 install:
   - rakudobrew build-zef
   - zef install Test::META
+  - zef install Path::Iterator
   - zef --depsonly install .
 env:
   - AUTHOR_TESTING=1
