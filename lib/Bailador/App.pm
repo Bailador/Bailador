@@ -61,7 +61,7 @@ class Bailador::App is Bailador::Route {
         self!sessions.delete-session(self.request);
     }
 
-    method done-rendering() {
+    method !done-rendering() {
         # store session according to session engine
         self!sessions.store(self.response, self.request.env);
     }
@@ -96,7 +96,7 @@ class Bailador::App is Bailador::Route {
             }
 
             LEAVE {
-                self.done-rendering();
+                self!done-rendering();
             }
 
             CATCH {
