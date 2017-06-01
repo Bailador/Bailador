@@ -20,4 +20,4 @@ post '/echo' => sub {
 }
 
 
-baile;
+app.get-psgi-app;
