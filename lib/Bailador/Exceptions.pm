@@ -1,4 +1,4 @@
-v6;
+use v6;
 
 class X::Bailador::NoRouteFound is Exception {
     method message() {

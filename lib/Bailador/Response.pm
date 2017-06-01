@@ -1,3 +1,4 @@
+use v6;
 use URI::Escape;
 
 class Bailador::Response {

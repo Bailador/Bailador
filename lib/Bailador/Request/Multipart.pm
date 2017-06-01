@@ -1,3 +1,4 @@
+use v6;
 class Bailador::Request::Multipart {
     ## Content-Disposition: form-data; name="file"; filename="xxx.png"
     ## Content-Type: image/png

@@ -1,3 +1,4 @@
+use v6;
 use Bailador::Request::Multipart;
 use Test;
 
