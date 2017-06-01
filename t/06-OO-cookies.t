@@ -106,14 +106,14 @@ is-deeply get-psgi-response($app, 'GET', '/wiki1'), [ 200, ["Content-Type" => "t
 
 is-deeply get-psgi-response($app, 'GET', '/wiki2'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => "SSID=Ap4P.GTEq; Path=/; Domain=foo.com; Expires=Wed, 13 Jan 2021 22:23:01 GMT; Secure; HttpOnly"], "wikipedia" ], 'ROUTE GET /wiki2 sets a cookie with all parameters like an example from the HTTP cookie wikipedia article';
 
-is-deeply get-psgi-response($app, 'GET', '/multi1'), 
-    [ 200, 
+is-deeply get-psgi-response($app, 'GET', '/multi1'),
+    [ 200,
         [
             "Content-Type" => "text/html",
             "Set-Cookie" => "enwikiUserID=127001; Path=/; Expires=Thu, 15 Oct 2015 15:12:40 GMT; Secure; HttpOnly",
             "Set-Cookie" => "enwikiUserName=localhost; Path=/; Expires=Thu, 15 Oct 2015 15:12:40 GMT; Secure; HttpOnly",
             "Set-Cookie" => "forceHTTPS=true; Path=/; Expires=Thu, 15 Oct 2015 15:12:40 GMT; HttpOnly"
-        ], "multiple" 
+        ], "multiple"
     ], 'ROUTE GET /multi1 sets multiple cookies';
 
 is-deeply get-psgi-response($app, 'GET', '/escape1'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => 'key=value%3B; Secure'], "escape" ], 'ROUTE GET /escape1 sends a cookie with a URI encoded value';

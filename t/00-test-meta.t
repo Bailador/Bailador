@@ -3,9 +3,9 @@ use lib 'lib';
 use Test;
 plan 1;
 
-constant AUTHOR = ?%*ENV<AUTHOR_TESTING>; 
+constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
 
-if AUTHOR { 
+if AUTHOR {
     require Test::META <&meta-ok>;
     meta-ok;
     done-testing;
