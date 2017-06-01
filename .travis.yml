@@ -7,7 +7,10 @@ perl6:
   - latest
 install:
   - rakudobrew build-zef
+  - zef install Test::META
   - zef --depsonly install .
+env:
+  - AUTHOR_TESTING=1
 #branches:
 #  only:
 #  - master
