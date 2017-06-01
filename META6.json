@@ -9,8 +9,8 @@
     "provides" : {
         "Bailador"                                : "lib/Bailador.pm",
         "Bailador::App"                           : "lib/Bailador/App.pm",
-        "Bailador::Configuration"                 : "lib/Bailador/Configuration.pm"
-        "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm"
+        "Bailador::Configuration"                 : "lib/Bailador/Configuration.pm",
+        "Bailador::ContentTypes"                  : "lib/Bailador/ContentTypes.pm",
         "Bailador::Context"                       : "lib/Bailador/Context.pm",
         "Bailador::Exceptions"                    : "lib/Bailador/Exceptions.pm",
         "Bailador::Request"                       : "lib/Bailador/Request.pm",
@@ -24,7 +24,7 @@
         "Bailador::Template"                      : "lib/Bailador/Template.pm",
         "Bailador::Template::Mojo"                : "lib/Bailador/Template/Mojo.pm",
         "Bailador::Template::Mustache"            : "lib/Bailador/Template/Mustache.pm",
-        "Bailador::Test"                          : "lib/Bailador/Test.pm",
+        "Bailador::Test"                          : "lib/Bailador/Test.pm"
     },
     "resources" : [
         "error.template"
