@@ -1,4 +1,6 @@
 use v6.c;
+use File::Find;
+
 unit module Bailador::CLI;
 
 sub usage(Str $msg?) is export {
@@ -51,5 +53,37 @@ q{
 };
 
     return %skeleton;
+}
+
+my sub bootup-app ($app) is export {
+    my Proc::Async $p .= new: 'perl6', $app;
+    $p.stdout.tap: -> $v { $*OUT.print: $v };
+    $p.stderr.tap: -> $v { $*ERR.print: $v };
+    $p.start;
+    return $p;
+}
+
+my sub watch-recursive(@dirs) is export {
+    supply {
+        my sub watch-it($p) {
+            if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
+                say "Skipping .precomp dir [$p]";
+                return;
+            }
+            say "Starting watch on `$p`";
+            whenever IO::Notification.watch-path($p) -> $e {
+                if $e.event ~~ FileRenamed && $e.path.IO ~~ :d {
+                    watch-it($_) for find-dirs $e.path;
+                }
+                emit($e);
+            }
+        }
+        watch-it(~$_) for |@dirs.map: { find-dirs $_ };
+    }
+}
+
+my sub find-dirs (Str:D $p) {
+    state $seen = {};
+    return slip ($p.IO, slip find :dir($p), :type<dir>).grep: { !$seen{$_}++ };
 }
 
