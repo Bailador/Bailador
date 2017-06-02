@@ -11,7 +11,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Contribution](#contribution)
 - [Example](#example)
 - [How to Start Apps](#how-to-start-apps)
-    - [Rebailador](#rebailador)
+    - [bailador](#bailador)
     - [Crust](#crust)
     - [Baile](#baile)
 - [How to Write Web Apps](#how-to-write-web-apps)
@@ -111,14 +111,14 @@ and then type this in your shell:
 
 `crustup --server HTTP:::Easy example.p6w`
 
-### Rebailador
+### bailador
 
-`rebailador` will watch the source code of your Bailador app for changes and automatically restart the app.
+`bailador` will watch the source code of your Bailador app for changes and automatically restart the app.
 
 
-    rebailador bin/your-bailador-app.p6
+    bailador bin/your-bailador-app.p6
 
-    rebailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+    bailador --w=lib,bin,views,public   bin/your-bailador-app.p6
 
 #### `--w`
 
@@ -127,7 +127,7 @@ will watch `lib` and `bin` directories.
 
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
 
-    rebailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+    bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
 
 
 ### Baile
