@@ -31,3 +31,20 @@ multi sub MAIN(Str :$new) {
 	}
 }
 
+multi sub MAIN ( Str $app, Str :$w = 'lib,bin') {
+    my @watchlist = $w.split: /<!after \\> \,/;
+    s/\\\,/,/ for @watchlist;
+
+    say "Attempting to boot up the app";
+    my $p = bootup-app $app;
+    react {
+        whenever watch-recursive(@watchlist.grep: *.IO.e) -> $e {
+            if $e.path() !~~ /\.sw.$/ and $e.path() !~~ /\~$/ {
+                say "Change detected [$e.path(), $e.event()]. Restarting app";
+                $p.kill;
+                $p = bootup-app $app;
+            }
+        }
+    }
+}
+
