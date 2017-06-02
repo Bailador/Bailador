@@ -4,7 +4,6 @@ use v6;
 use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
-Bailador::import; # for the template to work
 
 # simple cases
 get '/' => sub {
