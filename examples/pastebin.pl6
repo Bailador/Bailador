@@ -34,4 +34,4 @@ get /paste\/(\d+)$/ => sub ($tag) {
     return "Paste does not exist";
 }
 
-baile;
+app.get-psgi-app;
