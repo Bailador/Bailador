@@ -67,7 +67,7 @@ my sub watch-recursive(@dirs) is export {
     supply {
         my sub watch-it($p) {
             if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
-                say "Skipping .precomp dir [$p]";
+                #say "Skipping .precomp dir [$p]";
                 return;
             }
             say "Starting watch on `$p`";
