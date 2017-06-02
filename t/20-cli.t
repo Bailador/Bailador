@@ -15,7 +15,7 @@ chdir($dir);
 
 # Show Usage when no parameter is supplied.
 {
-    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), :out, :err;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err;
     is $p.out.get, 'Usage:';
     is $p.err.get, Nil;
     #diag $p.out.slurp: :close;
@@ -24,7 +24,7 @@ chdir($dir);
 
 # Create application
 {
-    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 views/index.tt
@@ -44,7 +44,7 @@ app.pl
 
 # Won't overwrite existing directory
 {
-    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 App-Name already exists. Exiting.
