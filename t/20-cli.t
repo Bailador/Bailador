@@ -24,7 +24,7 @@ chdir($dir);
 
 # Create application
 {
-    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), 'App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 views/index.tt
@@ -44,7 +44,7 @@ app.pl
 
 # Won't overwrite existing directory
 {
-    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), 'App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 App-Name already exists. Exiting.
