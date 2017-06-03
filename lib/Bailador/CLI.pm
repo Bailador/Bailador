@@ -27,7 +27,7 @@ get '/' => sub {
     template 'index.tt', { version => $version }
 }
 
-baile;
+app.to-psgi-app();
 };
 
 
@@ -56,9 +56,11 @@ q{
 }
 
 my sub bootup-app ($app) is export {
-    my Proc::Async $p .= new: 'perl6', $app;
-    $p.stdout.tap: -> $v { $*OUT.print: $v };
-    $p.stderr.tap: -> $v { $*ERR.print: $v };
+    my $msg     = "Entering the dance floor in reload mode: http://0.0.0.0:3000";
+    my $command = "use Bailador; start-p6w-app(3000, '0.0.0.0', EVALFILE('$app'), '$msg')";
+    my Proc::Async $p .= new('perl6', "-Ilib", "-e", $command);
+    $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
+    $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
     $p.start;
     return $p;
 }

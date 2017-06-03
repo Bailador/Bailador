@@ -126,9 +126,14 @@ multi sub baile(Str $host) is export {
 multi sub baile(Int $port, Str $host, Bool :$development-mode = False ) is export {
     app.config.mode = "development" if $development-mode;
     my $psgi-app = app.get-psgi-app();
+    my $msg      = "Entering the dance floor{ app.config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
+    start-p6w-app($port, $host, $psgi-app, $msg);
+}
+
+sub start-p6w-app(Int $port, Str $host, Callable $app, Str $msg) is export {
     given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
-        .app($psgi-app);
-        say "Entering the development dance floor{ app.config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
+        .app($app);
+        say $msg;
         .run;
     }
 }
