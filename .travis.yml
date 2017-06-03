@@ -12,8 +12,5 @@ install:
   - zef --depsonly install .
 env:
   - AUTHOR_TESTING=1
-#branches:
-#  only:
-#  - master
 notifications:
     slack: perl6-bailador:FuFG55nk94k5BSOeGMNO5nDh
