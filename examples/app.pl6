@@ -7,6 +7,21 @@ use Bailador::Route::StaticFile;
 
 # simple cases
 get '/' => sub {
+    q{
+<h2>Welcome to Bailador!</h2>
+<ul>
+   <li><a href="/red">Redirect to not existing page</a></li>
+   <li><a href="/die">Throw an exception</a></li>
+   <li><a href="/about">Simple text</a></li>
+   <li><a href="/hello/Foo Bar">Say hello</a></li>
+   <li><a href="/fooBarMoo">Routing</a></li>
+   <li><a href="/one-two-three">Routing</a></li>
+   <li><a href="/template/abc">Use a template</a></li>
+</ul>
+};
+}
+
+get '/red' => sub {
     redirect('/index.html');
 }
 

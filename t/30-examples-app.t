@@ -2,16 +2,27 @@ use v6;
 use Test;
 use Bailador::Test;
 
-plan 7;
+plan 8;
 
 my $app = EVALFILE "examples/app.pl6";
 
 subtest {
-    plan 2;
+    plan 3;
     my %data = run-psgi-request($app, 'GET', '/');
-    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /';
+    my $html = %data<response>[2];
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
     is %data<err>, '';
+    like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';
+
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/red');
+    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /red';
+    is %data<err>, '';
+}, '/red';
 
 subtest {
     plan 2;
