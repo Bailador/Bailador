@@ -9,6 +9,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 # TABLE OF CONTENTS
 - [Install](#install)
 - [Contribution](#contribution)
+- [Versioning model](#Versioning-model)
 - [Example](#example)
 - [How to Start Apps](#how-to-start-apps)
     - [bailador](#bailador)
@@ -81,6 +82,21 @@ prove -e 'prove6 -Ilib' t
 
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
 
+## Versioning model
+
+The Baildor repository holds two main branches with an infinite lifetime :
+
+ - Main branch :
+
+ We consider `origin/main` to be the main branch where the source code of HEAD always reflects a production-ready state.
+
+ - Dev branch :
+
+ We consider `origin/develop` to be the main branch where the source code of HEAD always reflects a state with the latest delivered development changes for the next release.
+
+When the source code in the `dev` branch reaches a stable point and is ready to be released, all of the changes are merged back into `main` and then tagged with a release number.
+
+
 ## Example
 
 For more examples, please see the [examples](examples) folder.
@@ -89,8 +105,8 @@ For more examples, please see the [examples](examples) folder.
 
 ### Crust
 
-When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of 
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`. 
+When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`.
 
 #### Example
 
@@ -136,12 +152,12 @@ In order to invoke the Bailador App directly, you could simply call baile() in y
 
 ```Perl6
 use Bailador;
-    
+
 # simple cases
 get '/' => sub {
     "hello world"
 }
-    
+
 baile;
 ```
 
@@ -189,7 +205,7 @@ parameters. The return value of the callable will be auto rendered. So
 it is the content of your response. The request is available via the
 appropriately named variable `request`; `request.params` will contain
 the route parameters, for instance; `request.params<q>` will yield the
-value for param `q`. 
+value for param `q`.
 
 The strings captured by the regular expression are available as
 subroutine parameters.
@@ -363,7 +379,7 @@ Therefore you need to create a class that implements the role Bailador::Template
 The template files should be placed in a folder named "views" which is located in the same directory as your application.pl file. When you call the subroutine
 
     template 'template.tt', $name, $something;
-    
+
 the template (or in other words the file views/template.tt) gets invoked "as a subroutine" and the @params get passed. This is a example of a template file with Template::Mojo:
 
     % my ($name, $something) = @_;
@@ -374,7 +390,7 @@ the template (or in other words the file views/template.tt) gets invoked "as a s
 ### Error Templates
 
 In order to customize the error pages drop a template file with the filename of the HTTP status code and the suffix `.xx` in your views directory. Curently there only two different error codes: `404` and `500`.
-    
+
 ## Sessions
 
 Sessions are implemented using a Session Cookie. If the browser rejects cookies, Bailador is not able to handle sessions.
@@ -382,13 +398,13 @@ Sessions are implemented using a Session Cookie. If the browser rejects cookies,
 In order to create a session just call the subroutine
 
     session()
-    
+
 inside the code block of a route. This subroutine returns a Hash in which you can just toss in all data or objects that should be be in the session context.
 After your route code is finished the session will be stored automatically. How this should be done can be configured.
 The handling of sessions can be influenced with settings of Bailador::Configuration.
 
     config()
-    
+
 inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
 Following config options are available. Most of them should be self explaining.
 
