@@ -6,14 +6,14 @@ class Bailador::Template::Mojo does Bailador::Template {
     has %.template-cache;
     has $!engine = Template::Mojo;
 
-    method render(Str $template-name, @params) {
+    method render(Str $template-name, *@params) {
         my $engine = self!get-engine($template-name);
-        $engine.render(|@params)
+        $engine.render(|@params);
     }
 
-    method render-string(Str $template-content, %params) {
+    method render-string(Str $template-content, *@params) {
         my $engine = Template::Mojo.new($template-content);
-        return $engine.render(%params);
+        return $engine.render(|@params)
     }
 
     method !get-engine(Str $template-name) {

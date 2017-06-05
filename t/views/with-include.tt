@@ -1,0 +1,4 @@
+% use Bailador;
+<pre>
+<%= template('simple.tt', @_) %>
+</pre>

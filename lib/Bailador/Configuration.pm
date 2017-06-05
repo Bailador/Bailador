@@ -5,6 +5,7 @@ class Bailador::Configuration {
     has Str $.mode is rw where "production"|"development" = "production";
     has Str $.host is rw                                  = "127.0.0.1";
     has Int $.port is rw                                  = 3000;
+    has Str $.layout is rw;
 
     ## SESSION RELATED STUFF
     has Str $.cookie-name is rw       = 'bailador';

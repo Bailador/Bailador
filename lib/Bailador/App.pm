@@ -19,8 +19,19 @@ class Bailador::App is Bailador::Route {
 
     method request  { $.context.request  }
     method response { $.context.response }
-    method template(Str $tmpl, *@params, *%params) {
-        $!renderer.render("$.location/views/$tmpl", @params, |%params);
+    method template(Str $tmpl, Str :$layout, *@params, *%params) {
+        my $content = $!renderer.render("$.location/views/$tmpl", |@params, |%params);
+
+        my $use-this-layout = $layout // $.config.layout;
+        if $use-this-layout {
+            my $filename;
+            for ('', '.tt', '.mustache', '.html', '.template') -> $ext {
+                $filename = "$.location/layout/$use-this-layout" ~ $ext;
+                return $!renderer.render($filename, $content) if $filename.IO.e
+            }
+        }
+
+        return $content;
     }
 
     multi method render($result) {
