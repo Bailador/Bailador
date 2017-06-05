@@ -62,6 +62,11 @@ zef install Bailador
 ```
 This should download and install Bailador.
 
+You can test your installation, and see what is your Bailador installed version with the following command :
+```
+bailador version
+```
+
 ## Contribution
 
 If you'd like to contribute to Bailador you need to `fork` the [GitHub](https://github.com/Bailador/Bailador) repository and clone the forked repo to your hard disk. Then you need to install all the dependencies of Bailador:
