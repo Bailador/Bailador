@@ -289,9 +289,10 @@ Adds a Cookie to the response.
 
 Sets the status code of a response.
 
-#####  `template(Str $template-name, *@params)`
+#####  `template(Str $template-name, :$layout, *@params)`
 
-Calls the template which is a file in the views folder. For more details see the Template section. Should only be used within the code block of a route.
+Calls the template which is a file in the views folder. You can specify a $:layout if you want to override the sesttings in Bailador::Configuration.
+For more details see the Template section. Should only be used within the code block of a route.
 
 ##### `session()`
 
@@ -380,12 +381,20 @@ The template files should be placed in a folder named "views" which is located i
 
     template 'template.tt', $name, $something;
 
-the template (or in other words the file views/template.tt) gets invoked "as a subroutine" and the @params get passed. This is a example of a template file with Template::Mojo:
+the template (or in other words the file views/template.tt) gets invoked "as a subroutine" and the |@params get passed. This is a example of a template file with Template::Mojo:
 
     % my ($name, $something) = @_;
     <html ... codes goes here ...>
         <h1><%= $name %></h1>
     <html>
+
+### Layouts
+
+In order to use layouts you can pass a layout option to the `template()` call.
+
+    template 'template.tt', layout => 'main', $name, $something;
+
+First Bailador renders your template with its parameters, and then scanns the 'layout' sub directory for another layout template. The same rendering engine will be used for the layout template. The result of your first template rendering will be passed as only option to layout template. If the specified layout was not found the result of the first template rendering will be returned.
 
 ### Error Templates
 
@@ -427,6 +436,7 @@ Currently available parameters:
 * mode:MODE         (defaults to 'production')
 * port:PORT         (defaults to 3000)
 * host:HOST         (defaults to 127.0.0.1)
+* layout            (defaults to Any)
 * cookie-name       (defaults to 'bailador')
 * cookie-path       (defaults to = '/)
 * cookie-expiration (defaults to 3600)
