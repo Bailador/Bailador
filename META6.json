@@ -3,7 +3,7 @@
     "version"     : "0.0.3",
     "perl"        : "6.c",
     "description" : "A light-weight route-based web application framework for Perl 6",
-    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest", "HTTP::MultiPartParser", "File::Find", "File::Temp", "File::Directory::Tree" ],
+    "depends"     : [ "HTTP::Easy", "Template::Mojo", "Template::Mustache", "URI", "Digest::HMAC", "Digest", "HTTP::MultiPartParser", "File::Find", "File::Temp", "File::Directory::Tree", "YAMLish" ],
     "tags"        : [ "Web", "HTTP", "Net" ],
     "license"     : "MIT",
     "provides" : {

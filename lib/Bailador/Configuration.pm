@@ -1,6 +1,11 @@
 use v6;
 
+use YAMLish;
+
 class Bailador::Configuration {
+    ## CONFIGURATION FILE
+    has Str $.config_file = 'settings.yaml';
+
     ## GENERAL STUFF
     has Str $.mode is rw where "production"|"development" = "production";
     has Str $.host is rw                                  = "127.0.0.1";
@@ -30,6 +35,35 @@ class Bailador::Configuration {
                 }
             }
         }
+    }
 
+    method load-from-file() {
+        unless $.config_file.IO.e {
+            warn "The configuration file wasn't found.";
+            warn "Bailador will use his default configuration.";
+        }
+
+        if $.config_file.IO.extension ~~ 'yaml' | 'yml' {
+            try {
+                my $yaml = slurp $.config_file;
+                my %config = load-yaml($yaml);
+                for %config.kv -> $k, $v {
+                    given $k {
+                        when 'mode' {
+                            $.mode = $v;
+                        }
+                        when 'port' {
+                            $.port = $v;
+                        }
+                        when 'host' {
+                            $.host = $v;
+                        }
+                    }
+                }
+                return;
+            }
+            warn 'Error while loading the YAML config file.';
+            warn 'Bailador will use his default configuration.';
+        }
     }
 }
