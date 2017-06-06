@@ -2,7 +2,7 @@ use v6;
 
 class Bailador::Configuration {
     ## USER DEFINED STUFF
-    has %.user-defined-suff;
+    has %.user-defined-stuff;
 
     ## GENERAL STUFF
     has Str $.mode is rw where "production"|"development" = "production";
@@ -30,6 +30,7 @@ class Bailador::Configuration {
             my @pairs = %*ENV<BAILADOR>.split(',');
             for @pairs -> $p {
                 my ( $k, $v ) = $p . split(/<[:=]>/);
+                say "key: $k value: $v";
                 set($k, $v);
             }
         }
@@ -56,9 +57,11 @@ class Bailador::Configuration {
     }
 
     multi method FALLBACK(Str $name) {
+        say "FALLBACK", $name;
         self.get($name);
     }
     multi method FALLBACK(Str $name, $value) {
+        say "FALLBACK", $name, "value", $value;
         self.set($name, $value);
     }
 }

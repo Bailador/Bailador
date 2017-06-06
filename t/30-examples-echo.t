@@ -4,6 +4,7 @@ use Bailador::Test;
 
 plan 3;
 
+%*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/echo.pl6";
 
 subtest {

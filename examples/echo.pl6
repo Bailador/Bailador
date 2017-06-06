@@ -19,5 +19,4 @@ post '/echo' => sub {
     return 'echo via POST: ' ~ (request.params<text>  // '');
 }
 
-
-app.get-psgi-app;
+baile();

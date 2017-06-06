@@ -4,6 +4,7 @@ use Bailador::Test;
 
 plan 8;
 
+%*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/app.pl6";
 
 subtest {
@@ -25,9 +26,10 @@ subtest {
 }, '/red';
 
 subtest {
-    plan 2;
+    plan 3;
     my %data = run-psgi-request($app, 'GET', '/die');
-    is-deeply %data<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error'], 'route GET /die dies';
+    is %data<response>[0], 500;
+    is-deeply %data<response>[1], ["Content-Type" => "text/html, charset=utf-8"];
     like %data<err>, rx:s/This is an exception so you can see how it is handled/, 'stderr';
 }, '/die';
 

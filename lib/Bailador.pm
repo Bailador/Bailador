@@ -10,6 +10,7 @@ my $app;
 
 multi sub app {
     $app = Bailador::App.new unless $app;
+    $app.config.load-from-env();
     return $app;
 }
 
@@ -110,30 +111,25 @@ sub config() is export {
     return app.config;
 }
 
-multi sub baile() is export {
-    my $port = app.config.port;
-    my $host = app.config.host;
-    baile($port, $host);
-}
-multi sub baile(Int $port) is export {
-    my $host = app.config.host;
-    baile($port, $host);
-}
-multi sub baile(Str $host) is export {
-    my $port = app.config.port;
-    baile($port, $host);
-}
-multi sub baile(Int $port, Str $host, Bool :$development-mode = False ) is export {
-    app.config.mode = "development" if $development-mode;
-    my $psgi-app = app.get-psgi-app();
-    my $msg      = "Entering the dance floor{ app.config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
-    start-p6w-app($port, $host, $psgi-app, $msg);
+sub add-command-ns(Str:D $namespace) is export {
+    app.commands.add-ns($namespace);
 }
 
-sub start-p6w-app(Int $port, Str $host, Callable $app, Str $msg) is export {
-    given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
-        .app($app);
-        say $msg;
-        .run;
+multi sub baile() is export {
+    my $cmd;
+    if @*ARGS.elems > 0 {
+        $cmd = app.commands.get-command(@*ARGS.shift);
+        app.config.load-from-args(@*ARGS),
+    } elsif app.config.command-detection() {
+        $cmd = app.commands.detect-command();
+    } else {
+        die 'can not detect command';
     }
+    $cmd.run(app => app() );
+}
+
+multi sub baile(Str :$command!, *@args) is export {
+    my $cmd = app.commands.get-command($command);
+    app.config.load-from-args(@args),
+    $cmd.run(app => app() );
 }

@@ -7,6 +7,7 @@ use Bailador::Sessions;
 use Bailador::Exceptions;
 use Bailador::ContentTypes;
 use Bailador::Configuration;
+use Bailador::Commands;
 use Template::Mojo;
 
 class Bailador::App is Bailador::Route {
@@ -16,6 +17,7 @@ class Bailador::App is Bailador::Route {
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
     has Bailador::Sessions $!sessions;
     has Bailador::Configuration $.config = Bailador::Configuration.new;
+    has Bailador::Commands $.commands = Bailador::Commands.new;
 
     method request  { $.context.request  }
     method response { $.context.response }

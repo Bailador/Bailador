@@ -5,6 +5,8 @@ use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
 
+app.config.mode = 'development';
+
 # simple cases
 get '/' => sub {
     q{
@@ -38,6 +40,13 @@ get '/hello/:name' => sub ($name) {
     "Hello $name!"
 };
 
+get '/info' => sub {
+    say %*ENV<P6SGI_CONTAINER>;
+    say %*ENV<P6SGI_CONTAINER>.WHAT;
+    say %*ENV<PERL6_PROGRAM_NAME>;
+    say %*ENV<PERL6_PROGRAM_NAME>.WHAT;
+}
+
 # regexes, as usual
 get /foo(.+)/ => sub ($x) {
     "regexes! I got $x"
@@ -63,4 +72,4 @@ get '/env' => sub {
 
 app.add_route: Bailador::Route::StaticFile.new: directory => $?FILE.IO.parent.child('public'), path => / (.*) /;
 
-app.get-psgi-app;
+baile();
