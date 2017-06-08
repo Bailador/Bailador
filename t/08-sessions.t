@@ -9,7 +9,7 @@ plan 5;
 
 get '/setsession' => sub {
     my $session = session;
-    $session<key> = 'value';
+    $session<key> = 'foobar';
     "with session";
 }
 
@@ -30,7 +30,7 @@ my $second-session-id;
 my $session-cookie-name;
 
 subtest {
-    plan 3;
+    plan 4;
 
     my $response = get-psgi-response('GET', '/setsession');
     is $response[0], 200, 'New session HTTP status 200';
@@ -42,18 +42,20 @@ subtest {
     ($session-cookie-name, $value) = $cookie.trim.split(/\s*\=\s*/, 2);
     $first-session-id = $value.split(/<[;&]>/)[0];
     diag "SessionID: $first-session-id";
-    is($response[2], 'with session', 'New session Content');
+    is $session-cookie-name, 'bailador', 'cookie name';
+    is $response[2], 'with session', 'New session Content';
 
 }, 'Set inital session';
 
 subtest {
     plan 3;
+
     my $response = get-psgi-response('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
     is $response[0], 200, 'With session HTTP status 200';
     my %header = $response[1];
 
     ok %header<Set-Cookie>:exists, 'Session cookie available';
-    is($response[2], 'value', 'Data from last session available');
+    is $response[2], 'foobar', 'Data from last session available';
 
 }, 'Read session';
 
@@ -73,7 +75,7 @@ subtest {
     my %header = $response[1];
 
     ok %header<Set-Cookie>:exists, 'Session cookie available';
-    is($response[2], 'no value', 'No data from last session available');
+    is $response[2], 'no value', 'No data from last session available';
 
 }, 'Fake session ID';
 
