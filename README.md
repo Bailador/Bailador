@@ -470,3 +470,8 @@ In the planning phase, currently crowdfunding it: https://leanpub.com/bailador
 ## License
 
 MIT License
+
+## Related projects
+
+https://github.com/pnu/heroku-buildpack-rakudo
+

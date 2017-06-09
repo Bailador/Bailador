@@ -13,4 +13,4 @@ get post '/' => sub {
     }
 }
 
-app.get-psgi-app;
+baile();
