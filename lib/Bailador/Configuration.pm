@@ -28,7 +28,15 @@ class Bailador::Configuration {
 
 
     method load-from-array(@args) {
-        for @*ARGS -> ($k, $v) { self.set($k, $v); }
+        for @*ARGS -> ($k, $v) {
+            self.set($k, $v);
+        }
+    }
+
+    method load-from-hash(%config) {
+        for %config.kv -> $k, $v {
+            self.set($k, $v);
+        }
     }
 
     method load-from-env() {
@@ -52,24 +60,13 @@ class Bailador::Configuration {
             try {
                 my $yaml = slurp $.config_file;
                 my %config = load-yaml($yaml);
-                for %config.kv -> $k, $v {
-                    given $k {
-                        when 'mode' {
-                            $.mode = $v;
-                        }
-                        when 'port' {
-                            $.port = $v;
-                        }
-                        when 'host' {
-                            $.host = $v;
-                        }
-                    }
-                }
+                self.load-from-hash(%config);
                 return;
             }
             warn 'Error while loading the YAML config file.';
             warn 'Bailador will use his default configuration.';
         }
+    }
 
     multi method set($key, $value) {
         if self.^can($key) {
