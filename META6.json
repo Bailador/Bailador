@@ -11,6 +11,7 @@
         "File::Temp",
         "HTTP::Easy",
         "HTTP::MultiPartParser",
+        "Path::Iterator",
         "Template::Mojo",
         "Template::Mustache",
         "URI",
