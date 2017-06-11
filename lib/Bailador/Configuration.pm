@@ -1,6 +1,11 @@
 use v6;
 
+use YAMLish;
+
 class Bailador::Configuration {
+    ## CONFIGURATION FILE
+    has Str $.config_file = 'settings.yaml';
+
     ## USER DEFINED STUFF
     has %.user-defined-stuff;
 
@@ -23,8 +28,17 @@ class Bailador::Configuration {
 
 
     method load-from-array(@args) {
-        for @*ARGS -> ($k, $v) { self.set($k, $v); }
+        for @*ARGS -> ($k, $v) {
+            self.set($k, $v);
+        }
     }
+
+    method load-from-hash(%config) {
+        for %config.kv -> $k, $v {
+            self.set($k, $v);
+        }
+    }
+
     method load-from-env() {
         if %*ENV<BAILADOR> {
             my @pairs = %*ENV<BAILADOR>.split(',');
@@ -33,6 +47,24 @@ class Bailador::Configuration {
                 say "key: $k value: $v";
                 set($k, $v);
             }
+        }
+    }
+
+    method load-from-file() {
+        unless $.config_file.IO.e {
+            warn "The configuration file wasn't found.";
+            warn "Bailador will use his default configuration.";
+        }
+
+        if $.config_file.IO.extension ~~ 'yaml' | 'yml' {
+            try {
+                my $yaml = slurp $.config_file;
+                my %config = load-yaml($yaml);
+                self.load-from-hash(%config);
+                return;
+            }
+            warn 'Error while loading the YAML config file.';
+            warn 'Bailador will use his default configuration.';
         }
     }
 
@@ -60,6 +92,7 @@ class Bailador::Configuration {
         say "FALLBACK", $name;
         self.get($name);
     }
+
     multi method FALLBACK(Str $name, $value) {
         say "FALLBACK", $name, "value", $value;
         self.set($name, $value);

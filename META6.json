@@ -14,7 +14,8 @@
         "Path::Iterator",
         "Template::Mojo",
         "Template::Mustache",
-        "URI"
+        "URI",
+        "YAMLish"
     ],
     "tags"        : [ "Web", "HTTP", "Net" ],
     "license"     : "MIT",
