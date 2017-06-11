@@ -44,8 +44,7 @@ class Bailador::Configuration {
             my @pairs = %*ENV<BAILADOR>.split(',');
             for @pairs -> $p {
                 my ( $k, $v ) = $p . split(/<[:=]>/);
-                say "key: $k value: $v";
-                set($k, $v);
+                self.set($k, $v);
             }
         }
     }
@@ -70,7 +69,9 @@ class Bailador::Configuration {
 
     multi method set($key, $value) {
         if self.^can($key) {
-            self."$key"() = $value;
+            # I dont like this :-(
+            my $type = self."$key"().WHAT.perl;
+            self."$key"() = $value."$type"();
         } else {
             %.user-defined-stuff{$key} = $value;
         }
@@ -82,19 +83,17 @@ class Bailador::Configuration {
 
     method get(Str $key) {
         if self.^can($key) {
-            self."$key"(),
+            self."$key"();
         } else {
             %.user-defined-stuff{$key};
         }
     }
 
     multi method FALLBACK(Str $name) {
-        say "FALLBACK", $name;
         self.get($name);
     }
 
     multi method FALLBACK(Str $name, $value) {
-        say "FALLBACK", $name, "value", $value;
         self.set($name, $value);
     }
 }

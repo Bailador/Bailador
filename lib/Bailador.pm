@@ -9,8 +9,10 @@ unit module Bailador;
 my $app;
 
 multi sub app {
-    $app = Bailador::App.new unless $app;
-    $app.config.load-from-env();
+    unless $app {
+        $app = Bailador::App.new;
+        $app.config.load-from-env();
+    }
     return $app;
 }
 
