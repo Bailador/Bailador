@@ -69,8 +69,7 @@ class Bailador::Configuration {
 
     multi method set($key, $value) {
         if self.^can($key) {
-            # I dont like this :-(
-            my $type = self."$key"().WHAT.perl;
+            my $type = self."$key"().^name;
             self."$key"() = $value."$type"();
         } else {
             %.user-defined-stuff{$key} = $value;

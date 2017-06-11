@@ -106,7 +106,7 @@ sub redirect(Str $location) is export {
 
 # for Dancer2 compatibility
 sub set(Str $key, $value) is export {
-    app.config."$key"() = $value;
+    app.config.set($key, $value);
 }
 
 sub config() is export {
