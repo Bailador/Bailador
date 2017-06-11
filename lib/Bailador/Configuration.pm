@@ -4,7 +4,7 @@ use YAMLish;
 
 class Bailador::Configuration {
     ## CONFIGURATION FILE
-    has Str $.config_file = 'settings.yaml';
+    has Str $.config-file = 'settings.yaml';
 
     ## USER DEFINED STUFF
     has %.user-defined-stuff;
@@ -50,14 +50,14 @@ class Bailador::Configuration {
     }
 
     method load-from-file() {
-        unless $.config_file.IO.e {
+        unless $.config-file.IO.e {
             warn "The configuration file wasn't found.";
             warn "Bailador will use his default configuration.";
         }
 
-        if $.config_file.IO.extension ~~ 'yaml' | 'yml' {
+        if $.config-file.IO.extension ~~ 'yaml' | 'yml' {
             try {
-                my $yaml = slurp $.config_file;
+                my $yaml = slurp $.config-file;
                 my %config = load-yaml($yaml);
                 self.load-from-hash(%config);
                 return;
