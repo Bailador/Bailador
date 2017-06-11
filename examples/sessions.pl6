@@ -4,8 +4,8 @@ use v6;
 use lib 'lib';
 use Bailador;
 
-sessions-config.cookie-expiration = 60 * 5; # 5minutes
-sessions-config.hmac-key = 'my-key';
+config.cookie-expiration = 60 * 5; # 5minutes
+config.hmac-key = 'my-key';
 
 get '/' => sub {
     my $session = session;

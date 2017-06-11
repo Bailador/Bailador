@@ -310,7 +310,7 @@ class MyWebApp is Bailador::App {
     submethod BUILD(|) {
         my $rootdir = $?FILE.IO.parent.parent;
         self.location = $rootdir.child("views").dirname;
-        self.sessions-config.cookie-expiration = 180;
+        self.config.cookie-expiration = 180;
 
         self.get:  '/login' => sub { self.session-delete; self.template: 'login.tt' };
         self.post: '/login' => self.curry: 'login-post';
