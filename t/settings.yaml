@@ -1,0 +1,6 @@
+mode: 'development'
+host: 'localhost'
+port: 8080
+
+cookie-name: 'Bailador-cookie'
+cookie-expiration: 2800
