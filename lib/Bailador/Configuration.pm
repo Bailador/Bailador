@@ -4,7 +4,7 @@ use YAMLish;
 
 class Bailador::Configuration {
     ## CONFIGURATION FILE
-    has Str $.config-file = 'settings.yaml';
+    has Str $.config-file is rw = 'settings.yaml';
 
     ## USER DEFINED STUFF
     has %.user-defined-stuff;
