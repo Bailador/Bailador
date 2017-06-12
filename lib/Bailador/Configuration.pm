@@ -51,8 +51,9 @@ class Bailador::Configuration {
 
     method load-from-file() {
         unless $.config-file.IO.e {
-            warn "The configuration file wasn't found.";
-            warn "Bailador will use his default configuration.";
+            # warn "The configuration file wasn't found.";
+            # warn "Bailador will use his default configuration.";
+            return
         }
 
         if $.config-file.IO.extension ~~ 'yaml' | 'yml' {
