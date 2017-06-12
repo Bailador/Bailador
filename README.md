@@ -15,6 +15,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
     - [bailador](#bailador)
     - [Crust](#crust)
     - [Baile](#baile)
+- [Configuration](#configuration)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
     - [Classical Approach](#classical-approach)
@@ -167,6 +168,20 @@ baile;
 ```
 
 This will install the Bailador server in default port 3000.
+
+## Configuration
+
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file.
+
+For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your projet directory a `settings.yaml` file :
+
+```yaml
+# settings.yaml
+mode: "development"
+port: 8080
+```
+
+Bailador will now use the paremeters defined in your file.
 
 ## How to Write Web Apps
 
@@ -474,4 +489,3 @@ MIT License
 ## Related projects
 
 https://github.com/pnu/heroku-buildpack-rakudo
-
