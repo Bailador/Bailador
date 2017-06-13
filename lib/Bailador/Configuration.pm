@@ -29,7 +29,7 @@ class Bailador::Configuration {
     has Str $.backend is rw           = "Bailador::Sessions::Store::Memory";
 
     method load-from-array(@args) {
-        for @*ARGS -> ($k, $v) {
+        for @args -> ($k, $v) {
             self.set($k, $v);
         }
     }
