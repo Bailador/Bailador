@@ -22,7 +22,7 @@ class Bailador::App is Bailador::Route {
     method request  { $.context.request  }
     method response { $.context.response }
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
-        my $content = $!renderer.render("$.location/views/$tmpl", |@params, |%params);
+        my $content = $!renderer.render("$.location/" ~ self.config.views ~ "/$tmpl", |@params, |%params);
 
         my $use-this-layout = $layout // $.config.layout;
         if $use-this-layout {
