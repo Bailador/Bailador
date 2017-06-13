@@ -7,11 +7,9 @@ use Bailador;
 Bailador::import;
 use Bailador::Test;
 
-plan 7;
+plan 8;
 
-get '/' => sub {
-	template 'index.tt';
-}
+get '/' => sub { template 'index.tt'; }
 
 
 ## Default configuration
