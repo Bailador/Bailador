@@ -118,21 +118,6 @@ sub add-command-ns(Str:D $namespace) is export {
     app.commands.add-ns($namespace);
 }
 
-multi sub baile() is export {
-    my $cmd;
-    if @*ARGS.elems > 0 {
-        $cmd = app.commands.get-command(@*ARGS.shift);
-        app.config.load-from-args(@*ARGS),
-    } elsif app.config.command-detection() {
-        $cmd = app.commands.detect-command();
-    } else {
-        die 'can not detect command';
-    }
-    $cmd.run(app => app() );
-}
-
-multi sub baile(Str :$command!, *@args) is export {
-    my $cmd = app.commands.get-command($command);
-    app.config.load-from-args(@args),
-    $cmd.run(app => app() );
+sub baile(*%param, *@param) is export {
+    app.baile(|%param, |@param);
 }

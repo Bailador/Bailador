@@ -79,6 +79,29 @@ class Bailador::App is Bailador::Route {
         self!sessions.store(self.response, self.request.env);
     }
 
+    multi method baile() {
+        my $command;
+        my @params;
+        if @*ARGS.elems > 0 {
+            $command = @*ARGS.shift;
+            @params =  @*ARGS;
+        } elsif $.config.default-command() {
+            $command = $.config.default-command();
+        } elsif $.config.command-detection() {
+            $command = $.commands.detect-command();
+        } else {
+            die 'can not detect command';
+        }
+        say "baile with $command";
+        self.baile($command, |@params);
+    }
+
+    multi method baile(Str $command, *@args) {
+        my $cmd = $.commands.get-command($command);
+        $.config.load-from-args(@args),
+        return $cmd.run(app => self);
+    }
+
     method get-psgi-app {
         # quotes from https://github.com/zostay/P6SGI
         # draft 0.7

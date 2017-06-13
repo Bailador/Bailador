@@ -18,6 +18,8 @@ class Bailador::Configuration {
     ## Commands
     has Bool $.command-detection is rw = True;
     has Str  $.default-command is rw;
+    has Str  $.watch-command is rw = 'easy';
+    has @.watch-list is rw;
 
     ## SESSION RELATED STUFF
     has Str $.cookie-name is rw       = 'bailador';
@@ -25,7 +27,6 @@ class Bailador::Configuration {
     has Int $.cookie-expiration is rw = 3600;
     has Str $.hmac-key is rw          = 'changeme';
     has Str $.backend is rw           = "Bailador::Sessions::Store::Memory";
-
 
     method load-from-array(@args) {
         for @*ARGS -> ($k, $v) {
@@ -71,7 +72,11 @@ class Bailador::Configuration {
     multi method set($key, $value) {
         if self.^can($key) {
             my $type = self."$key"().^name;
-            self."$key"() = $value."$type"();
+            if $type eq 'Array' {
+                self."$key"().push($value);
+            } else {
+                self."$key"() = $value."$type"();
+            }
         } else {
             %.user-defined-stuff{$key} = $value;
         }

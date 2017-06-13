@@ -69,14 +69,14 @@ multi sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :$http_
 
 multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
     my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
-    my $psgi-app = $app.get-psgi-app(),
+    my $psgi-app = $app.baile('p6w');
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
 
 multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
     my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
-    my $psgi-app = get-psgi-app();
+    my $psgi-app = baile('p6w');
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
