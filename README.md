@@ -397,7 +397,12 @@ Where Template::Mojo is the default engine but if you want to switch to Template
 It is possible to user other template engines as well.
 Therefore you need to create a class that implements the role Bailador::Template. Its basically just required to implement the render method.
 
-The template files should be placed in a folder named "views" which is located in the same directory as your application.pl file. When you call the subroutine
+The template files should be placed by default in a folder named "views" which is located in the same directory as your application.pl file. If you want to override this, you just have to change the  `views` settings, and choose you own directory :
+```yaml
+views: "templates"
+```
+
+When you call the subroutine
 
     template 'template.tt', $name, $something;
 
