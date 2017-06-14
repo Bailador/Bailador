@@ -92,7 +92,6 @@ class Bailador::App is Bailador::Route {
         } else {
             die 'can not detect command';
         }
-        say "baile with $command";
         self.baile($command, |@params);
     }
 

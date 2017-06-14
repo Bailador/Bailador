@@ -18,15 +18,12 @@ class Bailador::Command::watch does Bailador::Command {
 
         my $param = %*ENV<BAILADOR>;
         $param ~= ',default-command:' ~ $watch-command;
-        say $param;
         %*ENV<BAILADOR> = $param;
 
 
         my @watchlist = $config.watch-list;
         die 'nothing to watch, empty watch-list' unless @watchlist;
-        say @watchlist;
-        my $p         = bootup-app();
-        say $p;
+        my $p = bootup-app();
         react {
             whenever watch-recursive(@watchlist.grep: *.IO.e) -> $e {
                 if $e.path() !~~ /\.sw.$/ and $e.path() !~~ /\~$/ {
@@ -36,13 +33,10 @@ class Bailador::Command::watch does Bailador::Command {
                 }
             }
         }
-        say "react done";
     }
 
     my sub bootup-app() {
         # TODO take care about $*REPO
-        say $*EXECUTABLE;
-        say $*PROGRAM;
         my Proc::Async $p .= new($*EXECUTABLE.Str, "-Ilib", $*PROGRAM.Str);
         $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
         $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
