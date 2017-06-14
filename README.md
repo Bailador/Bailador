@@ -111,8 +111,8 @@ For more examples, please see the [examples](examples) folder.
 
 ### Crust
 
-When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`.
+When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Allways use `baile()` in the end of your app, because in the default configuraton it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
 
 #### Example
 
@@ -126,7 +126,7 @@ get '/' => sub {
     "hello world"
 }
 
-app.to-psgi-app;
+baile();
 ```
 
 and then type this in your shell:
