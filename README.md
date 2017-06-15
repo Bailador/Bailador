@@ -83,7 +83,7 @@ prove6 -l
 ```
 or
 ```
-prove -e 'prove6 -Ilib' t
+prove -e 'perl6 -Ilib' t
 ```
 
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
