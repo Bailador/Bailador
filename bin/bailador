@@ -41,6 +41,6 @@ multi sub MAIN('version') {
 	say "Bailador " ~ $version;
 }
 
-multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin') {
-    bootup-file($app, $w);
+multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
+    bootup-file($app, $w, $config);
 }

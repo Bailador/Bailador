@@ -140,7 +140,7 @@ and then type this in your shell:
 
     bailador bin/your-bailador-app.p6
 
-    bailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
 
 #### `--w`
 
@@ -150,6 +150,25 @@ will watch `lib` and `bin` directories.
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
 
     bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+
+#### `--config`
+
+Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
+Currently available parameters:
+
+* mode:MODE         (defaults to 'production')
+* port:PORT         (defaults to 3000)
+* host:HOST         (defaults to 127.0.0.1)
+* layout            (defaults to Any)
+* cookie-name       (defaults to 'bailador')
+* cookie-path       (defaults to = '/)
+* cookie-expiration (defaults to 3600)
+* hmac-key          (defaults to 'changeme')
+* backend           (defaults to "Bailador::Sessions::Store::Memory")
+
+```
+    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
+```
 
 
 ### Baile
