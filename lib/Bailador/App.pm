@@ -81,7 +81,6 @@ class Bailador::App is Bailador::Route {
 
     multi method baile() {
         my $command;
-        my @params;
         if $.config.default-command() {
             $command = $.config.default-command();
         } elsif $.config.command-detection() {
@@ -89,8 +88,7 @@ class Bailador::App is Bailador::Route {
         } else {
             die 'can not detect command';
         }
-        say "baile with $command";
-        self.baile($command, |@params);
+        self.baile($command);
     }
 
     multi method baile(Str $command, *@args) {

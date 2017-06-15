@@ -111,8 +111,8 @@ For more examples, please see the [examples](examples) folder.
 
 ### Crust
 
-When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`.
+When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Allways use `baile()` in the end of your app, because in the default configuraton it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
 
 #### Example
 
@@ -126,7 +126,7 @@ get '/' => sub {
     "hello world"
 }
 
-app.to-psgi-app;
+baile();
 ```
 
 and then type this in your shell:
@@ -140,7 +140,7 @@ and then type this in your shell:
 
     bailador bin/your-bailador-app.p6
 
-    bailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
 
 #### `--w`
 
@@ -150,6 +150,25 @@ will watch `lib` and `bin` directories.
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
 
     bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+
+#### `--config`
+
+Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
+Currently available parameters:
+
+* mode:MODE         (defaults to 'production')
+* port:PORT         (defaults to 3000)
+* host:HOST         (defaults to 127.0.0.1)
+* layout            (defaults to Any)
+* cookie-name       (defaults to 'bailador')
+* cookie-path       (defaults to = '/)
+* cookie-expiration (defaults to 3600)
+* hmac-key          (defaults to 'changeme')
+* backend           (defaults to "Bailador::Sessions::Store::Memory")
+
+```
+    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
+```
 
 
 ### Baile

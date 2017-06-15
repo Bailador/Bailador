@@ -54,14 +54,14 @@ q{
     return %skeleton;
 }
 
-my sub bootup-file (Str $app, Str $w) is export {
+my sub bootup-file (Str $app, Str $w, Str $config?) is export {
     say "Attempting to boot up the app";
 
     my @watchlist = $w.split: /<!after \\> \,/;
     s/\\\,/,/ for @watchlist;
 
-    my $param = %*ENV<BAILADOR>;
-    $param ~= 'default-command:watch,watch-command:easy';
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:watch,watch-command:easy';
     for @watchlist -> $w {
         $param ~= ",watch-list:" ~ $w;
     }
