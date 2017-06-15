@@ -83,7 +83,7 @@ prove6 -l
 ```
 or
 ```
-prove -e 'prove6 -Ilib' t
+prove -e 'perl6 -Ilib' t
 ```
 
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
@@ -173,7 +173,7 @@ This will install the Bailador server in default port 3000.
 
 Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file.
 
-For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your projet directory a `settings.yaml` file :
+For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your project directory a `settings.yaml` file :
 
 ```yaml
 # settings.yaml
