@@ -1,5 +1,4 @@
 use v6.c;
-use File::Find;
 
 unit module Bailador::CLI;
 
@@ -27,7 +26,7 @@ get '/' => sub {
     template 'index.tt', { version => $version }
 }
 
-app.to-psgi-app();
+baile();
 };
 
 
@@ -55,37 +54,33 @@ q{
     return %skeleton;
 }
 
-my sub bootup-app ($app) is export {
-    my $msg     = "Entering the dance floor in reload mode: http://0.0.0.0:3000";
-    my $command = "use Bailador; start-p6w-app(3000, '0.0.0.0', EVALFILE('$app'), '$msg')";
-    my Proc::Async $p .= new('perl6', "-Ilib", "-e", $command);
+my sub bootup-file (Str $app, Str $w, Str $config?) is export {
+    say "Attempting to boot up the app";
+
+    my @watchlist = $w.split: /<!after \\> \,/;
+    s/\\\,/,/ for @watchlist;
+
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:watch,watch-command:easy';
+    for @watchlist -> $w {
+        $param ~= ",watch-list:" ~ $w;
+    }
+    %*ENV<BAILADOR> = $param;
+
+    my @includes = repo-to-includes();
+    my Proc::Async $p .= new($*EXECUTABLE, |@includes, $app);
     $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
     $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
-    $p.start;
-    return $p;
+    await $p.start;
 }
 
-my sub watch-recursive(@dirs) is export {
-    supply {
-        my sub watch-it($p) {
-            if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
-                #say "Skipping .precomp dir [$p]";
-                return;
-            }
-            say "Starting watch on `$p`";
-            whenever IO::Notification.watch-path($p) -> $e {
-                if $e.event ~~ FileRenamed && $e.path.IO ~~ :d {
-                    watch-it($_) for find-dirs $e.path;
-                }
-                emit($e);
-            }
+sub repo-to-includes is export {
+    my @includes;
+    for $*REPO.repo-chain -> $repo {
+        if $repo ~~ CompUnit::Repository::FileSystem {
+            @includes.push: '-I' ~ $repo.prefix;
         }
-        watch-it(~$_) for |@dirs.map: { find-dirs $_ };
     }
-}
-
-my sub find-dirs (Str:D $p) {
-    state $seen = {};
-    return slip ($p.IO, slip find :dir($p), :type<dir>).grep: { !$seen{$_}++ };
+    return @includes;
 }
 

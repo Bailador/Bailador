@@ -15,6 +15,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
     - [bailador](#bailador)
     - [Crust](#crust)
     - [Baile](#baile)
+- [Configuration](#configuration)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
     - [Classical Approach](#classical-approach)
@@ -31,7 +32,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`config()`](#config)
             - [`set(Str $key, $value)`](#setstr-key-value)
             - [`baile()`](#baile)
-            - [`get-psgi-app`](#get-psgi-app)
         - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
             - [`content_type(Str $type)`](#content_typestr-type)
             - [`request()`](#request)
@@ -82,7 +82,7 @@ prove6 -l
 ```
 or
 ```
-prove -e 'prove6 -Ilib' t
+prove -e 'perl6 -Ilib' t
 ```
 
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
@@ -110,8 +110,8 @@ For more examples, please see the [examples](examples) folder.
 
 ### Crust
 
-When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and run best on top of
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Before you invoke your Bailador App make sure the file returns a regular P6W app. You can do this with `app.to-psgi-app()`.
+When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Allways use `baile()` in the end of your app, because in the default configuraton it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
 
 #### Example
 
@@ -125,7 +125,7 @@ get '/' => sub {
     "hello world"
 }
 
-app.to-psgi-app;
+baile();
 ```
 
 and then type this in your shell:
@@ -139,7 +139,7 @@ and then type this in your shell:
 
     bailador bin/your-bailador-app.p6
 
-    bailador --w=lib,bin,views,public   bin/your-bailador-app.p6
+    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
 
 #### `--w`
 
@@ -149,6 +149,25 @@ will watch `lib` and `bin` directories.
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
 
     bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
+
+#### `--config`
+
+Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
+Currently available parameters:
+
+* mode:MODE         (defaults to 'production')
+* port:PORT         (defaults to 3000)
+* host:HOST         (defaults to 127.0.0.1)
+* layout            (defaults to Any)
+* cookie-name       (defaults to 'bailador')
+* cookie-path       (defaults to = '/)
+* cookie-expiration (defaults to 3600)
+* hmac-key          (defaults to 'changeme')
+* backend           (defaults to "Bailador::Sessions::Store::Memory")
+
+```
+    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
+```
 
 
 ### Baile
@@ -167,6 +186,20 @@ baile;
 ```
 
 This will install the Bailador server in default port 3000.
+
+## Configuration
+
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file.
+
+For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your project directory a `settings.yaml` file :
+
+```yaml
+# settings.yaml
+mode: "development"
+port: 8080
+```
+
+Bailador will now use the paremeters defined in your file.
 
 ## How to Write Web Apps
 
@@ -260,13 +293,11 @@ This is a Dancer2 like way to set values to the config.
     config.foo = True;
 ```
 
-##### `baile( [$port=3000, $host=0.0.0.0] )`
+##### `baile()`
+
+or `baile($command)`
 
 Let's enter the dance floor. ¡Olé!
-
-##### `get-psgi-app`
-
-Returns a PSGI / P6SGI / P6W app which should be able to run on different Servers.
 
 #### Subroutines that sould only be used inside the Code block of a Route
 
@@ -310,7 +341,7 @@ class MyWebApp is Bailador::App {
     submethod BUILD(|) {
         my $rootdir = $?FILE.IO.parent.parent;
         self.location = $rootdir.child("views").dirname;
-        self.sessions-config.cookie-expiration = 180;
+        self.config.cookie-expiration = 180;
 
         self.get:  '/login' => sub { self.session-delete; self.template: 'login.tt' };
         self.post: '/login' => self.curry: 'login-post';
@@ -382,7 +413,12 @@ Where Template::Mojo is the default engine but if you want to switch to Template
 It is possible to user other template engines as well.
 Therefore you need to create a class that implements the role Bailador::Template. Its basically just required to implement the render method.
 
-The template files should be placed in a folder named "views" which is located in the same directory as your application.pl file. When you call the subroutine
+The template files should be placed by default in a folder named "views" which is located in the same directory as your application.pl file. If you want to override this, you just have to change the  `views` settings, and choose you own directory :
+```yaml
+views: "templates"
+```
+
+When you call the subroutine
 
     template 'template.tt', $name, $something;
 
@@ -474,4 +510,3 @@ MIT License
 ## Related projects
 
 https://github.com/pnu/heroku-buildpack-rakudo
-
