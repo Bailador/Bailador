@@ -1,4 +1,10 @@
-0.0.5
+0.0.5 2017.06.16
+    - Ticket #158 - passing perl6 include lib directory downstream
+    - Ticket #148 - bailador command line tool can read out --config options
+    - Ticket #142 - views directory is now configurable
+    - Bailador can now use a settings yaml file
+    - Introduced Bailador::Comamnd::watch which can be used via the bailador comand line tool
+    - Including some other smaller documentation changes, bugfixes and additions
 
 0.0.4 2017.06.10
     First release to CPAN
