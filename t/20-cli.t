@@ -4,7 +4,7 @@ use File::Temp;
 use lib 'lib';
 use Test;
 
-plan 9;
+plan 3;
 
 my $dir = tempdir();
 #diag $dir;
@@ -13,17 +13,19 @@ my $git_dir = $*CWD;
 chdir($dir);
 #diag $*CWD;
 
-# Show Usage when no parameter is supplied.
-{
+subtest {
+    plan 2;
+
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err;
     is $p.out.get, 'Usage:';
     is $p.err.get, Nil;
     #diag $p.out.slurp: :close;
-}
+}, 'Show Usage when no parameter is supplied.';
 
 
-# Create application
-{
+subtest {
+    plan 5;
+
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
@@ -40,10 +42,11 @@ app.pl
 
     my @views_dir = dir('App-Name/views');
     is-deeply @views_dir.map(*.Str), ('App-Name/views/index.tt',);
-}
+}, 'Create application';
 
-# Won't overwrite existing directory
-{
+subtest {
+    plan 2;
+
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
@@ -51,7 +54,7 @@ App-Name already exists. Exiting.
 };
     my $err = $p.err.slurp: :close;
     is $err, ''; # TODO Why is this the empty string and above it is Nil?
-}
+}, 'Will not overwrite existing directory';
 
 
 # vim: expandtab
