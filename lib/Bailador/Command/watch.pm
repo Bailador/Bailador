@@ -1,6 +1,7 @@
 use v6;
 
 use Bailador::Command;
+use Bailador::CLI;
 use File::Find;
 
 class Bailador::Command::watch does Bailador::Command {
@@ -36,8 +37,8 @@ class Bailador::Command::watch does Bailador::Command {
     }
 
     my sub bootup-app() {
-        # TODO take care about $*REPO
-        my Proc::Async $p .= new($*EXECUTABLE.Str, "-Ilib", $*PROGRAM.Str);
+        my @includes = repo-to-includes();
+        my Proc::Async $p .= new($*EXECUTABLE.Str, |@includes, $*PROGRAM.Str);
         $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
         $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
         $p.start;

@@ -67,11 +67,20 @@ my sub bootup-file (Str $app, Str $w, Str $config?) is export {
     }
     %*ENV<BAILADOR> = $param;
 
-    # TODO take care about $*REPO
-    my Proc::Async $p .= new($*EXECUTABLE, "-Ilib", $app);
+    my @includes = repo-to-includes();
+    my Proc::Async $p .= new($*EXECUTABLE, |@includes, $app);
     $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
     $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
     await $p.start;
 }
 
+sub repo-to-includes is export {
+    my @includes;
+    for $*REPO.repo-chain -> $repo {
+        if $repo ~~ CompUnit::Repository::FileSystem {
+            @includes.push: '-I' ~ $repo.prefix;
+        }
+    }
+    return @includes;
+}
 
