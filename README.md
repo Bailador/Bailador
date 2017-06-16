@@ -32,7 +32,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`config()`](#config)
             - [`set(Str $key, $value)`](#setstr-key-value)
             - [`baile()`](#baile)
-            - [`get-psgi-app`](#get-psgi-app)
         - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
             - [`content_type(Str $type)`](#content_typestr-type)
             - [`request()`](#request)
@@ -294,13 +293,11 @@ This is a Dancer2 like way to set values to the config.
     config.foo = True;
 ```
 
-##### `baile( [$port=3000, $host=0.0.0.0] )`
+##### `baile()`
+
+or `baile($command)`
 
 Let's enter the dance floor. ¡Olé!
-
-##### `get-psgi-app`
-
-Returns a PSGI / P6SGI / P6W app which should be able to run on different Servers.
 
 #### Subroutines that sould only be used inside the Code block of a Route
 
