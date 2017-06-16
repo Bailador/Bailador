@@ -54,19 +54,30 @@ q{
     return %skeleton;
 }
 
-my sub bootup-file (Str $app, Str $w, Str $config?) is export {
-    say "Attempting to boot up the app";
+my multi sub bootup-file ('easy' ,Str $app, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param    ~= ',default-command:easy';
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
+my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
     my @watchlist = $w.split: /<!after \\> \,/;
     s/\\\,/,/ for @watchlist;
 
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+
     $param ~= ',default-command:watch,watch-command:easy';
     for @watchlist -> $w {
         $param ~= ",watch-list:" ~ $w;
     }
     %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
 
+multi sub bootup-file (Str $app) {
+    say "Attempting to boot up the app";
     my @includes = repo-to-includes();
     my Proc::Async $p .= new($*EXECUTABLE, |@includes, $app);
     $p.stdout.tap: -> $v { $*OUT.print: "# $v" };

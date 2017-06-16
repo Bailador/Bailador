@@ -15,7 +15,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
     - [bailador](#bailador)
     - [Crust](#crust)
     - [Baile](#baile)
-- [Configuration](#configuration)
 - [How to Write Web Apps](#how-to-write-web-apps)
     - [Mixing both Approaches](#mixing-both-approaches)
     - [Classical Approach](#classical-approach)
@@ -49,6 +48,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Templates](#templates)
     - [Error Templates](#error-templates)
 - [Sessions](#sessions)
+- [Configuration](#configuration)
 - [Bailador-based applications](#bailador-based-applications)
 - [Articles about Bailador](#articles-about-bailador)
 - [License](#license)
@@ -134,14 +134,27 @@ and then type this in your shell:
 
 ### bailador
 
-`bailador` will watch the source code of your Bailador app for changes and automatically restart the app.
+`bailador` can be used to start your your bailador web application. The command line tool converts the command line switches (e.g. `--config=port:8080`) to environment variables (`%*ENV`). There are different commands for bailador.
 
+#### `--config`
 
-    bailador bin/your-bailador-app.p6
+Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
+For details of the available configuration parametes check the [Configuration](#configuration) section of the documentation.
+Currently available parameters:
 
-    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
+```
+    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
+```
 
-#### `--w`
+#### `bailador easy`
+
+The command easy starts the the web application with the HTTP::Easy::PSGI backend.
+
+#### `bailador watch`
+
+The command watch watches the source code of your Bailador app for changes and automatically restart the app.
+
+##### `--w`
 
 Takes comma-separated list of directories to watch. By default,
 will watch `lib` and `bin` directories.
@@ -150,24 +163,7 @@ If you have to watch a directory with a comma in its name, prefix it with a back
 
     bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
 
-#### `--config`
-
-Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
-Currently available parameters:
-
-* mode:MODE         (defaults to 'production')
-* port:PORT         (defaults to 3000)
-* host:HOST         (defaults to 127.0.0.1)
-* layout            (defaults to Any)
-* cookie-name       (defaults to 'bailador')
-* cookie-path       (defaults to = '/)
-* cookie-expiration (defaults to 3600)
-* hmac-key          (defaults to 'changeme')
-* backend           (defaults to "Bailador::Sessions::Store::Memory")
-
-```
-    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
-```
+    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
 
 
 ### Baile
@@ -186,20 +182,6 @@ baile;
 ```
 
 This will install the Bailador server in default port 3000.
-
-## Configuration
-
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file.
-
-For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your project directory a `settings.yaml` file :
-
-```yaml
-# settings.yaml
-mode: "development"
-port: 8080
-```
-
-Bailador will now use the paremeters defined in your file.
 
 ## How to Write Web Apps
 
@@ -471,23 +453,58 @@ and set backend to this class name.
 
 ## Configuration
 
-Using the `BAILADOR` environment variable we can configure various aspects how Bailador will run.
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method. 
+
+```perl6
+# directly
+config.port      = 8080;
+config.hmack-key = 'xxxxxx';
+
+# or via set()
+config.set('port', 8080);
+
+# set works for custom values as well
+config.set('custom-key', 'value')
+config.set('database-username', 'ufobat')
+config.set('database-password', 'xxxxxx')
+
+```
+
+For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your project directory a `settings.yaml` file :
+
+```yaml
+# settings.yaml
+mode: "development"
+port: 8080
+```
+
+Bailador will now use the paremeters defined in your file.
+
+Using the `BAILADOR` environment variable is a comma seperated list of key-value pairs.
+
+```
+BAILADOR=mode:development,host:0.0.0.0,port:5000 perl6 examples/app.pl6
+```
+
 Currently available parameters:
 
-* mode:MODE         (defaults to 'production')
-* port:PORT         (defaults to 3000)
-* host:HOST         (defaults to 127.0.0.1)
-* layout            (defaults to Any)
+* config-file       (defaults to 'settings.yaml')
+* mode              (defaults to 'production')
+* port              (defaults to 3000)
+* host              (defaults to 127.0.0.1)
+* views
+* layout
+* command-detection (defaults to True)
+* default-command
+* watch-command     (defaults to 'easy')
+* watch-list
 * cookie-name       (defaults to 'bailador')
 * cookie-path       (defaults to = '/)
 * cookie-expiration (defaults to 3600)
 * hmac-key          (defaults to 'changeme')
 * backend           (defaults to "Bailador::Sessions::Store::Memory")
-
-```
-BAILADOR=debug,host:0.0.0.0,port:5000
-```
-
+* log-format        (defaults to '\d (\s) \m'
+* log-filter        (defautls to `( 'severity' => '>=warning')`)
 
 ## Bailador-based applications
 
