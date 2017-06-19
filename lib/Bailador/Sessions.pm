@@ -2,6 +2,7 @@ use v6;
 
 use Digest;
 use Digest::HMAC;
+use Log::Any;
 
 use Bailador::Configuration;
 use Bailador::Sessions::Store;
@@ -45,7 +46,7 @@ class Bailador::Sessions {
                     $session-id = $unchecked-session-id;
                 }
             }else{
-                note "Session ID HMAC mismatch - someone trying to guess session IDs";
+                Log::Any.warning("Session ID HMAC mismatch - someone trying to guess session IDs");
             }
         }
 
