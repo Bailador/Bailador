@@ -16,7 +16,7 @@ subtest {
     is-deeply %data<response>, [200, ["Content-Type" => "application/json"], ''], 'route GET /';
     is %data<err>, '';
     my %person := from-json $json_str;
-    is-deeply %person, { 
+    is-deeply %person, {
         name => 'Foo',
         id   => 42,
         courses => ['Perl', 'Web Development'],
