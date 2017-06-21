@@ -25,13 +25,14 @@ subtest {
 
 
 subtest {
-    plan 5;
+    plan 7;
 
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
+t/app.t
 views/index.tt
-app.pl
+bin/app.pl6
 };
     my $err = $p.err.slurp: :close;
     is $err, ''; # TODO Why is this the empty string and above it is Nil?
@@ -39,10 +40,16 @@ app.pl
     is-deeply @main_dir.map(*.Str), ('App-Name',);
 
     my @app_dir = dir('App-Name');
-    is-deeply @app_dir.map(*.Str).sort, ('App-Name/app.pl', 'App-Name/views');
+    is-deeply @app_dir.map(*.Str).sort, ('App-Name/bin', 'App-Name/t', 'App-Name/views');
 
     my @views_dir = dir('App-Name/views');
     is-deeply @views_dir.map(*.Str), ('App-Name/views/index.tt',);
+
+    my @bin_dir = dir('App-Name/bin/');
+    is-deeply @bin_dir.map(*.Str), ('App-Name/bin/app.pl6',);
+
+    my @t_dir = dir('App-Name/t');
+    is-deeply @t_dir.map(*.Str), ('App-Name/t/app.t',);
 }, 'Create application';
 
 subtest {

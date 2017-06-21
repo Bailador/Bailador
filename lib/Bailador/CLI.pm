@@ -15,12 +15,12 @@ sub usage(Str $msg?) is export {
 
 sub skeleton() is export {
     my %skeleton;
-%skeleton{'app.pl'} =
+%skeleton{'bin/app.pl6'} =
 q{use v6;
 use Bailador;
 Bailador::import();
 
-my $version = '0.01';
+my $version = '0.0.1';
 
 get '/' => sub {
     template 'index.tt', { version => $version }
@@ -29,6 +29,27 @@ get '/' => sub {
 baile();
 };
 
+%skeleton{'t/app.t'} =
+q{use v6;
+use Test;
+use Bailador::Test;
+
+plan 1;
+
+%*ENV<P6W_CONTAINER> = 'Bailador::Test';
+my $app = EVALFILE "bin/app.pl6";
+
+subtest {
+    plan 4;
+    my %data = run-psgi-request($app, 'GET', '/');
+    my $html = %data<response>[2];
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
+    is %data<err>, '';
+    like $html, rx:s/\<h1\>Bailador App\<\/h1\>/;
+    like $html, rx:s/Version 0\.01/;
+}, '/';
+};
 
 %skeleton{'views/index.tt'} =
 q{

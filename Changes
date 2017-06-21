@@ -1,5 +1,6 @@
 
-    - Add exampl/api.pl6 to demonstrate returning JSON.
+    - Add example/api.pl6 to demonstrate returning JSON.
+    - Add test to skeleton created by --new, move application to bin/.
 
 0.0.5 2017.06.16
     - Ticket #158 - passing perl6 include lib directory downstream
