@@ -1,3 +1,6 @@
+
+    - Add exampl/api.pl6 to demonstrate returning JSON.
+
 0.0.5 2017.06.16
     - Ticket #158 - passing perl6 include lib directory downstream
     - Ticket #148 - bailador command line tool can read out --config options
