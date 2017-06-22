@@ -30,16 +30,16 @@ class Bailador::Route {
         }).join("'/'");
     }
 
-    multi submethod new(Str @method, Regex $path, Callable $code, Str $path-str) {
+    multi submethod new(Str @method, Regex $path, Callable $code, Str $path-str = $path.perl) {
         self.bless(:@method, :$path, :$code, :$path-str);
     }
-    multi submethod new(Str $method, Regex $path, Callable $code, Str $path-str) {
+    multi submethod new(Str $method, Regex $path, Callable $code, Str $path-str = $path.perl) {
         my Str @methods = $method eq 'ANY'
         ?? <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>
         !! ($method);
         self.new(@methods, $path, $code, $path-str);
     }
-    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str) {
+    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str = $path) {
         my $regex = "/ ^ " ~ route_to_regex($path) ~ " [ \$ || <?before '/' > ] /";
         self.new($method, $regex.EVAL, $code, $path-str);
     }
