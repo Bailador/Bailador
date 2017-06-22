@@ -6,6 +6,7 @@ use Bailador::Exceptions;
 class Bailador::Route {
     subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }
     has HttpMethod @.method;
+    has Str $.path-str;        # string representation of route path
     has Regex $.path;
     has Callable $.code is rw;
     has Bailador::Route @.routes;
@@ -14,6 +15,7 @@ class Bailador::Route {
     method !get-prefix-route {
         return $!prefix-route
     }
+
     method !set-prefix-route(Bailador::Route $prefix-route) {
         $!prefix-route = $prefix-route;
     }
@@ -28,21 +30,21 @@ class Bailador::Route {
         }).join("'/'");
     }
 
-    multi submethod new(Str @method, Regex $path, Callable $code) {
-        self.bless(:@method, :$path, :$code);
+    multi submethod new(Str @method, Regex $path, Callable $code, Str $path-str) {
+        self.bless(:@method, :$path, :$code, :$path-str);
     }
-    multi submethod new(Str $method, Regex $path, Callable $code) {
+    multi submethod new(Str $method, Regex $path, Callable $code, Str $path-str) {
         my Str @methods = $method eq 'ANY'
         ?? <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>
         !! ($method);
-        self.new(@methods, $path, $code);
+        self.new(@methods, $path, $code, $path-str);
     }
-    multi submethod new(Str $method, Str $path, Callable $code) {
+    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str) {
         my $regex = "/ ^ " ~ route_to_regex($path) ~ " [ \$ || <?before '/' > ] /";
-        self.new($method, $regex.EVAL, $code);
+        self.new($method, $regex.EVAL, $code, $path-str);
     }
     multi submethod new($meth, Pair $route) {
-        self.new($meth, $route.key, $route.value);
+        self.new($meth, $route.key, $route.value, $route.key.perl);
     }
 
     method !match (Str $method, Str $path) {
