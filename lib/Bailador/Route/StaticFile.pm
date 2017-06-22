@@ -16,4 +16,8 @@ class Bailador::Route::StaticFile is Bailador::Route {
         return $file if $file.f;
         return False;
     }
+
+    method Str() {
+        "{self.^name} $.directory"
+    }
 }
