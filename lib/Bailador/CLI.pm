@@ -97,6 +97,13 @@ my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
     bootup-file($app);
 }
 
+my multi sub bootup-file ('routes', Str $app, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:routes';
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
 multi sub bootup-file (Str $app) {
     say "Attempting to boot up the app";
     my @includes = repo-to-includes();
