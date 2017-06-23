@@ -48,3 +48,7 @@ multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
 multi sub MAIN ('easy', Str $app, Str :$config) {
     bootup-file('easy', $app, $config);
 }
+
+multi sub MAIN ('baile', Str $app, Str :$config) {
+    bootup-file('baile', $app, $config);
+}
