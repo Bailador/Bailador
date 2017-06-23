@@ -82,6 +82,13 @@ my multi sub bootup-file ('easy' ,Str $app, Str $config?) is export {
     bootup-file($app);
 }
 
+my multi sub bootup-file ('baile' ,Str $app, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param    ~= ',default-command:baile';
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
 my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
     my @watchlist = $w.split: /<!after \\> \,/;

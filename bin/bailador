@@ -52,3 +52,7 @@ multi sub MAIN ('easy', Str $app, Str :$config) {
 multi sub MAIN ('routes', Str $app, Str :$config) {
     bootup-file('routes', $app, $config);
 }
+
+multi sub MAIN ('baile', Str $app, Str :$config) {
+    bootup-file('baile', $app, $config);
+}

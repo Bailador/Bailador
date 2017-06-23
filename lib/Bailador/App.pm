@@ -136,7 +136,7 @@ class Bailador::App is Bailador::Route {
         try {
             self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = $env<PATH_INFO>;
+            my $uri    = $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0];
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {
