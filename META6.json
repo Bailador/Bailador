@@ -25,7 +25,7 @@
     "File::Temp",
     "HTTP::Easy",
     "HTTP::MultiPartParser",
-    "HTTP::Request::Suply",
+    "HTTP::Request::Supply",
     "HTTP::Status",
     "Log::Any",
     "Path::Iterator",
