@@ -82,9 +82,9 @@ my multi sub bootup-file ('easy' ,Str $app, Str $config?) is export {
     bootup-file($app);
 }
 
-my multi sub bootup-file ('baile' ,Str $app, Str $config?) is export {
+my multi sub bootup-file ('ogre' ,Str $app, Str $config?) is export {
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
-    $param    ~= ',default-command:baile';
+    $param    ~= ',default-command:ogre';
     %*ENV<BAILADOR> = $param;
     bootup-file($app);
 }
