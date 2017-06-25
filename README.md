@@ -11,6 +11,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Contribution](#contribution)
 - [Versioning model](#Versioning-model)
 - [Example](#example)
+- [Skeleton](#skeleton)
 - [How to Start Apps](#how-to-start-apps)
     - [bailador](#bailador)
     - [Crust](#crust)
@@ -89,6 +90,15 @@ When the source code in the `dev` branch reaches a stable point and is ready to 
 ## Example
 
 For more examples, please see the [examples](examples) folder.
+
+## Skeleton
+
+Run
+
+```
+bailador --name App-Name new
+```
+to create a skeleton project.
 
 ## How to Start Apps
 
