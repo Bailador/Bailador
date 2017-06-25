@@ -18,8 +18,8 @@ subtest {
     plan 2;
 
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err;
-    is $p.out.get, 'Usage:';
-    is $p.err.get, Nil;
+    is $p.err.get, 'Usage:';
+    is $p.out.get, Nil;
     #diag $p.out.slurp: :close;
 }, 'Show Usage when no parameter is supplied.';
 
@@ -27,7 +27,7 @@ subtest {
 subtest {
     plan 7;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 t/app.t
@@ -55,7 +55,7 @@ bin/app.pl6
 subtest {
     plan 2;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--new=App-Name', :out, :err;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err;
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 App-Name already exists. Exiting.

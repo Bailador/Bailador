@@ -2,17 +2,6 @@ use v6.c;
 
 unit module Bailador::CLI;
 
-sub usage(Str $msg?) is export {
-    if $msg {
-        say $msg;
-        say '';
-    }
-    say "Usage:";
-    say "    $*PROGRAM-NAME --help               (shows this help)";
-    say "    $*PROGRAM-NAME --new Project-Name   (creates a directory called Project-Name with a skeleton application)";
-    exit();
-}
-
 sub skeleton() is export {
     my %skeleton;
 %skeleton{'bin/app.pl6'} =
