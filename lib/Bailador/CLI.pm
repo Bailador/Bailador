@@ -75,20 +75,6 @@ q{
     return %skeleton;
 }
 
-my multi sub bootup-file ('easy' ,Str $app, Str $config?) is export {
-    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
-    $param    ~= ',default-command:easy';
-    %*ENV<BAILADOR> = $param;
-    bootup-file($app);
-}
-
-my multi sub bootup-file ('ogre' ,Str $app, Str $config?) is export {
-    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
-    $param    ~= ',default-command:ogre';
-    %*ENV<BAILADOR> = $param;
-    bootup-file($app);
-}
-
 my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
     my @watchlist = $w.split: /<!after \\> \,/;
@@ -104,9 +90,9 @@ my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
     bootup-file($app);
 }
 
-my multi sub bootup-file ('routes', Str $app, Str $config?) is export {
+my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre routes>}, Str $app, Str $config?) is export {
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
-    $param ~= ',default-command:routes';
+    $param ~= ',default-command:' ~ $cmd;
     %*ENV<BAILADOR> = $param;
     bootup-file($app);
 }

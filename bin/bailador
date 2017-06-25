@@ -56,3 +56,7 @@ multi sub MAIN ('routes', Str $app, Str :$config) {
 multi sub MAIN ('ogre', Str $app, Str :$config) {
     bootup-file('ogre', $app, $config);
 }
+
+multi sub MAIN ('tiny', Str $app, Str :$config) {
+    bootup-file('tiny', $app, $config);
+}
