@@ -15,7 +15,7 @@ install:
   - cd %APPVEYOR_BUILD_FOLDER%
   - zef install Test::META
   - zef --force install Path::Iterator
-  - export AUTHOR_TESTING=1
+  - SET AUTHOR_TESTING=1
   - zef --verbose --depsonly install .
 
 test_script:
