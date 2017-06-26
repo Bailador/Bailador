@@ -11,12 +11,12 @@ class Bailador::Command::routes does Bailador::Command {
             my $path = $prefix ~ ($r.path-str //
                                   do { $r.can('Str').[0].package.perl ne 'Mu' && $r.Str() } //
                                   $r.^name);
-            if $r.routes > 0 { 
+            if $r.routes > 0 {
                 print-routes($path, $r.routes);
             } else {
-                # because we've concatenated .perl strings, 
+                # because we've concatenated .perl strings,
                 # get rid of the doubled "" in the middle
-                $path ~~ s:g/'""'//;    
+                $path ~~ s:g/'""'//;
                 for $r.method.list -> $method {
                     put join " ", $method.fmt("%10s"), $path;
                 }

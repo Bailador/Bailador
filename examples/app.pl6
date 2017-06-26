@@ -73,7 +73,7 @@ get '/env' => sub {
 app.add_route: Bailador::Route::StaticFile.new: directory => $?FILE.IO.parent.child('public'), path => / (.*) /;
 
 prefix '/media' => sub {
-    prefix '/video' => sub { 
+    prefix '/video' => sub {
         get '/dvds' => sub { 'DVDS' }
         get '/VHS'  => sub { 'VHS' }
     }
