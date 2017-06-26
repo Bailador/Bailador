@@ -14,7 +14,7 @@ install:
   - rakudobrew build zef
   - cd %APPVEYOR_BUILD_FOLDER%
   - zef install Test::META
-  - zef install Path::Iterator
+  - zef --force install Path::Iterator
   - export AUTHOR_TESTING=1
   - zef --verbose --depsonly install .
 
