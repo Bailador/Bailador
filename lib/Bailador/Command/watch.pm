@@ -45,22 +45,29 @@ class Bailador::Command::watch does Bailador::Command {
         return $p;
     }
 
-    my sub watch-recursive(@dirs) is export {
+    my sub watch-recursive(@elements) is export {
         supply {
-            my sub watch-it($p) {
-                if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
-                    #say "Skipping .precomp dir [$p]";
-                    return;
-                }
-                say "Starting watch on `$p`";
-                whenever IO::Notification.watch-path($p) -> $e {
-                    if $e.event ~~ FileRenamed && $e.path.IO ~~ :d {
-                        watch-it($_) for find-dirs $e.path;
-                    }
-                    emit($e);
+            for @elements -> $path {
+                if $path.IO.d {
+                    watch-it($_) for find-dirs $path;
+                } else {
+                    watch-it($path);
                 }
             }
-            watch-it(~$_) for |@dirs.map: { find-dirs $_ };
+        }
+    }
+
+    my sub watch-it($p) {
+        if ( $p ~~ rx{ '/'? '.precomp' [ '/' | $ ] } ) {
+            #say "Skipping .precomp dir [$p]";
+            return;
+        }
+        say "Starting watch on `$p`";
+        whenever IO::Notification.watch-path($p) -> $e {
+            if $e.event ~~ FileRenamed && $e.path.IO ~~ :d {
+                watch-it($_) for find-dirs $e.path;
+            }
+            emit($e);
         }
     }
 

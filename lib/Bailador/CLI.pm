@@ -66,8 +66,15 @@ q{
 
 my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
-    my @watchlist = $w.split: /<!after \\> \,/;
-    s/\\\,/,/ for @watchlist;
+    my @watchlist;
+
+    if $w {
+        my @list = $w.split: /<!after \\> \,/;
+        s/\\\,/,/ for @list;
+        @watchlist = @list.grep: *.IO.e;
+    }
+
+    @watchlist.unshift: $app;
 
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
 
