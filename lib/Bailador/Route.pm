@@ -39,7 +39,7 @@ class Bailador::Route {
         !! ($method);
         self.new(@methods, $path, $code, $path-str);
     }
-    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str = $path) {
+    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str = $path.perl) {
         my $regex = "/ ^ " ~ route_to_regex($path) ~ " [ \$ || <?before '/' > ] /";
         self.new($method, $regex.EVAL, $code, $path-str);
     }
