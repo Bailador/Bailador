@@ -12,9 +12,9 @@ post '/bar' => sub { }
 post '/echo3/:text' => sub ($text) { return 'Echo3: ' ~ join('-', $text,  (request.params<text> // ''), (request.params('body')<text> // ''), (request.params('query')<text> // ''))}
 
 is-deeply get-psgi-response('GET', '/foo'),  [200, ["Content-Type" => "text/html"], Any],              'route GET /foo exists';
-is-deeply get-psgi-response('POST', '/foo'), [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route POST /foo does not exist';
+is-deeply get-psgi-response('POST', '/foo'), [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';
 is-deeply get-psgi-response('POST', '/bar'), [200, ["Content-Type" => "text/html"], Any],              'route POST /bar exists';
-is-deeply get-psgi-response('GET', '/bar'),  [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route GET /bar does not exist';
+is-deeply get-psgi-response('GET', '/bar'),  [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found'], 'route GET /bar does not exist';
 
 is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo'),               [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo';
 is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo?text=bar'),      [200, ["Content-Type" => "text/html"], 'Echo: bar'], 'echo with text';

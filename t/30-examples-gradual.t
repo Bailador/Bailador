@@ -46,7 +46,7 @@ subtest {
     plan 4;
     my %data = run-psgi-request($app, 'GET', '/xyz');
     is %data<response>[0], 404;
-    is-deeply %data<response>[1], ["Content-Type" => "text/html, charset=utf-8"];
+    is-deeply %data<response>[1], ["Content-Type" => "text/html;charset=UTF-8"];
     is-deeply %data<response>[2], 'Not found';
     is %data<err>, '', 'stderr';
 }, '/xyz';

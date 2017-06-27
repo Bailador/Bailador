@@ -29,7 +29,7 @@ subtest {
     plan 3;
     my %data = run-psgi-request($app, 'GET', '/die');
     is %data<response>[0], 500;
-    is-deeply %data<response>[1], ["Content-Type" => "text/html, charset=utf-8"];
+    is-deeply %data<response>[1], ["Content-Type" => "text/html;charset=UTF-8"];
     like %data<err>, rx:s/This is an exception so you can see how it is handled/, 'stderr';
 }, '/die';
 

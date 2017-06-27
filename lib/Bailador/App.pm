@@ -166,7 +166,7 @@ class Bailador::App is Bailador::Route {
                         $err-page = 'Not found';
                     }
                     Log::Any.notice("No Route was Found for $method $uri");
-                    self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
+                    self.render(status => 404, type => 'text/html;charset=UTF-8', content => $err-page);
                 }
                 default {
                     Log::Any.error(.gist);
@@ -187,7 +187,7 @@ class Bailador::App is Bailador::Route {
                     } else {
                         $err-page = 'Internal Server Error';
                     }
-                    self.render(status => 500, type => 'text/html, charset=utf-8', content => $err-page);
+                    self.render(status => 500, type => 'text/html;charset=UTF-8', content => $err-page);
                 }
             }
         }

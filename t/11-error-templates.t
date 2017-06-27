@@ -20,7 +20,7 @@ subtest {
     plan 2;
 
     my %resp = run-psgi-request('GET',  '/notexisting');
-    is-deeply %resp<response>, [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found' ], '404 - without error template';
+    is-deeply %resp<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found' ], '404 - without error template';
     is %resp<err>, '', 'no stderr';
 }
 
@@ -31,7 +31,7 @@ subtest {
     plan 2;
 
     my %resp = run-psgi-request('GET',  '/notexisting');
-    is-deeply %resp<response>, [404, ["Content-Type" => "text/html, charset=utf-8"], 'nada' ], '404 - with error template';
+    is-deeply %resp<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'nada' ], '404 - with error template';
     is %resp<err>, '', 'no stderr';
     #like %resp<err>, rx:s//, 'stderr';
 }
@@ -44,7 +44,7 @@ subtest {
 
     my %resp = run-psgi-request('GET', '/die');
 
-    is-deeply %resp<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'Internal Server Error' ], '500 - without error template';
+    is-deeply %resp<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'Internal Server Error' ], '500 - without error template';
     like %resp<err>, rx:s/something/, 'stderr';
 }
 
@@ -55,7 +55,7 @@ subtest {
     plan 2;
 
     my %resp = run-psgi-request('GET', '/die');
-    is-deeply %resp<response>, [500, ["Content-Type" => "text/html, charset=utf-8"], 'muerte' ], '500 - with error template';
+    is-deeply %resp<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'muerte' ], '500 - with error template';
     like %resp<err>, rx:s/something/, 'stderr';
 }
 
