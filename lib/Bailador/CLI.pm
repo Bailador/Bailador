@@ -2,25 +2,14 @@ use v6.c;
 
 unit module Bailador::CLI;
 
-sub usage(Str $msg?) is export {
-    if $msg {
-        say $msg;
-        say '';
-    }
-    say "Usage:";
-    say "    $*PROGRAM-NAME --help               (shows this help)";
-    say "    $*PROGRAM-NAME --new Project-Name   (creates a directory called Project-Name with a skeleton application)";
-    exit();
-}
-
 sub skeleton() is export {
     my %skeleton;
-%skeleton{'app.pl'} =
+%skeleton{'bin/app.pl6'} =
 q{use v6;
 use Bailador;
 Bailador::import();
 
-my $version = '0.01';
+my $version = '0.0.1';
 
 get '/' => sub {
     template 'index.tt', { version => $version }
@@ -29,6 +18,27 @@ get '/' => sub {
 baile();
 };
 
+%skeleton{'t/app.t'} =
+q{use v6;
+use Test;
+use Bailador::Test;
+
+plan 1;
+
+%*ENV<P6W_CONTAINER> = 'Bailador::Test';
+my $app = EVALFILE "bin/app.pl6";
+
+subtest {
+    plan 4;
+    my %data = run-psgi-request($app, 'GET', '/');
+    my $html = %data<response>[2];
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
+    is %data<err>, '';
+    like $html, rx:s/\<h1\>Bailador App\<\/h1\>/;
+    like $html, rx:s/Version 0\.01/;
+}, '/';
+};
 
 %skeleton{'views/index.tt'} =
 q{
@@ -54,19 +64,30 @@ q{
     return %skeleton;
 }
 
-my sub bootup-file (Str $app, Str $w, Str $config?) is export {
-    say "Attempting to boot up the app";
+my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
     my @watchlist = $w.split: /<!after \\> \,/;
     s/\\\,/,/ for @watchlist;
 
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+
     $param ~= ',default-command:watch,watch-command:easy';
     for @watchlist -> $w {
         $param ~= ",watch-list:" ~ $w;
     }
     %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
 
+my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre routes>}, Str $app, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:' ~ $cmd;
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
+multi sub bootup-file (Str $app) {
+    say "Attempting to boot up the app";
     my @includes = repo-to-includes();
     my Proc::Async $p .= new($*EXECUTABLE, |@includes, $app);
     $p.stdout.tap: -> $v { $*OUT.print: "# $v" };

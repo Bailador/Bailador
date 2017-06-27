@@ -3,20 +3,17 @@ use v6;
 use JSON::Fast;
 use Bailador::CLI;
 
-multi sub MAIN(Bool :$help) {
-	usage();
-}
-
-multi sub MAIN(Str :$new) {
-#	if not $new -> {
-#		usage("Project-Name is a required parameter");
-#	}
-	say "Generating $new";
-	if $new.IO.e {
-		say "$new already exists. Exiting.";
+multi sub MAIN('new', Str :$name) {
+	if not $name -> {
+        say "--name=Project-Name is a required parameter";
+        return;
+	}
+	say "Generating $name";
+	if $name.IO.e {
+		say "$name already exists. Exiting.";
 		exit;
 	}
-	mkdir $new;
+	mkdir $name;
 	my %skeleton = skeleton();
 	#say %skeleton;
 
@@ -26,9 +23,9 @@ multi sub MAIN(Str :$new) {
 		{
 			my $sep = $file.rindex('/');
 			my $dir = $file.substr(0, $sep);
-			mkdir "$new/$dir";
+			mkdir "$name/$dir";
 		}
-		spurt "$new/$file", %skeleton{$file};
+		spurt "$name/$file", %skeleton{$file};
 	}
 }
 
@@ -42,5 +39,21 @@ multi sub MAIN('version') {
 }
 
 multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
-    bootup-file($app, $w, $config);
+    bootup-file('watch', $app, $w, $config);
+}
+
+multi sub MAIN ('easy', Str $app, Str :$config) {
+    bootup-file('easy', $app, $config);
+}
+
+multi sub MAIN ('routes', Str $app, Str :$config) {
+    bootup-file('routes', $app, $config);
+}
+
+multi sub MAIN ('ogre', Str $app, Str :$config) {
+    bootup-file('ogre', $app, $config);
+}
+
+multi sub MAIN ('tiny', Str $app, Str :$config) {
+    bootup-file('tiny', $app, $config);
 }

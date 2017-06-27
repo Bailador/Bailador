@@ -8,7 +8,9 @@ use Bailador::Exceptions;
 use Bailador::ContentTypes;
 use Bailador::Configuration;
 use Bailador::Commands;
+use Bailador::LogAdapter;
 use Template::Mojo;
+use Log::Any;
 
 class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';
@@ -18,6 +20,7 @@ class Bailador::App is Bailador::Route {
     has Bailador::Sessions $!sessions;
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
+    has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -34,6 +37,13 @@ class Bailador::App is Bailador::Route {
         }
 
         return $content;
+    }
+
+    method before-run() {
+        # probably a good place for a hook
+        my $formatter = $.config.log-format;
+        my @filter    = $.config.log-filter;
+        Log::Any.add($.log-adapter, :$formatter, :@filter);
     }
 
     multi method render($result) {
@@ -76,6 +86,7 @@ class Bailador::App is Bailador::Route {
 
     method !done-rendering() {
         # store session according to session engine
+        # good place for a Hook
         self!sessions.store(self.response, self.request.env);
     }
 
@@ -94,7 +105,8 @@ class Bailador::App is Bailador::Route {
     multi method baile(Str $command, *@args) {
         my $cmd = $.commands.get-command($command);
         $.config.load-from-args(@args),
-        return $cmd.run(app => self);
+        $.before-run();
+        $cmd.run(app => self );
     }
 
     method get-psgi-app {
@@ -110,11 +122,21 @@ class Bailador::App is Bailador::Route {
         }
     }
 
+    method !adjust-log-adapter($env) {
+        if ($env<p6w.errors>:exists) {
+            self.log-adapter.io-handle = $env<p6w.errors>;
+        } else {
+            # this should never happen
+            self.log-adapter.io-handle = $*ERR;
+        }
+    }
+
     method dispatch($env) {
         self.context.env = $env;
         try {
+            self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = $env<PATH_INFO>;
+            my $uri    = $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0];
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {
@@ -127,6 +149,8 @@ class Bailador::App is Bailador::Route {
             }
 
             LEAVE {
+                my $http-code = self.response.code;
+                Log::Any.trace("Serving $method $uri with $http-code");
                 self!done-rendering();
             }
 
@@ -141,16 +165,18 @@ class Bailador::App is Bailador::Route {
                     } else {
                         $err-page = 'Not found';
                     }
+                    Log::Any.notice("No Route was Found for $method $uri");
                     self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
                 }
                 default {
-                    if ($env<p6w.errors>:exists) {
-                        my $err = $env<p6w.errors>;
-                        $err.say(.gist);
-                    }
-                    else {
-                        note .gist;
-                    }
+                    Log::Any.error(.gist);
+                    #if ($env<p6w.errors>:exists) {
+                    #    my $err = $env<p6w.errors>;
+                    #    #$err.say(.gist);
+                    #}
+                    #else {
+                    #    note .gist;
+                    #}
 
                     my $err-page;
                     if $!config.mode eq 'development' {

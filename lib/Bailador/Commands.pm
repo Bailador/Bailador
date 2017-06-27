@@ -1,7 +1,8 @@
 use v6;
 
-use Bailador::Command::p6w;
 use Bailador::Command::easy;
+use Bailador::Command::ogre;
+use Bailador::Command::p6w;
 use Bailador::Command::watch;
 
 class Bailador::Commands {

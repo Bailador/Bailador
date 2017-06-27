@@ -32,30 +32,29 @@ my $session-cookie-name;
 subtest {
     plan 4;
 
-    my $response = get-psgi-response('GET', '/setsession');
-    is $response[0], 200, 'New session HTTP status 200';
+    my %data = run-psgi-request('GET', '/setsession');
+    is %data<response>[0], 200, 'New session HTTP status 200';
 
-    my %header = $response[1];
+    my %header = %data<response>[1];
     ok %header<Set-Cookie>:exists, 'Session cookie available';
     my $cookie = %header<Set-Cookie>;
     my $value;
     ($session-cookie-name, $value) = $cookie.trim.split(/\s*\=\s*/, 2);
     $first-session-id = $value.split(/<[;&]>/)[0];
-    diag "SessionID: $first-session-id";
     is $session-cookie-name, 'bailador', 'cookie name';
-    is $response[2], 'with session', 'New session Content';
+    is %data<response>[2], 'with session', 'New session Content';
 
 }, 'Set inital session';
 
 subtest {
     plan 3;
 
-    my $response = get-psgi-response('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
-    is $response[0], 200, 'With session HTTP status 200';
-    my %header = $response[1];
+    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    is %data<response>[0], 200, 'With session HTTP status 200';
+    my %header = %data<response>[1];
 
     ok %header<Set-Cookie>:exists, 'Session cookie available';
-    is $response[2], 'foobar', 'Data from last session available';
+    is %data<response>[2], 'foobar', 'Data from last session available';
 
 }, 'Read session';
 
@@ -69,13 +68,12 @@ subtest {
         $wrong-session-id.substr-rw(0,1) = '2';
     }
 
-    diag "Sending wrong SessionID: $wrong-session-id";
-    my $response = get-psgi-response('GET', '/readsession', http_cookie => "$session-cookie-name=$wrong-session-id");
-    is $response[0], 200, 'With session HTTP status 200';
-    my %header = $response[1];
+    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$wrong-session-id");
+    is %data<response>[0], 200, 'With session HTTP status 200';
+    my %header = %data<response>[1];
 
     ok %header<Set-Cookie>:exists, 'Session cookie available';
-    is $response[2], 'no value', 'No data from last session available';
+    is %data<response>[2], 'no value', 'No data from last session available';
 
 }, 'Fake session ID';
 
@@ -84,12 +82,12 @@ subtest {
     # let the cookie expire!
     sleep 6;
 
-    my $response = get-psgi-response('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
-    is $response[0], 200, 'With session HTTP status 200';
-    my %header = $response[1];
+    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    is %data<response>[0], 200, 'With session HTTP status 200';
+    my %header = %data<response>[1];
 
     ok %header<Set-Cookie>:exists, 'Session cookie available';
-    is $response[2], 'no value', 'Data from last session is timed out';
+    is %data<response>[2], 'no value', 'Data from last session is timed out';
 
     my $cookie = %header<Set-Cookie>;
     my $value;
@@ -97,14 +95,13 @@ subtest {
     $second-session-id = $value.split(/<[;&]>/)[0];
 
     isnt $first-session-id, $second-session-id, 'got a new session ID because old session was timed out';
-    diag "SessionID: $second-session-id";
 
 }, 'Session expiration';
 
 subtest {
     plan 1;
-    my $response = get-psgi-response('GET', '/deletesession', http_cookie => "$session-cookie-name=$second-session-id");
-    is-deeply $response, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
+    my %data = run-psgi-request('GET', '/deletesession', http_cookie => "$session-cookie-name=$second-session-id");
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
 }, 'Session deletion';
 
 done-testing;

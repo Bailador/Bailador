@@ -29,6 +29,10 @@ class Bailador::Configuration {
     has Str $.hmac-key is rw          = 'changeme';
     has Str $.backend is rw           = "Bailador::Sessions::Store::Memory";
 
+    ## LOGGING
+    has Str $.log-format is rw = '\d (\s) \m';
+    has @.log-filter is rw     = ('severity' => '>=warning');
+
     method load-from-array(@args) {
         for @args -> ($k, $v) {
             self.set($k, $v);
