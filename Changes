@@ -1,4 +1,12 @@
-
+0.0.6 2017.6.27
+    - Ticket #147 - no test output for t/08-* testcases
+    - Added a test case for bailador watch command
+    - Added Bailador::Commands for
+        * tiny (HTTP::Server::Tiny)
+        * easy (HTTP::Easy)
+        * ogre (HTTP::Server::Ogre), which is an exprimental and new async P6W server and
+        * routes, which prints out all routes of your application. (Ticket #165)
+    - Ticket #107 and #137 - Log::Any can be used for logging. p6w.errors will be used ad default out
     - Add example/api.pl6 to demonstrate returning JSON.
     - Add test to skeleton created by --new, move application to bin/.
     - Add experimental code, example, and test for gradual serving. #120
