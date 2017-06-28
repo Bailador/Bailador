@@ -22,6 +22,15 @@ class Bailador::App is Bailador::Route {
     has Bailador::Commands $.commands = Bailador::Commands.new;
     has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
 
+    submethod TWEAK {
+        self.load-config();
+    }
+
+    method load-config {
+        $!config.load-from-file($!location.IO);
+        $!config.load-from-env();
+    }
+
     method request  { $.context.request  }
     method response { $.context.response }
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
