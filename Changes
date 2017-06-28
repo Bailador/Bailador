@@ -1,3 +1,4 @@
+    - Ticket #111 - added a test for Bailador::Configuration which evaluates %*ENV and overrides settings file according #161
     - Ticket #170 - error handlers use Content-Type header according to RFC 2616
     - Ticket #166 and #167 - The command 'watch' watches the app.pl file as well as all files or dirs
       that are stated in '-w' command line switch
