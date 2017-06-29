@@ -176,7 +176,9 @@ class Bailador::App is Bailador::Route {
                 }
                 when X::Bailador::NoRouteFound {
                     Log::Any.notice("No Route was Found for $method $uri");
-                    if $!location.defined && "$!location/views/404.xx".IO.e {
+                    if self.error_handlers{404} {
+                        self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.error_handlers{404}());
+                    } elsif $!location.defined && "$!location/views/404.xx".IO.e {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.template("404.xx", []));
                     } else {
                         self.render(:status(404), :type<text/plain;charset=UTF-8>, content => 'Not found');
@@ -197,6 +199,8 @@ class Bailador::App is Bailador::Route {
                         state $error-template = Template::Mojo.new(%?RESOURCES<error.template>.IO.slurp);
                         $err-page = $error-template.render($_, self.request());
                         self.render(status => 500, type => 'text/html;charset=UTF-8', content => $err-page);
+                    } elsif self.error_handlers{500} {
+                        self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.error_handlers{500}());
                     } elsif $!location.defined && "$!location/views/500.xx".IO.e {
                         self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.template("500.xx", []));
                     } else {

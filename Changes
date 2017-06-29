@@ -4,6 +4,7 @@
     - Ticket #170 - error handlers use Content-Type header according to RFC 2616
     - Ticket #166 and #167 - The command 'watch' watches the app.pl file as well as all files or dirs
       that are stated in '-w' command line switch
+    - Add custom error handing functions #131
 
 0.0.6 2017.6.27
     - Ticket #147 - no test output for t/08-* testcases
