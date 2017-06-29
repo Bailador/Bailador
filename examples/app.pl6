@@ -15,7 +15,9 @@ get '/' => sub {
    <li><a href="/red">Redirect to not existing page</a></li>
    <li><a href="/die">Throw an exception</a></li>
    <li><a href="/about">Simple text</a></li>
-   <li><a href="/hello/Foo Bar">Say hello</a></li>
+   <li><a href="/hello/Foo Bar">Say hello to Foo Bar</a></li>
+   <li><a href="/hello/Foo/Bar">This should be a 404</a></li>
+   <li><a href="/def/Foo/Bar">This should work</a></li>
    <li><a href="/fooBarMoo">Routing</a></li>
    <li><a href="/one-two-three">Routing</a></li>
    <li><a href="/template/abc">Use a template</a></li>
@@ -39,6 +41,11 @@ get '/about' => sub {
 get '/hello/:name' => sub ($name) {
     "Hello $name!"
 };
+
+get '/def/:one/:two' => sub ($first, $second) {
+    "Hello '$first' and '$second'!"
+};
+
 
 get '/info' => sub {
     say %*ENV<P6SGI_CONTAINER>;

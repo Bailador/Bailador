@@ -2,7 +2,7 @@ use v6;
 use Test;
 use Bailador::Test;
 
-plan 10;
+plan 11;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/app.pl6";
@@ -58,9 +58,16 @@ todo 'See https://github.com/Bailador/Bailador/issues/177';
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/hello/Foo/Bar');
-    is-deeply %data<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found'], 'route GET /abc';
+    is-deeply %data<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found'], 'route GET /hello/Foo/Bar';
     is %data<err>, '';
 }, '/hello/Foo/Bar';
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/def/egy/ketto');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], q{Hello 'egy' and 'ketto'!}], 'route GET /def/egy/ketto';
+    is %data<err>, '';
+}, '/def/egy/ketto';
 
 
 subtest {
