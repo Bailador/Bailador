@@ -57,16 +57,17 @@ class Bailador::Configuration {
         }
     }
 
-    method load-from-file() {
-        unless $.config-file.IO.e {
+    method load-from-file(IO::Path $path) {
+        my $file = $path.child($.config-file);
+        unless $file.IO.e {
             # warn "The configuration file wasn't found.";
             # warn "Bailador will use his default configuration.";
             return
         }
 
-        if $.config-file.IO.extension ~~ 'yaml' | 'yml' {
+        if $file.IO.extension ~~ 'yaml' | 'yml' {
             try {
-                my $yaml = slurp $.config-file;
+                my $yaml = slurp $file;
                 my %config = load-yaml($yaml);
                 self.load-from-hash(%config);
                 return;

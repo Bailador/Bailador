@@ -22,9 +22,20 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
 
 ## Release
 
-* Install mi6 package `zef install mi6`
-* Run `mi6`
-* Update the VERSION number in the META6.yml
-* Verify the list of changes in the Changes file
+* Upgrade the version in META6.json
+* Check for missings entries in the Change file (git log)
+* Commit and Push this changes to the dev branch.
+* Merge dev in main and tag it with the current version.
+   - `git checkout main`
+   - `git pull`
+   - `git merge dev`
+   - `git tag 0.x.y`
+   - `git push`
+   - `git push origin 0.x.y`
+* Install mi6 package `zef install App:Mi6`
+* Run `mi6 dist`
+* Revert Changes to README.md with `git checkout README.md` (Ticket #151)
+* Copy README.md to Bailador-0.x.y/README.md
+* Build the tarball with `tar cvfz Bailador-0.x.y.tar.gz Bailador-0.x.y`
 * Upload to PAUSE
 

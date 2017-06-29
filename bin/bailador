@@ -3,6 +3,8 @@ use v6;
 use JSON::Fast;
 use Bailador::CLI;
 
+my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
+
 multi sub MAIN('new', Str :$name) {
 	if not $name -> {
         say "--name=Project-Name is a required parameter";
@@ -38,22 +40,27 @@ multi sub MAIN('version') {
 	say "Bailador " ~ $version;
 }
 
+#| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected
 multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
     bootup-file('watch', $app, $w, $config);
 }
 
+#| Invokes your app on top of HTTP::Easy
 multi sub MAIN ('easy', Str $app, Str :$config) {
     bootup-file('easy', $app, $config);
 }
 
+#| Displayes all the routes of your app
 multi sub MAIN ('routes', Str $app, Str :$config) {
     bootup-file('routes', $app, $config);
 }
 
+#| Invokes your app on top of HTTP::Server::Ogre
 multi sub MAIN ('ogre', Str $app, Str :$config) {
     bootup-file('ogre', $app, $config);
 }
 
+#| Invokes your app on top of HTTP::Server::Tiny
 multi sub MAIN ('tiny', Str $app, Str :$config) {
     bootup-file('tiny', $app, $config);
 }

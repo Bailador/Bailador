@@ -11,10 +11,6 @@ my $app;
 multi sub app {
     unless $app {
         $app = Bailador::App.new;
-        $app.config.load-from-env();
-        if $app.config.check-config-file-from-env() {
-            $app.config.load-from-file();
-        }
     }
     return $app;
 }
