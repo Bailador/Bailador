@@ -1,8 +1,9 @@
-use v6;
+use v6.c;
+
 use File::Temp;
+use Test;
 
 use lib 'lib','t/lib';
-use Test;
 use Helpers;
 
 plan 4;

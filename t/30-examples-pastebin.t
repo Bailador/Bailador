@@ -1,7 +1,9 @@
-use v6;
-use Test;
-use Bailador::Test;
+use v6.c;
+
 use File::Directory::Tree;
+use Test;
+
+use Bailador::Test;
 
 plan 2;
 
@@ -45,4 +47,3 @@ subtest {
 }, 'paste';
 
 rmtree 'data';
-

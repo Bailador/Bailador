@@ -1,10 +1,12 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador;
-Bailador::import;
+use Bailador::Template::Mustache;
 use Bailador::Test;
 
-use Bailador::Template::Mustache;
+Bailador::import;
 
 plan 6;
 

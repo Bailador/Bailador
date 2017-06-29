@@ -1,8 +1,11 @@
-use v6;
+use v6.c;;
+
 use Test;
+
 use Bailador;
-Bailador::import;
 use Bailador::Test;
+
+Bailador::import;
 
 plan 8;
 
@@ -58,4 +61,3 @@ subtest {
     is-deeply %resp<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'muerte' ], '500 - with error template';
     like %resp<err>, rx:s/something/, 'stderr';
 }
-

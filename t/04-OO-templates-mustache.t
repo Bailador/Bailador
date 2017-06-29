@@ -1,9 +1,11 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::App;
+use Bailador::Template::Mustache;
 use Bailador::Test;
 
-use Bailador::Template::Mustache;
 
 plan 3;
 

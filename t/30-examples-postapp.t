@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::Test;
 
 plan 2;
@@ -21,6 +23,3 @@ subtest {
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ["\{:answer(\"42\"), :text(\"Foo Bar\")}", Any, Any]], 'route POST /';
     is %data<err>, '';
 }, '/';
-
-
-

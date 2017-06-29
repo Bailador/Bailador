@@ -1,12 +1,15 @@
-use v6;
-use lib 'lib';
-use Test;
+use v6.c;
+
 use Path::Iterator;
+use Test;
+
+use lib 'lib';
+
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
 
 if AUTHOR {
-    # check for use v6;
+    # check for use v6.c;
     my @dirs = '.';
     for Path::Iterator.skip-vcs.ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
         my @lines = $file.IO.lines;
@@ -24,4 +27,3 @@ else {
      skip-rest "Skipping author test";
      exit;
 }
-

@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::App;
 use Bailador::Route;
 use Bailador::Test;
@@ -73,4 +75,3 @@ is-deeply $response, [200, [:Content-Type("text/html")], "logged out"] , "logged
 # get the login page again, because we're not logged in -> catch all again
 $response = get-psgi-response($app, 'GET', '/app/logout', http_cookie => "$session-cookie-name=$session-id");
 is-deeply $response, [200, [:Content-Type("text/html")], "this is the login page / catch all route"], "logout 2nd time - catchall";
-
