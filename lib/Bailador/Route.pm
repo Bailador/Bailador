@@ -51,7 +51,17 @@ class Bailador::Route {
         if @.method {
             return False if @.method.any ne $method
         }
-        return $path ~~ $.path;
+
+        my Match $match = $path ~~ $.path;
+        if @.routes {
+            # we have children routes -- so this is a prefixroute
+            # its okay not to match the whole regular expression.
+
+            return $match if $match;
+        } else {
+            return $match if $match and $match.postmatch eq '';
+        }
+        return False;
     }
 
     method recurse-on-routes(Str $method, Str $uri) {
