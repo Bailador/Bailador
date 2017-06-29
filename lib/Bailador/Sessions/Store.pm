@@ -1,4 +1,4 @@
-use v6;
+use v6.c;
 
 role Bailador::Sessions::Store {
     method store-session(Str $session-id, Hash $session) { ... }

@@ -1,8 +1,10 @@
-use v6;
+use v6.c;
 
-use Bailador::Command;
-use Bailador::CLI;
 use File::Find;
+
+use Bailador::CLI;
+use Bailador::Command;
+
 
 class Bailador::Command::watch does Bailador::Command {
     method run(:$app) {
@@ -76,5 +78,3 @@ class Bailador::Command::watch does Bailador::Command {
         return slip ($p.IO, slip find :dir($p), :type<dir>).grep: { !$seen{$_}++ };
     }
 }
-
-

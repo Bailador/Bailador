@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::App;
 use Bailador::Test;
 

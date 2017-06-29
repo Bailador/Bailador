@@ -1,11 +1,11 @@
-use v6;
+use v6.c;
 
 use Test;
 
 use Bailador;
+use Bailador::Test;
 
 Bailador::import;
-use Bailador::Test;
 
 plan 8;
 

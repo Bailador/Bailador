@@ -1,7 +1,7 @@
-use v6;
+use v6.c;
 
-use Bailador::Request;
 use Bailador::Exceptions;
+use Bailador::Request;
 
 class Bailador::Route {
     subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }

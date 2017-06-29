@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador;
 use Bailador::Test;
 
@@ -62,5 +64,3 @@ is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/f?text=bar', 'text=fo
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/g?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_type';  # ???
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/h?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_length';  # ???
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/i?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'text=foo'], 'body';
-
-

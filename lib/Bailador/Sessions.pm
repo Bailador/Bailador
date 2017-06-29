@@ -1,13 +1,13 @@
-use v6;
+use v6.c;
 
 use Digest;
 use Digest::HMAC;
 use Log::Any;
 
 use Bailador::Configuration;
-use Bailador::Sessions::Store;
 use Bailador::Request;
 use Bailador::Response;
+use Bailador::Sessions::Store;
 
 class Bailador::Sessions {
     has Bailador::Configuration $!config;

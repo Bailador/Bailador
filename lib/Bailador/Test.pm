@@ -1,8 +1,11 @@
-use v6;
+use v6.c;
+
 use Test;
+use URI;
+
 use Bailador;
 use Bailador::Request;
-use URI;
+
 
 unit module Bailador::Test;
 

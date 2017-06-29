@@ -1,7 +1,8 @@
-use v6;
+use v6.c;
+
+use HTTP::Server::Ogre;
 
 use Bailador::Command;
-use HTTP::Server::Ogre;
 
 class Bailador::Command::ogre does Bailador::Command {
     method run(:$app) {

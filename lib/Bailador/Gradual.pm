@@ -1,4 +1,5 @@
-use v6;
+use v6.c;
+
 use Bailador;
 use Bailador::Route::StaticFile;
 
@@ -29,4 +30,3 @@ get '/(.*)' => sub ($url) {
 
 my $files = Bailador::Route::StaticFile.new: directory => $rel_root.IO.child('static'), path => /(.*)/;
 app.add_route: $files;
-

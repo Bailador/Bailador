@@ -1,7 +1,9 @@
-use v6;
-use lib 'lib';
-use Test;
+use v6.c;
+
 use Path::Iterator;
+use Test;
+
+use lib 'lib';
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
 
@@ -24,4 +26,3 @@ else {
      skip-rest "Skipping author test";
      exit;
 }
-

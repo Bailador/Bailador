@@ -1,6 +1,8 @@
-use v6;
-use Bailador::Request::Multipart;
+use v6.c;
+
 use Test;
+
+use Bailador::Request::Multipart;
 
 plan 2;
 
@@ -37,4 +39,3 @@ subtest {
     is-deeply $multipart.content, $content, 'content';
     is $multipart.size, 6, 'content size';
 }
-

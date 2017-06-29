@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::Test;
 
 plan 12;

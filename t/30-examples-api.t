@@ -1,7 +1,9 @@
-use v6;
-use Test;
-use Bailador::Test;
+use v6.c;
+
 use JSON::Fast;
+use Test;
+
+use Bailador::Test;
 
 plan 1;
 
@@ -22,6 +24,3 @@ subtest {
         courses => ['Perl', 'Web Development'],
     };
 }, '/';
-
-
-

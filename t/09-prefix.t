@@ -1,7 +1,9 @@
-use v6;
+use v6.c;
+
 use Test;
-use Bailador::Test;
+
 use Bailador;
+use Bailador::Test;
 
 plan 3;
 
@@ -95,4 +97,3 @@ subtest {
     is($prefixone-execution , 0 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next executed 4 times');
 };
-
