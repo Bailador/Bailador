@@ -8,6 +8,10 @@ use lib 'lib';
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
 
+# Enforce that every Perl file (ending with p6, pl6, pm6, or t) will
+# have "use v6;" or "use v6.c" as the first non-empty line.
+# An optional sh-bang  line as the first line is allowed.
+
 if AUTHOR {
     # check for use v6.c;
     my @dirs = '.';
