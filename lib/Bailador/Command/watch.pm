@@ -1,6 +1,7 @@
 use v6.c;
 
 use File::Find;
+use Terminal::ANSIColor;
 
 use Bailador::CLI;
 use Bailador::Command;
@@ -16,7 +17,7 @@ class Bailador::Command::watch does Bailador::Command {
             }
         }
         unless $watch-command {
-            die 'can not detect watch-command'
+            die colored('can not detect watch-command', 'red');
         }
 
         my $param = %*ENV<BAILADOR>;
@@ -25,7 +26,7 @@ class Bailador::Command::watch does Bailador::Command {
 
 
         my @watchlist = $config.watch-list;
-        die 'nothing to watch, empty watch-list' unless @watchlist;
+        die colored('nothing to watch, empty watch-list', 'red') unless @watchlist;
         my $p = bootup-app();
         react {
             whenever watch-recursive(@watchlist.grep: *.IO.e) -> $e {

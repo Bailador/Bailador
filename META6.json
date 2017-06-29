@@ -31,6 +31,7 @@
     "Path::Iterator",
     "Template::Mojo",
     "Template::Mustache",
+    "Terminal::ANSIColor",
     "URI",
     "YAMLish"
   ],

@@ -2,6 +2,7 @@ use v6.c;
 
 use Log::Any;
 use Template::Mojo;
+use Terminal::ANSIColor;
 
 use Bailador::Configuration;
 use Bailador::Commands;
@@ -108,7 +109,7 @@ class Bailador::App is Bailador::Route {
         } elsif $.config.command-detection() {
             $command = $.commands.detect-command();
         } else {
-            die 'can not detect command';
+            die colored('can not detect command', 'red');
         }
         self.baile($command);
     }

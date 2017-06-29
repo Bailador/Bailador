@@ -1,5 +1,7 @@
 use v6.c;
 
+use Terminal::ANSIColor;
+
 class Bailador::Request::Multipart {
     ## Content-Disposition: form-data; name="file"; filename="xxx.png"
     ## Content-Type: image/png
@@ -12,7 +14,7 @@ class Bailador::Request::Multipart {
 
     method !parse_headers {
         my $content-disposition = %.headers<CONTENT-DISPOSITION>;
-        die "CONTENT-DISPOSITION header is required for multipart/form-data " ~ %.headers.perl unless $content-disposition;
+        die colored("CONTENT-DISPOSITION header is required for multipart/form-data " ~ %.headers.perl, 'red') unless $content-disposition;
         if $content-disposition ~~ / << name >> '=' '"' ( <-["]>+ ) '"' / {
             $!name = $/[0].Str;
         }
