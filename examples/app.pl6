@@ -16,6 +16,7 @@ get '/' => sub {
    <li><a href="/die">Throw an exception</a></li>
    <li><a href="/about">Simple text</a></li>
    <li><a href="/hello/Foo Bar">Say hello to Foo Bar</a></li>
+   <li><a href="/hello/Foo.html">Say hello to Foo.html</a></li>
    <li><a href="/hello/Foo/Bar">This should be a 404</a></li>
    <li><a href="/def/Foo/Bar">This should work</a></li>
    <li><a href="/fooBarMoo">Routing</a></li>
