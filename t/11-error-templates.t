@@ -23,18 +23,18 @@ subtest {
     plan 2;
 
     my %resp = run-psgi-request('GET',  '/notexisting');
-    is-deeply %resp<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'Not found' ], '404 - without error template';
+    is-deeply %resp<response>, [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found' ], '404 - without error template';
     is %resp<err>, '', 'no stderr';
 }
 
-$not-found-template.spurt: 'nada';
+$not-found-template.spurt: '<h1>nada</h1>';
 ok $not-found-template.e , 'there is a 404 template';
 
 subtest {
     plan 2;
 
     my %resp = run-psgi-request('GET',  '/notexisting');
-    is-deeply %resp<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], 'nada' ], '404 - with error template';
+    is-deeply %resp<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], '<h1>nada</h1>' ], '404 - with error template';
     is %resp<err>, '', 'no stderr';
     #like %resp<err>, rx:s//, 'stderr';
 }
@@ -47,7 +47,7 @@ subtest {
 
     my %resp = run-psgi-request('GET', '/die');
 
-    is-deeply %resp<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'Internal Server Error' ], '500 - without error template';
+    is-deeply %resp<response>, [500, ["Content-Type" => "text/plain;charset=UTF-8"], 'Internal Server Error' ], '500 - without error template';
     like %resp<err>, rx:s/something/, 'stderr';
 }
 
