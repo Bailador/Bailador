@@ -1,9 +1,8 @@
 use v6.c;
+use lib 'lib';
 
 use Path::Iterator;
 use Test;
-
-use lib 'lib';
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
 

@@ -3,8 +3,8 @@ use v6.c;
 use Log::Any;
 use Template::Mojo;
 
-use Bailador::Configuration;
 use Bailador::Commands;
+use Bailador::Configuration;
 use Bailador::ContentTypes;
 use Bailador::Context;
 use Bailador::Exceptions;

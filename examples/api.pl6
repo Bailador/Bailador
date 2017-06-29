@@ -1,9 +1,9 @@
 #!/usr/bin/env perl6
 
-use v6;
+use v6.c;
 use lib 'lib';
-use Bailador;
 use JSON::Fast;
+use Bailador;
 
 app.config.mode = 'development';
 
