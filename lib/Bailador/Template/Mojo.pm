@@ -1,6 +1,8 @@
 use v6.c;
-use Bailador::Template;
+
 use Template::Mojo;
+
+use Bailador::Template;
 
 class Bailador::Template::Mojo does Bailador::Template {
     has %.template-cache;

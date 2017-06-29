@@ -1,4 +1,5 @@
 use v6.c;
+
 use Bailador::Template;
 
 class Bailador::Template::Mustache does Bailador::Template {

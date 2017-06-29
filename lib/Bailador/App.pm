@@ -1,16 +1,18 @@
-use v6;
+use v6.c;
 
-use Bailador::Context;
-use Bailador::Route;
-use Bailador::Template::Mojo;
-use Bailador::Sessions;
-use Bailador::Exceptions;
-use Bailador::ContentTypes;
+use Log::Any;
+use Template::Mojo;
+
 use Bailador::Configuration;
 use Bailador::Commands;
+use Bailador::ContentTypes;
+use Bailador::Context;
+use Bailador::Exceptions;
 use Bailador::LogAdapter;
-use Template::Mojo;
-use Log::Any;
+use Bailador::Route;
+use Bailador::Sessions;
+use Bailador::Template::Mojo;
+
 
 class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';

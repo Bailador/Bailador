@@ -1,8 +1,10 @@
 use v6.c;
+
+use HTTP::Easy::PSGI;
+
 use Bailador::App;
 use Bailador::Request;
 use Bailador::Template;
-use HTTP::Easy::PSGI;
 
 unit module Bailador;
 
