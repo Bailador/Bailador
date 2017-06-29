@@ -27,7 +27,12 @@ class Bailador::App is Bailador::Route {
     }
 
     method load-config {
-        $!config.load-from-file($!location.IO);
+        if %*ENV<BAILADOR_CONFIGFILE> {
+            $!config.config-file = %*ENV<BAILADOR_CONFIGFILE>;
+        }
+        if $!config.check-config-file($!location.IO) {
+            $!config.load-from-file($!location.IO);
+        }
         $!config.load-from-env();
     }
 
