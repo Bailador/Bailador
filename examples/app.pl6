@@ -5,6 +5,7 @@ use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
 
+use-feature('AutoHead');
 app.config.mode = 'development';
 
 # simple cases
@@ -35,7 +36,8 @@ get '/die' => sub {
     "hello world"
 }
 
-get '/about' => sub {
+head '/about' => sub { "" }
+get '/about'  => sub {
     "about me"
 }
 

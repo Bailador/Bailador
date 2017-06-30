@@ -30,6 +30,12 @@ sub error(Pair $x) is export {
     return $x;
 }
 
+sub use-feature(Str $feature-name) is export {
+    my $feature = 'Bailador::Feature::' ~ $feature-name;
+    require ::($feature);
+    app() does ::($feature);
+}
+
 sub get(Pair $x) is export {
     app.add_route: 'GET', $x;
     return $x;
@@ -53,6 +59,11 @@ sub delete(Pair $x) is export {
 sub patch(Pair $x) is export {
     app.add_route: 'PATCH', $x;
     return $x;
+}
+
+sub head(Pair $x) is export {
+    app.add_route: 'HEAD', $x;
+    return $x
 }
 
 sub prefix(Pair $x) is export {

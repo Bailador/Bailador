@@ -1,3 +1,4 @@
+    - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
     - Named arguments to bin/bailador such as --config can now be anywhere
     - Added documentation to the usage of bin/bailador
     - Ticket #111 - added a test for Bailador::Configuration which evaluates %*ENV and overrides settings file according #161
