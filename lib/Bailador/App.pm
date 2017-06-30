@@ -86,12 +86,6 @@ class Bailador::App is Bailador::Route {
         self.response.headers<Location> = $location;
     }
 
-    method invoke_hook(Str $type) {
-        for @.hooks.grep( {$_.hook eq $type } ) -> $hook {
-            $hook.code();
-        }
-    }
-
     method add_error(Pair $x) {
         self.error_handlers{$x.key} = $x.value;
     }
@@ -111,7 +105,7 @@ class Bailador::App is Bailador::Route {
         self!sessions.delete-session(self.request);
     }
 
-    method done-rendering() {
+    method !done-rendering() {
         # store session according to session engine
         # good place for a Hook
         self!sessions.store(self.response, self.request.env);
@@ -178,7 +172,7 @@ class Bailador::App is Bailador::Route {
             LEAVE {
                 my $http-code = self.response.code;
                 Log::Any.trace("Serving $method $uri with $http-code");
-                self.done-rendering();
+                self!done-rendering();
             }
 
             CATCH {
