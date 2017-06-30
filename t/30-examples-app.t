@@ -4,7 +4,7 @@ use Test;
 
 use Bailador::Test;
 
-plan 12;
+plan 13;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/app.pl6";
@@ -110,7 +110,12 @@ subtest {
 #    is %data<err>, '';
 #}, '/template/Camelia';
 
-
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'HEAD', '/');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route HEAD /';
+    is %data<err>, '';
+}, '/';
 
 
 # vim: expandtab
