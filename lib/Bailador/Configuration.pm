@@ -62,7 +62,7 @@ class Bailador::Configuration {
         if $file.IO ~~ :e && @config-file-extensions.contains($file.IO.extension) {
             return True;
         } elsif $file.IO !~~ :e {
-            warn "The configuration file $file wasn't found.";
+            warn "The configuration file $file wasn't found." unless self.config-file ~ 'settings.yaml';
             return False;
         } elsif not @config-file-extensions.contains($file.IO.extension) {
             warn $file.IO.extension ~ ' format is not supported.';
