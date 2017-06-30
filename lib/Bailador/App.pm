@@ -181,7 +181,7 @@ class Bailador::App is Bailador::Route {
                     } elsif $!location.defined && "$!location/views/404.xx".IO.e {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.template("404.xx", []));
                     } else {
-                        self.render(:status(404), :type<text/plain;charset=UTF-8>, content => 'Not found');
+                        self.render(:status(404), :type<text/html;charset=UTF-8>, content => 'Not found');
                     }
                 }
                 default {
@@ -204,7 +204,7 @@ class Bailador::App is Bailador::Route {
                     } elsif $!location.defined && "$!location/views/500.xx".IO.e {
                         self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.template("500.xx", []));
                     } else {
-                        self.render(:status(500), :type<text/plain;charset=UTF-8>, content => 'Internal Server Error');
+                        self.render(:status(500), :type<text/html;charset=UTF-8>, content => 'Internal Server Error');
                     }
                 }
             }

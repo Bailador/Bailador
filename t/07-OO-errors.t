@@ -20,13 +20,13 @@ my $app = MyOwnWebApp.new;
 my %data;
 
 %data = run-psgi-request($app, 'GET', '/die');
-is-deeply %data<response>, [500, ["Content-Type" => "text/plain;charset=UTF-8"], 'Internal Server Error'], 'route GET handles die';
+is-deeply %data<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'Internal Server Error'], 'route GET handles die';
 like %data<err>, rx:s/oh no\!/, 'stderr';
 
 %data = run-psgi-request($app, 'GET', '/fail');
-is-deeply %data<response>, [500, ["Content-Type" => "text/plain;charset=UTF-8"], 'Internal Server Error'], 'route GET handles fail';
+is-deeply %data<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'Internal Server Error'], 'route GET handles fail';
 like %data<err>, rx:s/oh no\!/, 'stderr';
 
 %data = run-psgi-request($app, 'GET', '/exception');
-is-deeply %data<response>, [500, ["Content-Type" => "text/plain;charset=UTF-8"], 'Internal Server Error'], 'route GET handles thrown exception';
+is-deeply %data<response>, [500, ["Content-Type" => "text/html;charset=UTF-8"], 'Internal Server Error'], 'route GET handles thrown exception';
 like %data<err>, rx:s/NYI not yet implemented\. Sorry\./, 'stderr';
