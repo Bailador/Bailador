@@ -4,7 +4,7 @@ use Test;
 
 use Bailador::Test;
 
-plan 13;
+plan 14;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/app.pl6";
@@ -18,6 +18,16 @@ subtest {
     is %data<err>, '';
     like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';
+
+subtest {
+    plan 3;
+    my %data = run-psgi-request($app, 'GET', '/style.css');
+    my $css = %data<response>[2].decode;
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/css"], ""], 'route GET /style.css';
+    is %data<err>, '';
+    is $css, qq{body { margin: 0px; }\n};
+}, 'testcase for Bailador::Route::StaticFile';
 
 
 subtest {
