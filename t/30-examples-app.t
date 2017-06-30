@@ -65,7 +65,7 @@ subtest {
     is %data<err>, '';
 }, '/abc';
 
-todo 'See https://github.com/Bailador/Bailador/issues/177';
+#todo 'See https://github.com/Bailador/Bailador/issues/177';
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/hello/Foo/Bar');
