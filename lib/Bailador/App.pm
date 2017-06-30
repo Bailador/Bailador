@@ -23,6 +23,7 @@ class Bailador::App is Bailador::Route {
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
     has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
+    has %.error_handlers;
 
     submethod TWEAK {
         self.load-config();
@@ -83,6 +84,10 @@ class Bailador::App is Bailador::Route {
         $.context.autorender = False;
         self.response.code = $code;
         self.response.headers<Location> = $location;
+    }
+
+    method add_error(Pair $x) {
+        self.error_handlers{$x.key} = $x.value;
     }
 
     method !sessions() {

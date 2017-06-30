@@ -10,7 +10,6 @@ class Bailador::Route {
     has Regex $.path;
     has Callable $.code is rw;
     has Bailador::Route @.routes;
-    has %.error_handlers;
     has Bailador::Route $!prefix-route;
 
     method !get-prefix-route {
@@ -144,12 +143,6 @@ class Bailador::Route {
         my $route = Bailador::Route.new($method, $x);
         self.add_route($route);
     }
-
-    multi method add_error(Pair $x) {
-        my $curr = self!get_current_route();
-        self.error_handlers{$x.key} = $x.value;
-    }
-
 
     ## syntactic sugar!
     method get(Pair $x) {
