@@ -1,6 +1,7 @@
 use v6.c;
 
 use HTTP::MultiPartParser;
+use Terminal::ANSIColor;
 
 use Bailador::Request::Multipart;
 
@@ -66,7 +67,7 @@ class Bailador::Request {
                 }
             }
             default {
-                die "unknown source '$source'";
+                die colored("unknown source '$source'", 'red');
             }
         }
         return %ret;

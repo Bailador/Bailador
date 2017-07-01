@@ -1,5 +1,7 @@
 use v6.c;
 
+use Terminal::ANSIColor;
+
 use Bailador::Exceptions;
 use Bailador::Request;
 
@@ -135,7 +137,7 @@ class Bailador::Route {
         my $curr = self!get_current_route();
         # avoid obvious duplicate routes
         my $matches = $curr.routes.grep({ $_.method.Str eq $route.method.Str and $_.path.perl eq $route.path.perl });
-        die "duplicate route: {$route.method.Str} {$route.path.perl}" if $matches;
+        die colored("duplicate route: {$route.method.Str} {$route.path.perl}", 'red') if $matches;
         $curr.routes.push($route);
     }
 

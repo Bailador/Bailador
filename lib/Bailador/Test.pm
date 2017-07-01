@@ -1,6 +1,7 @@
 use v6.c;
 
 use Test;
+use Terminal::ANSIColor;
 use URI;
 
 use Bailador;
@@ -92,7 +93,7 @@ sub de-supply-response($response) {
         $body.wait;
         return [$response[0], $response[1], |@result];
     }
-    die "body must be a Supply";
+    die colored("body must be a Supply", 'red');
 }
 
 sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
