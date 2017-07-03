@@ -13,7 +13,12 @@ if AUTHOR {
     for Path::Iterator.skip-vcs.ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
         check_tidy($file);
     }
+    for Path::Iterator.skip-vcs.in('examples') -> $file {
+        next if not $file.f;
+        check_tidy($file);
+    }
     check_tidy('bin/bailador');
+    check_tidy('README.md');
     done-testing;
 }
 else {

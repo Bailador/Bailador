@@ -6,7 +6,7 @@ use Bailador::CLI;
 my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
 
 multi sub MAIN('new', Str :$name) {
-    if not $name -> {
+    if not $name {
         say "--name=Project-Name is a required parameter";
         return;
     }

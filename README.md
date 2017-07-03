@@ -226,7 +226,7 @@ subroutine parameters.
 
 ```Perl6
     get "/foo/(.+)" => sub ( $route ) {
-		return "What a $route";
+        return "What a $route";
     }
 ```
 
@@ -447,7 +447,7 @@ and set backend to this class name.
 
 ## Configuration
 
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method. 
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method.
 
 ```perl6
 # directly

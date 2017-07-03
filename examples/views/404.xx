@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Custom 404 page</title>
-	<meta charset="UTF-8">
+        <meta charset="UTF-8">
     </head>
     <body>
         <h1>Hello, this is 404 for you.</h1>

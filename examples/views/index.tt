@@ -1,4 +1,4 @@
 <form action='/new_paste' method='post'>
-	<textarea name='content' cols=50 rows=10></textarea><br />
-	<input type='submit' value='Paste it!' />
+    <textarea name='content' cols=50 rows=10></textarea><br />
+    <input type='submit' value='Paste it!' />
 </form>
