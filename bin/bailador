@@ -6,38 +6,38 @@ use Bailador::CLI;
 my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
 
 multi sub MAIN('new', Str :$name) {
-	if not $name -> {
+    if not $name -> {
         say "--name=Project-Name is a required parameter";
         return;
-	}
-	say "Generating $name";
-	if $name.IO.e {
-		say "$name already exists. Exiting.";
-		exit;
-	}
-	mkdir $name;
-	my %skeleton = skeleton();
-	#say %skeleton;
+    }
+    say "Generating $name";
+    if $name.IO.e {
+        say "$name already exists. Exiting.";
+        exit;
+    }
+    mkdir $name;
+    my %skeleton = skeleton();
+    #say %skeleton;
 
-	for %skeleton.keys -> $file {
-		say $file;
-		if $file.rindex('/')
-		{
-			my $sep = $file.rindex('/');
-			my $dir = $file.substr(0, $sep);
-			mkdir "$name/$dir";
-		}
-		spurt "$name/$file", %skeleton{$file};
-	}
+    for %skeleton.keys -> $file {
+        say $file;
+        if $file.rindex('/')
+        {
+            my $sep = $file.rindex('/');
+            my $dir = $file.substr(0, $sep);
+            mkdir "$name/$dir";
+        }
+        spurt "$name/$file", %skeleton{$file};
+    }
 }
 
 multi sub MAIN('version') {
-	my $root = $*PROGRAM.absolute.IO.dirname;
-	$root = $root.IO.dirname;
-	my $meta_filename = "$root/../Bailador/META6.json";
-	my $json = $meta_filename.IO.slurp: :close;
-	my $version = from-json($json)<version>;
-	say "Bailador " ~ $version;
+    my $root = $*PROGRAM.absolute.IO.dirname;
+    $root = $root.IO.dirname;
+    my $meta_filename = "$root/../Bailador/META6.json";
+    my $json = $meta_filename.IO.slurp: :close;
+    my $version = from-json($json)<version>;
+    say "Bailador " ~ $version;
 }
 
 #| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected
