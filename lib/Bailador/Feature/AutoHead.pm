@@ -16,7 +16,7 @@ role Bailador::Feature::AutoHead {
         my %found-get;
 
         for $route.routes -> $child-route {
-            generate-head-routes($child-route);
+            generate-head-routes($child-route, $app);
 
             if 'GET' ~~ any( $child-route.method ) && 'HEAD' !~~ any ( $child-route.method ) {
                 # found a route with GET but no HEAD
