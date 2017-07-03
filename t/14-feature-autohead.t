@@ -14,7 +14,10 @@ get '/123' => sub { '/123' };
 prefix '/abc' => sub {
 
     get  '/x' => sub { '/abc/x' };
-    head '/x' => sub { '' };
+    head '/x' => sub {
+        # text/plain to prove its not a AutoHead HEAD route
+        app.render: :type('text/plain'), :content('')
+    };
 
     get  '/y' => sub { '/abc/y' };
 
@@ -31,7 +34,7 @@ is-deeply get-psgi-response('GET',  '/abc/def'),   [404, ["Content-Type" => "tex
 is-deeply get-psgi-response('GET',  '/abc/def/g'), [200, ["Content-Type" => "text/html"], '/abc/def/g'],               'route GET /abc/def/g';
 
 # explicit HEAD
-is-deeply get-psgi-response('HEAD', '/abc/x'),     [200, ["Content-Type" => "text/html"], ''],                         'route HEAD /abc/x';
+is-deeply get-psgi-response('HEAD', '/abc/x'),     [200, ["Content-Type" => "text/plain"], ''],                        'route HEAD /abc/x';
 
 # autohead
 is-deeply get-psgi-response('HEAD',  '/123'),      [200, ["Content-Type" => "text/html"], ''],                         'route HEAD /123';
