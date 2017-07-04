@@ -6,7 +6,7 @@ use Bailador::App;
 use Bailador::Request;
 use Bailador::Template;
 
-unit module Bailador;
+unit module Bailador:ver<0.0.7>;
 
 my $app;
 

@@ -2,6 +2,7 @@
 use v6;
 use JSON::Fast;
 use Bailador::CLI;
+use Bailador;
 
 my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
 
@@ -32,12 +33,7 @@ multi sub MAIN('new', Str :$name) {
 }
 
 multi sub MAIN('version') {
-    my $root = $*PROGRAM.absolute.IO.dirname;
-    $root = $root.IO.dirname;
-    my $meta_filename = "$root/../Bailador/META6.json";
-    my $json = $meta_filename.IO.slurp: :close;
-    my $version = from-json($json)<version>;
-    say "Bailador " ~ $version;
+    say "Bailador " ~ Bailador.^ver;
 }
 
 #| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected

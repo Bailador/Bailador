@@ -1,3 +1,4 @@
+    - Ticket #164 - bin/bailador version should work even after installation 
     - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
     - Named arguments to bin/bailador such as --config can now be anywhere
     - Added documentation to the usage of bin/bailador
