@@ -22,7 +22,7 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
 
 ## Release
 
-* Upgrade the version in META6.json
+* Upgrade the version in Bailador.pm (and META6.json, but META6.json gets its update automatically from mi6)
 * Check for missings entries in the Change file (git log)
 * Commit and Push this changes to the dev branch.
 * Merge dev in main and tag it with the current version.
