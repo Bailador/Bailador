@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador;
 use Bailador::Test;
 
@@ -30,8 +32,8 @@ post '/utf8' => sub {
 is-deeply get-psgi-response('GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
 is-deeply get-psgi-response('POST', '/bar'),  [200, ["Content-Type" => "text/html"], 'peti bar'],       'route POST /bar returns content';
 
-is-deeply get-psgi-response('POST', '/foo'),  [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'],      'route POST /foo not found';
-is-deeply get-psgi-response('GET',  '/bar'),  [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'],      'route GET /bar not found';
+is-deeply get-psgi-response('POST', '/foo'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route POST /foo not found';
+is-deeply get-psgi-response('GET',  '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route GET /bar not found';
 
 is-deeply get-psgi-response('GET',  '/params/bar'),   [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /params/bar returns content';
 is-deeply get-psgi-response('GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /regexes/bar returns content';

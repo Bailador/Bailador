@@ -1,3 +1,13 @@
+    - Ticket #164 - bin/bailador version should work even after installation 
+    - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
+    - Named arguments to bin/bailador such as --config can now be anywhere
+    - Added documentation to the usage of bin/bailador
+    - Ticket #111 - added a test for Bailador::Configuration which evaluates %*ENV and overrides settings file according #161
+    - Ticket #170 - error handlers use Content-Type header according to RFC 2616
+    - Ticket #166 and #167 - The command 'watch' watches the app.pl file as well as all files or dirs
+      that are stated in '-w' command line switch
+    - Add custom error handing functions #131
+
 0.0.6 2017.6.27
     - Ticket #147 - no test output for t/08-* testcases
     - Added a test case for bailador watch command

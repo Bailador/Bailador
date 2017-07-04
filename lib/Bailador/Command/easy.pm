@@ -1,7 +1,8 @@
-use v6;
+use v6.c;
+
+use HTTP::Easy::PSGI;
 
 use Bailador::Command;
-use HTTP::Easy::PSGI;
 
 class Bailador::Command::easy does Bailador::Command {
     method run(:$app) {

@@ -1,8 +1,10 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::Test;
 
-plan 8;
+plan 15;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 my $app = EVALFILE "examples/app.pl6";
@@ -17,6 +19,16 @@ subtest {
     like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';
 
+subtest {
+    plan 3;
+    my %data = run-psgi-request($app, 'GET', '/style.css');
+    my $css = %data<response>[2].decode;
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/css"], ""], 'route GET /style.css';
+    is %data<err>, '';
+    is $css, qq{body { margin: 0px; }\n};
+}, 'testcase for Bailador::Route::StaticFile';
+
 
 subtest {
     plan 2;
@@ -29,7 +41,7 @@ subtest {
     plan 3;
     my %data = run-psgi-request($app, 'GET', '/die');
     is %data<response>[0], 500;
-    is-deeply %data<response>[1], ["Content-Type" => "text/html, charset=utf-8"];
+    is-deeply %data<response>[1], ["Content-Type" => "text/html;charset=UTF-8"];
     like %data<err>, rx:s/This is an exception so you can see how it is handled/, 'stderr';
 }, '/die';
 
@@ -46,6 +58,38 @@ subtest {
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'Hello Foo!'], 'route GET /hello/Foo';
     is %data<err>, '';
 }, '/hello/Foo';
+
+todo "See https://github.com/Bailador/Bailador/issues/178";
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/hello/Foo.html');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'Hello Foo.html!'], 'route GET /hello/Foo.html';
+    is %data<err>, '';
+}, '/hello/foo.html';
+
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/abc');
+    is-deeply %data<response>, [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /abc';
+    is %data<err>, '';
+}, '/abc';
+
+#todo 'See https://github.com/Bailador/Bailador/issues/177';
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/hello/Foo/Bar');
+    is-deeply %data<response>, [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /hello/Foo/Bar';
+    is %data<err>, '';
+}, '/hello/Foo/Bar';
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/def/egy/ketto');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], q{Hello 'egy' and 'ketto'!}], 'route GET /def/egy/ketto';
+    is %data<err>, '';
+}, '/def/egy/ketto';
+
 
 subtest {
     plan 2;
@@ -76,8 +120,19 @@ subtest {
 #    is %data<err>, '';
 #}, '/template/Camelia';
 
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'HEAD', '/');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route HEAD /';
+    is %data<err>, '';
+}, '/';
 
-
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'HEAD', '/about');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route HEAD /about';
+    is %data<err>, '';
+}, '/';
 
 # vim: expandtab
 # vim: tabstop=4

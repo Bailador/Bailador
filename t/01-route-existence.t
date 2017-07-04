@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador;
 use Bailador::Test;
 
@@ -12,9 +14,9 @@ post '/bar' => sub { }
 post '/echo3/:text' => sub ($text) { return 'Echo3: ' ~ join('-', $text,  (request.params<text> // ''), (request.params('body')<text> // ''), (request.params('query')<text> // ''))}
 
 is-deeply get-psgi-response('GET', '/foo'),  [200, ["Content-Type" => "text/html"], Any],              'route GET /foo exists';
-is-deeply get-psgi-response('POST', '/foo'), [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route POST /foo does not exist';
+is-deeply get-psgi-response('POST', '/foo'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';
 is-deeply get-psgi-response('POST', '/bar'), [200, ["Content-Type" => "text/html"], Any],              'route POST /bar exists';
-is-deeply get-psgi-response('GET', '/bar'),  [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route GET /bar does not exist';
+is-deeply get-psgi-response('GET', '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /bar does not exist';
 
 is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo'),               [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo';
 is-deeply get-psgi-response('GET', 'http://127.0.0.1:1234/echo?text=bar'),      [200, ["Content-Type" => "text/html"], 'Echo: bar'], 'echo with text';
@@ -62,5 +64,3 @@ is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/f?text=bar', 'text=fo
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/g?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_type';  # ???
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/h?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_length';  # ???
 is-deeply get-psgi-response('POST', 'http://127.0.0.1:9876/i?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'text=foo'], 'body';
-
-

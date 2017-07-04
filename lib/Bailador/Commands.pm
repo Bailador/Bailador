@@ -1,4 +1,4 @@
-use v6;
+use v6.c;
 
 use Bailador::Command::easy;
 use Bailador::Command::ogre;

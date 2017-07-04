@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::Test;
 
 plan 6;
@@ -46,7 +48,7 @@ subtest {
     plan 4;
     my %data = run-psgi-request($app, 'GET', '/xyz');
     is %data<response>[0], 404;
-    is-deeply %data<response>[1], ["Content-Type" => "text/html, charset=utf-8"];
+    is-deeply %data<response>[1], ["Content-Type" => "text/plain;charset=UTF-8"];
     is-deeply %data<response>[2], 'Not found';
     is %data<err>, '', 'stderr';
 }, '/xyz';

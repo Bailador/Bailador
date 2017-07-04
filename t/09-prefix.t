@@ -1,7 +1,9 @@
-use v6;
+use v6.c;
+
 use Test;
-use Bailador::Test;
+
 use Bailador;
+use Bailador::Test;
 
 plan 3;
 
@@ -66,7 +68,7 @@ subtest {
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
 
     is-deeply get-psgi-response('GET', '/xyz/2/x'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/x'], 'route GET /xyz/2/x';
-    is-deeply get-psgi-response('GET', '/xyz/3/y'), [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route GET /xyz/3/y';
+    is-deeply get-psgi-response('GET', '/xyz/3/y'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /xyz/3/y';
     is-deeply get-psgi-response('GET', '/xyz/2'),   [200, ["Content-Type" => "text/html"], '/xyz/:foo'], 'route GET /xyz/2';
     is($prefixone-execution , 3 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
@@ -95,4 +97,3 @@ subtest {
     is($prefixone-execution , 0 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next executed 4 times');
 };
-

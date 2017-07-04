@@ -2,58 +2,61 @@
 use v6;
 use JSON::Fast;
 use Bailador::CLI;
+use Bailador;
+
+my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
 
 multi sub MAIN('new', Str :$name) {
-	if not $name -> {
+    if not $name {
         say "--name=Project-Name is a required parameter";
         return;
-	}
-	say "Generating $name";
-	if $name.IO.e {
-		say "$name already exists. Exiting.";
-		exit;
-	}
-	mkdir $name;
-	my %skeleton = skeleton();
-	#say %skeleton;
+    }
+    say "Generating $name";
+    if $name.IO.e {
+        say "$name already exists. Exiting.";
+        exit;
+    }
+    mkdir $name;
+    my %skeleton = skeleton();
+    #say %skeleton;
 
-	for %skeleton.keys -> $file {
-		say $file;
-		if $file.rindex('/')
-		{
-			my $sep = $file.rindex('/');
-			my $dir = $file.substr(0, $sep);
-			mkdir "$name/$dir";
-		}
-		spurt "$name/$file", %skeleton{$file};
-	}
+    for %skeleton.keys -> $file {
+        say $file;
+        if $file.rindex('/')
+        {
+            my $sep = $file.rindex('/');
+            my $dir = $file.substr(0, $sep);
+            mkdir "$name/$dir";
+        }
+        spurt "$name/$file", %skeleton{$file};
+    }
 }
 
 multi sub MAIN('version') {
-	my $root = $*PROGRAM.absolute.IO.dirname;
-	$root = $root.IO.dirname;
-	my $meta_filename = "$root/../Bailador/META6.json";
-	my $json = $meta_filename.IO.slurp: :close;
-	my $version = from-json($json)<version>;
-	say "Bailador " ~ $version;
+    say "Bailador " ~ Bailador.^ver;
 }
 
+#| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected
 multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
     bootup-file('watch', $app, $w, $config);
 }
 
+#| Invokes your app on top of HTTP::Easy
 multi sub MAIN ('easy', Str $app, Str :$config) {
     bootup-file('easy', $app, $config);
 }
 
+#| Displayes all the routes of your app
 multi sub MAIN ('routes', Str $app, Str :$config) {
     bootup-file('routes', $app, $config);
 }
 
+#| Invokes your app on top of HTTP::Server::Ogre
 multi sub MAIN ('ogre', Str $app, Str :$config) {
     bootup-file('ogre', $app, $config);
 }
 
+#| Invokes your app on top of HTTP::Server::Tiny
 multi sub MAIN ('tiny', Str $app, Str :$config) {
     bootup-file('tiny', $app, $config);
 }

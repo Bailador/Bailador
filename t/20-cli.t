@@ -1,11 +1,11 @@
-use v6;
-use File::Temp;
-
+use v6.c;
 use lib 'lib','t/lib';
-use Test;
-use Helpers;
 
-plan 4;
+use File::Temp;
+use Helpers;
+use Test;
+
+plan 5;
 
 my $dir = tempdir();
 #diag $dir;
@@ -22,6 +22,16 @@ subtest {
     is $p.out.get, Nil;
     #diag $p.out.slurp: :close;
 }, 'Show Usage when no parameter is supplied.';
+
+subtest {
+    plan 2;
+
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', :out, :err;
+    is $p.out.get, '--name=Project-Name is a required parameter';
+    is $p.err.get, Nil;
+    #diag $p.out.slurp: :close;
+}, 'Show Usage when --name is not supplied.';
+
 
 
 subtest {

@@ -5,7 +5,7 @@ unit module Bailador::CLI;
 sub skeleton() is export {
     my %skeleton;
 %skeleton{'bin/app.pl6'} =
-q{use v6;
+q{use v6.c;
 use Bailador;
 Bailador::import();
 
@@ -19,7 +19,7 @@ baile();
 };
 
 %skeleton{'t/app.t'} =
-q{use v6;
+q{use v6.c;
 use Test;
 use Bailador::Test;
 
@@ -66,8 +66,15 @@ q{
 
 my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
 
-    my @watchlist = $w.split: /<!after \\> \,/;
-    s/\\\,/,/ for @watchlist;
+    my @watchlist;
+
+    if $w {
+        my @list = $w.split: /<!after \\> \,/;
+        s/\\\,/,/ for @list;
+        @watchlist = @list.grep: *.IO.e;
+    }
+
+    @watchlist.unshift: $app;
 
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
 
@@ -104,4 +111,3 @@ sub repo-to-includes is export {
     }
     return @includes;
 }
-

@@ -1,16 +1,18 @@
-use v6;
+use v6.c;
 
-use Bailador::Context;
-use Bailador::Route;
-use Bailador::Template::Mojo;
-use Bailador::Sessions;
-use Bailador::Exceptions;
-use Bailador::ContentTypes;
-use Bailador::Configuration;
-use Bailador::Commands;
-use Bailador::LogAdapter;
-use Template::Mojo;
 use Log::Any;
+use Template::Mojo;
+
+use Bailador::Commands;
+use Bailador::Configuration;
+use Bailador::ContentTypes;
+use Bailador::Context;
+use Bailador::Exceptions;
+use Bailador::LogAdapter;
+use Bailador::Route;
+use Bailador::Sessions;
+use Bailador::Template::Mojo;
+
 
 class Bailador::App is Bailador::Route {
     has Str $.location is rw = '.';
@@ -21,6 +23,21 @@ class Bailador::App is Bailador::Route {
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
     has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
+    has %.error_handlers;
+
+    submethod TWEAK {
+        self.load-config();
+    }
+
+    method load-config {
+        if %*ENV<BAILADOR_CONFIGFILE> {
+            $!config.config-file = %*ENV<BAILADOR_CONFIGFILE>;
+        }
+        if $!config.check-config-file($!location.IO) {
+            $!config.load-from-file($!location.IO);
+        }
+        $!config.load-from-env();
+    }
 
     method request  { $.context.request  }
     method response { $.context.response }
@@ -67,6 +84,10 @@ class Bailador::App is Bailador::Route {
         $.context.autorender = False;
         self.response.code = $code;
         self.response.headers<Location> = $location;
+    }
+
+    method add_error(Pair $x) {
+        self.error_handlers{$x.key} = $x.value;
     }
 
     method !sessions() {
@@ -159,14 +180,14 @@ class Bailador::App is Bailador::Route {
                     self.render(content => Any);
                 }
                 when X::Bailador::NoRouteFound {
-                    my $err-page;
-                    if $!location.defined {
-                        $err-page = "$!location/views/404.xx".IO.e ?? self.template("404.xx", []) !! 'Not found';
-                    } else {
-                        $err-page = 'Not found';
-                    }
                     Log::Any.notice("No Route was Found for $method $uri");
-                    self.render(status => 404, type => 'text/html, charset=utf-8', content => $err-page);
+                    if self.error_handlers{404} {
+                        self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.error_handlers{404}());
+                    } elsif $!location.defined && "$!location/views/404.xx".IO.e {
+                        self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.template("404.xx", []));
+                    } else {
+                        self.render(:status(404), :type<text/plain;charset=UTF-8>, content => 'Not found');
+                    }
                 }
                 default {
                     Log::Any.error(.gist);
@@ -182,12 +203,14 @@ class Bailador::App is Bailador::Route {
                     if $!config.mode eq 'development' {
                         state $error-template = Template::Mojo.new(%?RESOURCES<error.template>.IO.slurp);
                         $err-page = $error-template.render($_, self.request());
-                    } elsif $!location.defined {
-                        $err-page = "$!location/views/500.xx".IO.e ?? self.template("500.xx", []) !! 'Internal Server Error';
+                        self.render(status => 500, type => 'text/html;charset=UTF-8', content => $err-page);
+                    } elsif self.error_handlers{500} {
+                        self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.error_handlers{500}());
+                    } elsif $!location.defined && "$!location/views/500.xx".IO.e {
+                        self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.template("500.xx", []));
                     } else {
-                        $err-page = 'Internal Server Error';
+                        self.render(:status(500), :type<text/plain;charset=UTF-8>, content => 'Internal Server Error');
                     }
-                    self.render(status => 500, type => 'text/html, charset=utf-8', content => $err-page);
                 }
             }
         }

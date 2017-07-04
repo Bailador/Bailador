@@ -1,18 +1,18 @@
 use v6.c;
+
+use HTTP::Easy::PSGI;
+
 use Bailador::App;
 use Bailador::Request;
 use Bailador::Template;
-use HTTP::Easy::PSGI;
 
-unit module Bailador;
+unit module Bailador:ver<0.0.7>;
 
 my $app;
 
 multi sub app {
     unless $app {
         $app = Bailador::App.new;
-        $app.config.load-from-file();
-        $app.config.load-from-env();
     }
     return $app;
 }
@@ -23,6 +23,17 @@ multi sub app(Bailador::App $myapp) is export {
 
 our sub import(Str :$rootdir) {
     app.location = $rootdir || callframe(1).file.IO.dirname;
+}
+
+sub error(Pair $x) is export {
+    app.add_error: $x;
+    return $x;
+}
+
+sub use-feature(Str $feature-name) is export {
+    my $feature = 'Bailador::Feature::' ~ $feature-name;
+    require ::($feature);
+    app() does ::($feature);
 }
 
 sub get(Pair $x) is export {
@@ -48,6 +59,11 @@ sub delete(Pair $x) is export {
 sub patch(Pair $x) is export {
     app.add_route: 'PATCH', $x;
     return $x;
+}
+
+sub head(Pair $x) is export {
+    app.add_route: 'HEAD', $x;
+    return $x
 }
 
 sub prefix(Pair $x) is export {

@@ -1,6 +1,6 @@
 # Bailador
 
-[![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/Bailador/Bailador/branch/master)
+[![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/Bailador/Bailador/branch/main)
 
 A light-weight route-based web application framework for Perl 6.
 
@@ -226,7 +226,7 @@ subroutine parameters.
 
 ```Perl6
     get "/foo/(.+)" => sub ( $route ) {
-		return "What a $route";
+        return "What a $route";
     }
 ```
 
@@ -447,7 +447,7 @@ and set backend to this class name.
 
 ## Configuration
 
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method. 
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method.
 
 ```perl6
 # directly

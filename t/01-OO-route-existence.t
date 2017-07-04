@@ -1,5 +1,7 @@
-use v6;
+use v6.c;
+
 use Test;
+
 use Bailador::Test;
 
 plan 9 + 9 + 9;
@@ -40,9 +42,9 @@ my $app = MyOwnWebApp.new;
 
 
 is-deeply get-psgi-response($app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html"], Any],              'route GET /foo exists';
-is-deeply get-psgi-response($app, 'POST', '/foo'), [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route POST /foo does not exist';
+is-deeply get-psgi-response($app, 'POST', '/foo'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';
 is-deeply get-psgi-response($app, 'POST', '/bar'), [200, ["Content-Type" => "text/html"], Any],              'route POST /bar exists';
-is-deeply get-psgi-response($app, 'GET', '/bar'),  [404, ["Content-Type" => "text/html, charset=utf-8"], 'Not found'], 'route GET /bar does not exist';
+is-deeply get-psgi-response($app, 'GET', '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /bar does not exist';
 is-deeply get-psgi-response($app, 'GET', 'http://127.0.0.1:1234/echo'),               [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo';
 is-deeply get-psgi-response($app, 'GET', 'http://127.0.0.1:1234/echo?text=bar'),      [200, ["Content-Type" => "text/html"], 'Echo: bar'], 'echo with text';
 is-deeply get-psgi-response($app, 'GET', 'http://127.0.0.1:1234/echo2/foo'),          [200, ["Content-Type" => "text/html"], 'Echo2: foo---'], 'echo with text';

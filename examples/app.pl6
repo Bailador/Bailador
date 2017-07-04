@@ -1,10 +1,11 @@
 #!/usr/bin/env perl6
 
-use v6;
+use v6.c;
 use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
 
+use-feature('AutoHead');
 app.config.mode = 'development';
 
 # simple cases
@@ -15,7 +16,10 @@ get '/' => sub {
    <li><a href="/red">Redirect to not existing page</a></li>
    <li><a href="/die">Throw an exception</a></li>
    <li><a href="/about">Simple text</a></li>
-   <li><a href="/hello/Foo Bar">Say hello</a></li>
+   <li><a href="/hello/Foo Bar">Say hello to Foo Bar</a></li>
+   <li><a href="/hello/Foo.html">Say hello to Foo.html</a></li>
+   <li><a href="/hello/Foo/Bar">This should be a 404</a></li>
+   <li><a href="/def/Foo/Bar">This should work</a></li>
    <li><a href="/fooBarMoo">Routing</a></li>
    <li><a href="/one-two-three">Routing</a></li>
    <li><a href="/template/abc">Use a template</a></li>
@@ -32,13 +36,19 @@ get '/die' => sub {
     "hello world"
 }
 
-get '/about' => sub {
+head '/about' => sub { "" }
+get '/about'  => sub {
     "about me"
 }
 
 get '/hello/:name' => sub ($name) {
     "Hello $name!"
 };
+
+get '/def/:one/:two' => sub ($first, $second) {
+    "Hello '$first' and '$second'!"
+};
+
 
 get '/info' => sub {
     say %*ENV<P6SGI_CONTAINER>;
@@ -70,7 +80,7 @@ get '/env' => sub {
     $result;
 }
 
-app.add_route: Bailador::Route::StaticFile.new: directory => $?FILE.IO.parent.child('public'), path => / (.*) /;
+app.add_route: Bailador::Route::StaticFile.new: directory => $?FILE.IO.parent.child('examples/public'), path => / (.*) /;
 
 prefix '/media' => sub {
     prefix '/video' => sub {

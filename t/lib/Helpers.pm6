@@ -1,4 +1,5 @@
-use v6;
+use v6.c;
+
 unit module Test::Helpers;
 
 sub wait-port(int $port, Str $host='0.0.0.0', :$sleep=0.1, int :$times=600) is export {

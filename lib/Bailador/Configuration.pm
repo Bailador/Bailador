@@ -1,6 +1,8 @@
-use v6;
+use v6.c;
 
 use YAMLish;
+
+my @config-file-extensions = 'yml', 'yaml';
 
 class Bailador::Configuration {
     ## CONFIGURATION FILE
@@ -55,16 +57,24 @@ class Bailador::Configuration {
         }
     }
 
-    method load-from-file() {
-        unless $.config-file.IO.e {
-            # warn "The configuration file wasn't found.";
-            # warn "Bailador will use his default configuration.";
-            return
+    method check-config-file(IO::Path $path) {
+        my $file = $path.child(self.config-file);
+        if $file.IO ~~ :e && @config-file-extensions.contains($file.IO.extension) {
+            return True;
+        } elsif $file.IO !~~ :e {
+            warn "The configuration file $file wasn't found." unless self.config-file ~ 'settings.yaml';
+            return False;
+        } elsif not @config-file-extensions.contains($file.IO.extension) {
+            warn $file.IO.extension ~ ' format is not supported.';
+            return False;
         }
+    }
 
-        if $.config-file.IO.extension ~~ 'yaml' | 'yml' {
+    method load-from-file(IO::Path $path) {
+        my $file = $path.child($.config-file);
+        if $file.IO.extension ~~ 'yaml' | 'yml' {
             try {
-                my $yaml = slurp $.config-file;
+                my $yaml = slurp $file;
                 my %config = load-yaml($yaml);
                 self.load-from-hash(%config);
                 return;
