@@ -54,6 +54,7 @@
     "Bailador::ContentTypes" : "lib/Bailador/ContentTypes.pm",
     "Bailador::Context" : "lib/Bailador/Context.pm",
     "Bailador::Exceptions" : "lib/Bailador/Exceptions.pm",
+    "Bailador::Feature::AutoHead" : "lib/Bailador/Feature/AutoHead.pm",
     "Bailador::Gradual" : "lib/Bailador/Gradual.pm",
     "Bailador::LogAdapter" : "lib/Bailador/LogAdapter.pm",
     "Bailador::Request" : "lib/Bailador/Request.pm",
