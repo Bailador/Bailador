@@ -22,9 +22,12 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
 
 ## Release
 
-* Upgrade the version in Bailador.pm (and META6.json, but META6.json gets its update automatically from mi6)
+* Install mi6 package `zef install App:Mi6`
+* Upgrade the version in lib/Bailador.pm
+* Run 'mi6 build' in order to update the META6.json
+* Revert changes to README.md with `git checkout README.md` (Ticket #151)
 * Check for missings entries in the Change file (git log)
-* Commit and Push this changes to the dev branch.
+* Commit and push this changes to the dev branch.
 * Merge dev in main and tag it with the current version.
    - `git checkout main`
    - `git pull`
@@ -32,9 +35,8 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
    - `git tag 0.x.y`
    - `git push`
    - `git push origin 0.x.y`
-* Install mi6 package `zef install App:Mi6`
 * Run `mi6 dist`
-* Revert Changes to README.md with `git checkout README.md` (Ticket #151)
+* Revert changes to README.md with `git checkout README.md` (Ticket #151)
 * Copy README.md to Bailador-0.x.y/README.md
 * Build the tarball with `tar cvfz Bailador-0.x.y.tar.gz Bailador-0.x.y`
 * Upload to PAUSE
