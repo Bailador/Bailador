@@ -152,6 +152,14 @@ role Bailador::Routing {
         self.add_route: 'PATCH', $x;
         return $x;
     }
+
+    method static-dir(Pair $x) {
+        my $path = $x.key;
+        my IO $directory = $x.value ~~ IO ?? $x.value !! $*PROGRAM.parent.child($x.value.Str);
+        require Bailador::Route::StaticFile;
+        self.add_route: Bailador::Route::StaticFile.new(path => $x.key, directory => $directory);
+        return $x;
+    }
 }
 
 class Bailador::Route does Bailador::Routing {

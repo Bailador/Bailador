@@ -66,6 +66,10 @@ sub head(Pair $x) is export {
     return $x
 }
 
+sub static-dir(Pair $x) is export {
+    app.static-dir: $x;
+}
+
 sub prefix(Pair $x) is export {
     app.prefix($x);
 }

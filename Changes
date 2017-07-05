@@ -1,3 +1,6 @@
+    - Ticket #190 - Added syntactic suggar for static-dir routes
+
+0.0.7 2017.07.04
     - Ticket #164 - bin/bailador version should work even after installation 
     - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
     - Named arguments to bin/bailador such as --config can now be anywhere
@@ -8,7 +11,7 @@
       that are stated in '-w' command line switch
     - Add custom error handing functions #131
 
-0.0.6 2017.6.27
+0.0.6 2017.06.27
     - Ticket #147 - no test output for t/08-* testcases
     - Added a test case for bailador watch command
     - Added Bailador::Commands for
