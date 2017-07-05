@@ -3,6 +3,7 @@ use v6.c;
 use Test;
 
 use Bailador::App;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 5;
@@ -10,21 +11,21 @@ plan 5;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
         self.config.cookie-expiration = 5;
-        self.get: '/setsession' => sub {
+        self.add_route: make-simple-route('GET','/setsession' => sub {
             my $session = self.session;
             $session<key> = 'value';
             "with session";
-        }
+        });
 
-        self.get: '/readsession' => sub {
+        self.add_route: make-simple-route('GET','/readsession' => sub {
             my $session = self.session;
             $session<key> || 'no value';
-        }
+        });
 
-        self.get: '/deletesession' => sub {
+        self.add_route: make-simple-route('GET','/deletesession' => sub {
             self.session-delete;
             "session should be deleted";
-        }
+        });
     }
 }
 

@@ -3,7 +3,7 @@ use v6.c;
 use Test;
 
 use Bailador::App;
-use Bailador::Route;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 10;
@@ -15,13 +15,13 @@ class MyOwnWebApp is Bailador::App {
         self.config.cookie-expiration = 5;
 
         # routes
-        self.post: '/login/:user' => sub {
+        self.add_route: make-simple-route('POST',  '/login/:user' => sub {
             my $user = @_[0];
             my $session = self.session;
             $session<user> = $user;
             self.render: "logged in";
-        }
-        my $route = Bailador::Route.new('ANY', '/app', sub {
+        });
+        my $route = make-prefix-route('/app', sub {
             my $session = self.session;
             # go deeper into the nested routes
             return True if self.session<user>;
@@ -29,18 +29,18 @@ class MyOwnWebApp is Bailador::App {
             # go to a next route that matches the request
             return False;
         });
-        $route.get: '/something' => self.curry: 'something';
-        $route.get: '/logout' => sub {
+        $route.add_route: make-simple-route('GET','/something' => self.curry: 'something');
+        $route.add_route: make-simple-route('GET','/logout' => sub {
             self.session-delete;
             self.render: "logged out";
-        };
+        });;
         self.add_route: $route;
 
         # catch all route
-        self.get: /.*/ => sub {
+        self.add_route: make-simple-route('GET',/.*/ => sub {
             self.session-delete;
             self.render: "this is the login page / catch all route";
-        };
+        });
     }
 
     method something {

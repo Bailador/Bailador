@@ -3,7 +3,7 @@ use v6.c;
 use Bailador::Exceptions;
 use Bailador::Request;
 
-class Bailador::Route { ... }
+role Bailador::Route { ... }
 
 role Bailador::Routing {
     ## !! those two members are *actually* private, due to
@@ -18,9 +18,8 @@ role Bailador::Routing {
     ## Route Dispatch Stuff
     method recurse-on-routes(Str $method, Str $uri) {
         for @.routes -> $r {
-            if $r!match: $method, $uri -> $match {
-                my @params = $match.list;
-                my $result = $r.code.(|@params);
+            if $r.match: $method, $uri -> $match {
+                my $result = $r.execute($match);
 
                 if $result ~~ Failure {
                     $result.exception.throw;
@@ -34,7 +33,8 @@ role Bailador::Routing {
                             $match.to == $match.from ??
                             $uri.substr($match.to) !!
                             $match.postmatch;
-                        return $r.recurse-on-routes($method, $postmatch);
+                        my $prematch = $match.prematch;
+                        return $r.recurse-on-routes($method, $prematch ~ $postmatch);
                         CATCH {
                             when X::Bailador::NoRouteFound {
                                 # continue with the next route
@@ -53,35 +53,14 @@ role Bailador::Routing {
         die X::Bailador::NoRouteFound.new;
     }
 
-    method !match (Str $method, Str $path) {
-        if @.method {
-            return False if @.method.any ne $method
-        }
-
-        my Match $match = $path ~~ $.path;
-        if @.routes {
-            # we have children routes -- so this is a prefixroute
-            # its okay not to match the whole regular expression.
-
-            return $match if $match;
-        } else {
-            return $match if $match and $match.postmatch eq '';
-        }
-        return False;
-    }
 
     ## Add Routes#
     multi method add_route(Bailador::Route $route) {
         my $curr = self!get_current_route();
         # avoid obvious duplicate routes
-        my $matches = $curr.routes.grep({ $_.method.Str eq $route.method.Str and $_.path.perl eq $route.path.perl });
-        die "duplicate route: {$route.method.Str} {$route.path.perl}" if $matches;
+        my $matches = $curr.routes.first({ $_.is-similar-to($route) });
+        die "duplicate route: {$route.gist}" if $matches;
         $curr.routes.push($route);
-    }
-
-    multi method add_route(Str $method, Pair $x) {
-        my $route = Bailador::Route.new($method, $x);
-        self.add_route($route);
     }
 
     ## Prefix Route Stuff
@@ -111,88 +90,81 @@ role Bailador::Routing {
         return self;
     }
 
-    multi method prefix(Pair $x){
-        self.prefix($x.key, $x.value);
-    }
-
-    multi method prefix(Str $prefix, Callable $code) {
+     method prefix(Bailador::Route $prefix, Callable $code) {
         my $curr = self!get_current_route();
-        $curr!set-prefix-route( Bailador::Route.new('ANY', $prefix, sub { True }) );
+        $curr!set-prefix-route( $prefix );
         $code.();
         self!del_current_route();
     }
 
     method prefix-enter(Callable $code) {
         my $curr = self!get_current_route();
-        $curr.code = $code;
-    }
-
-    ## syntactic sugar!
-    method get(Pair $x) {
-        self.add_route: 'GET', $x;
-        return $x;
-    }
-
-    method post(Pair $x) {
-        self.add_route: 'POST', $x;
-        return $x;
-    }
-
-    method put(Pair $x) {
-        self.add_route: 'PUT', $x;
-        return $x;
-    }
-
-    method delete(Pair $x) {
-        self.add_route: 'DELETE', $x;
-        return $x;
-    }
-
-    method patch(Pair $x) {
-        self.add_route: 'PATCH', $x;
-        return $x;
-    }
-
-    method static-dir(Pair $x) {
-        my $path = $x.key;
-        my IO $directory = $x.value ~~ IO ?? $x.value !! $*PROGRAM.parent.child($x.value.Str);
-        require Bailador::Route::StaticFile;
-        self.add_route: Bailador::Route::StaticFile.new(path => $x.key, directory => $directory);
-        return $x;
+        $curr.set-prefix-enter: $code;
     }
 }
 
-class Bailador::Route does Bailador::Routing {
-    subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }
-    has HttpMethod @.method;
-    has Str $.path-str;        # string representation of route path
-    has Regex $.path;
-    has Callable $.code is rw;
+subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }
+subset UrlMatcher where * ~~ Regex|Str;
 
-    sub route_to_regex($route) {
-        $route.split('/').map({
+role Bailador::Route does Bailador::Routing {
+    has HttpMethod @.method is required;
+    has UrlMatcher $.url-matcher is required;
+    has Regex $.regex is rw;
+
+    method execute(Match $match) { ... }
+    method build-regex() { ... }
+
+    submethod BUILD-ROLE(:$method, :$url-matcher) {
+        my @all-methods = <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>;
+        @!method = 'ANY' ~~ any(@$method) ?? @all-methods !! $method;
+        $!url-matcher = $url-matcher;
+    }
+
+    method match (Str $method, Str $path) {
+        if @.method {
+            return False if @.method.any ne $method
+        }
+        return self!url-matcher($path);
+    }
+
+    method !url-matcher(Str $path) {
+
+        unless $.regex {
+            if $.url-matcher ~~ Regex {
+                $.regex = $.url-matcher;
+            } else {
+                $.regex = self.build-regex();
+            }
+        }
+
+        my Match $match = $path ~~ $.regex;
+        #say "path: ", $path, " with regex: ", $.regex, " -> ", $match;
+        return $match;
+    }
+
+    method !get-regex-str {
+        return $.url-matcher.split('/').map({
             my $r = $_;
             if $_.substr(0, 1) eq ':' {
-               $r = q{(<-[\/\.]>+)};
+                $r = q{(<-[\/\.]>+)};
             }
             $r
-        }).join("'/'");
+         }).join("'/'");
     }
 
-    multi submethod new(Str @method, Regex $path, Callable $code, Str $path-str = $path.perl) {
-        self.bless(:@method, :$path, :$code, :$path-str);
+    method route-spec {
+        $.url-matcher ~~ Str ??  $.url-matcher !! $.url-matcher.perl;
     }
-    multi submethod new(Str $method, Regex $path, Callable $code, Str $path-str = $path.perl) {
-        my Str @methods = $method eq 'ANY'
-        ?? <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>
-        !! ($method);
-        self.new(@methods, $path, $code, $path-str);
+
+    method is-similar-to(Bailador::Route $other) {
+        my $r = @.method.Str eq $other.method.Str && $.route-spec eq $other.route-spec;
+        # if $r {
+        #     say "self:  ", self.gist;
+        #     say "other: ", $other.gist;
+        # }
+        return $r;
     }
-    multi submethod new(Str $method, Str $path, Callable $code, Str $path-str = $path.perl) {
-        my $regex = "/ ^ " ~ route_to_regex($path) ~ " [ \$ || <?before '/' > ] /";
-        self.new($method, $regex.EVAL, $code, $path-str);
-    }
-    multi submethod new($meth, Pair $route) {
-        self.new($meth, $route.key, $route.value, $route.key.perl);
+    method gist {
+        self.method.Str ~ " " ~ self.route-spec;
     }
 }
