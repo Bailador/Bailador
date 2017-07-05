@@ -14,7 +14,7 @@ use Bailador::Sessions;
 use Bailador::Template::Mojo;
 
 
-class Bailador::App is Bailador::Route {
+class Bailador::App does Bailador::Routing {
     has Str $.location is rw = '.';
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
