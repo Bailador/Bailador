@@ -15,7 +15,7 @@ class Bailador::Command::routes does Bailador::Command {
     my sub output-tree($method, @path, @is-last) {
         my @indent = map { ' ' x .chars-1 }, @path;
         my @chars = map { ?$_ ?? "   " !! "┃  " }, @is-last;
-        @chars[@chars.end] = @is-last[@is-last.end] ?? "┗━━" !! "┣━━";
+        @chars[@chars.end] = @is-last[@is-last.end] ?? "┗━━" !! "┣━━" if +@is-last;
         my $route = join "", (@indent Z~ @chars), @path[*-1];
         my $meth = $method == 10 ?? "prefix" !! $method;
         put join " ", $meth.fmt("%10s"), $route;
