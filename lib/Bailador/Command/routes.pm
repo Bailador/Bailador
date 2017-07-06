@@ -28,9 +28,9 @@ class Bailador::Command::routes does Bailador::Command {
         @path.push: $path;
         process($r.method, @path, @is-last);
         if $r.routes > 0 {
-            for $r.routes.list.kv -> $i, $v { 
+            for $r.routes.list.kv -> $i, $v {
                 @is-last.push: $i == +$r.routes.end;
-                route-walker($v, &process, @path, @is-last);  
+                route-walker($v, &process, @path, @is-last);
                 @is-last.pop;
             }
         }
