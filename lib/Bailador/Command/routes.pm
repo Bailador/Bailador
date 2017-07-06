@@ -1,30 +1,45 @@
 use v6.c;
 
 use Bailador::Command;
+use Bailador::Route;
 
 class Bailador::Command::routes does Bailador::Command {
-    sub print-routes($prefix,@routes) {
-        for @routes -> $r {
-            # Try to combine the prefix and .path-str
-            # If we don't have a .path-str, call .Str unless it was inherited from Mu
-            # otherwise just output the name of the Route class
-            my $path = $prefix ~ ($r.path-str //
-                                  do { $r.can('Str').[0].package.perl ne 'Mu' && $r.Str() } //
-                                  $r.^name);
-            if $r.routes > 0 {
-                print-routes($path, $r.routes);
-            } else {
-                # because we've concatenated .perl strings,
-                # get rid of the doubled "" in the middle
-                $path ~~ s:g/'""'//;
-                for $r.method.list -> $method {
-                    put join " ", $method.fmt("%10s"), $path;
-                }
+
+    my sub output-plain($method, @path, *@) {
+        my $route = join "", @path;
+        $route ~~ s:g/'""'//;
+        return if $method == 10;
+        put join " ", $method.fmt("%10s"), $route;
+    }
+
+    my sub output-tree($method, @path, @is-last) {
+        my @indent = map { ' ' x .chars-1 }, @path;
+        my @chars = map { ?$_ ?? "   " !! "┃  " }, @is-last;
+        @chars[@chars.end] = @is-last[@is-last.end] ?? "┗━━" !! "┣━━";
+        my $route = join "", (@indent Z~ @chars), @path[*-1];
+        my $meth = $method == 10 ?? "prefix" !! $method;
+        put join " ", $meth.fmt("%10s"), $route;
+    }
+
+    my sub route-walker(Bailador::Route $r, &process, @path, @is-last) {
+        my $path = $r.path-str //
+                   do { $r.can('Str').[0].package.perl ne 'Mu' && $r.Str() } //
+                   $r.^name;
+        @path.push: $path;
+        process($r.method, @path, @is-last);
+        if $r.routes > 0 {
+            for $r.routes.list.kv -> $i, $v { 
+                @is-last.push: $i == +$r.routes.end;
+                route-walker($v, &process, @path, @is-last);  
+                @is-last.pop;
             }
         }
+        @path.pop;
     }
 
     method run(:$app) {
-        print-routes('',$app.routes);
+        my $config = $app.config;
+        my &output-routine = $config.routes-output eq 'tree' ?? &output-tree !! &output-plain;
+        route-walker($_, &output-routine, [], []) for $app.routes;
     }
 }
