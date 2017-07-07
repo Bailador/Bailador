@@ -5,7 +5,7 @@ use File::Temp;
 use Helpers;
 use Test;
 
-plan 5;
+plan 6;
 
 my $dir = tempdir();
 #diag $dir;
@@ -73,6 +73,19 @@ App-Name already exists. Exiting.
     my $err = $p.err.slurp: :close;
     is $err, ''; # TODO Why is this the empty string and above it is Nil?
 }, 'Will not overwrite existing directory';
+
+subtest {
+    plan 2;
+
+    chdir 'App-Name';
+    temp %*ENV<PERL6LIB> = "$git_dir/lib";
+    my $p = run 'prove6', '-l', :out, :err;
+    my $out = $p.out.slurp: :close;
+    like $out, rx:s/Result\: PASS/;
+    my $err = $p.err.slurp: :close;
+    is $err, '';
+    chdir '..';
+}
 
 subtest {
     plan 1;

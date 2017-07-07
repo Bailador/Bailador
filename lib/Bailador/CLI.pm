@@ -36,7 +36,7 @@ subtest {
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
     is %data<err>, '';
     like $html, rx:s/\<h1\>Bailador App\<\/h1\>/;
-    like $html, rx:s/Version 0\.01/;
+    like $html, rx:s/Version 0\.0\.1/;
 }, '/';
 };
 
