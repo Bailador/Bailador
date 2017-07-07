@@ -5,7 +5,7 @@ use File::Temp;
 use Helpers;
 use Test;
 
-plan 6;
+plan 7;
 
 my $dir = tempdir();
 #diag $dir;
@@ -107,6 +107,20 @@ subtest {
     # diag $response;
     like $response, rx/ $expected /;
 }, '--config options are stored in BAILADOR env';
+
+subtest {
+    plan 1;
+    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'routes', "$git_dir/examples/prefix.pl6", :out, :err;
+
+    my $exitcode = $p.exitcode;
+    is $exitcode, 0, 'program terminated successfully';
+
+    my $out = $p.out.slurp: :close;
+    my $err = $p.err.slurp: :close;
+
+    diag $out;
+    diag $err;
+}, 'bin/bailador routes command'
 
 # vim: expandtab
 # vim: tabstop=4

@@ -1,3 +1,4 @@
+    - Added a fancy output Bailador::Command::routes, use bin/bailador routes -t <app> 
     - Ticket #177 - Route matching on / or "end of URI" works better
     - Ticket #190 - Added syntactic suggar for static-dir routes
 

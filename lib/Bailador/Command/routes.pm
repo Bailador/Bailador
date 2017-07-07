@@ -22,9 +22,10 @@ class Bailador::Command::routes does Bailador::Command {
     }
 
     my sub route-walker(Bailador::Route $r, &process, @path, @is-last) {
-        my $path = $r.path-str //
-                   do { $r.can('Str').[0].package.perl ne 'Mu' && $r.Str() } //
-                   $r.^name;
+        # my $path = $r.path-str //
+        #            do { $r.can('Str').[0].package.perl ne 'Mu' && $r.Str() } //
+        #            $r.^name;
+        my $path = $r.url-matcher;
         @path.push: $path;
         process($r.method, @path, @is-last);
         if $r.routes > 0 {
