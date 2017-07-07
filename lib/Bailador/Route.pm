@@ -165,6 +165,6 @@ role Bailador::Route does Bailador::Routing {
         return $r;
     }
     method gist {
-        self.method.Str ~ " " ~ self.route-spec;
+        self.method.Str ~ " " ~ self.route-spec ~ " (" ~ self.^name ~ ")";
     }
 }
