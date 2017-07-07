@@ -12,7 +12,7 @@ Bailador::import();
 my $version = '0.0.1';
 
 get '/' => sub {
-    template 'index.tt', { version => $version }
+    template 'index.html', { version => $version }
 }
 
 baile();
@@ -40,7 +40,7 @@ subtest {
 }, '/';
 };
 
-%skeleton{'views/index.tt'} =
+%skeleton{'views/index.html'} =
 q{
 % my ($h) = @_;
 <!DOCTYPE html>
