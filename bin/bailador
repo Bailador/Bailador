@@ -46,9 +46,9 @@ multi sub MAIN ('easy', Str $app, Str :$config) {
     bootup-file('easy', $app, $config);
 }
 
-#| Displayes all the routes of your app
-multi sub MAIN ('routes', Str $app, Str :$config) {
-    bootup-file('routes', $app, $config);
+#| Displays all the routes of your app
+multi sub MAIN ('routes', Str $app, Bool :$t = False, Str :$config) {
+    bootup-file('routes', $app, $t, $config);
 }
 
 #| Invokes your app on top of HTTP::Server::Ogre

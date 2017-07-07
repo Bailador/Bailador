@@ -86,7 +86,14 @@ my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
     bootup-file($app);
 }
 
-my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre routes>}, Str $app, Str $config?) is export {
+my multi sub bootup-file ('routes', Str $app, Bool $tree, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:routes,routes-output:' ~ ($tree ?? 'tree' !! 'plain');
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
+my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre>}, Str $app, Str $config?) is export {
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
     $param ~= ',default-command:' ~ $cmd;
     %*ENV<BAILADOR> = $param;
