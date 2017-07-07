@@ -20,7 +20,7 @@ multi sub MAIN('new', Str :$name) {
     my %skeleton = skeleton();
     #say %skeleton;
 
-    for %skeleton.keys -> $file {
+    for %skeleton.keys.sort -> $file {
         say $file;
         if $file.rindex('/')
         {
