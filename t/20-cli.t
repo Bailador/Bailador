@@ -79,7 +79,7 @@ subtest {
 
     chdir 'App-Name';
     temp %*ENV<PERL6LIB> = "$git_dir/lib";
-    my $p = run 'prove', '-e', 'perl6 -Ilib', :out, :err;
+    my $p = run 'prove6', '-l', :out, :err;
     my $exitcode = $p.exitcode;
     is $exitcode, 0, 'program terminated successfully';
     diag "exitcode: " ~ $exitcode;
