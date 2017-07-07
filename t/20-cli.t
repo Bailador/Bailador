@@ -75,11 +75,14 @@ App-Name already exists. Exiting.
 }, 'Will not overwrite existing directory';
 
 subtest {
-    plan 2;
+    plan 3;
 
     chdir 'App-Name';
     temp %*ENV<PERL6LIB> = "$git_dir/lib";
-    my $p = run 'prove6', '-l', :out, :err;
+    my $p = run 'prove', '-e', 'perl6 -Ilib', :out, :err;
+    my $exitcode = $p.exitcode;
+    is $exitcode, 0, 'program terminated successfully';
+    diag "exitcode: " ~ $exitcode;
     my $out = $p.out.slurp: :close;
     like $out, rx:s/Result\: PASS/;
     diag $out;
@@ -100,7 +103,9 @@ subtest {
     wait-port($port, times => 600);
 
     my $expected = "host:0.0.0.0,port:$port";
-        ok req("GET /config HTTP/1.0\r\nContent-length: 0\r\n\r\n", $port) ~~ / $expected /;
+    my $response = req("GET /config HTTP/1.0\r\nContent-length: 0\r\n\r\n", $port);
+    # diag $response;
+    like $response, rx/ $expected /;
 }, '--config options are stored in BAILADOR env';
 
 # vim: expandtab
