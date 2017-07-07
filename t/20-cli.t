@@ -5,7 +5,7 @@ use File::Temp;
 use Helpers;
 use Test;
 
-plan 7;
+plan 8;
 
 my $dir = tempdir();
 #diag $dir;
@@ -100,6 +100,37 @@ subtest {
 }
 
 subtest {
+    plan 2;
+
+    chdir 'App-Name';
+
+    copy "bin/app.pl6", "root.pl6";
+
+    my $port = 5006;
+    my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch', 'root.pl6';
+    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
+    $server.stdout.tap;
+    $server.stdout.tap;
+    $server.start;
+
+    # Wait for server to come online
+    wait-port($port, times => 600);
+
+    #diag $server;
+    #diag $server.^methods;
+
+    my $resp = req("GET / HTTP/1.0\r\nContent-length: 0\r\n\r\n", $port);
+    #diag $resp;
+    like $resp, rx:s/\<h1\>Bailador App\<\/h1\>/;
+    like $resp, rx:s/Version 0\.0\.1/;
+
+    $server.kill(9); # TODO: does not seem to kill the server
+    chdir '..';
+}
+
+
+
+subtest {
     plan 1;
     my $port = 5005;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch',
@@ -113,6 +144,7 @@ subtest {
     my $response = req("GET /config HTTP/1.0\r\nContent-length: 0\r\n\r\n", $port);
     # diag $response;
     like $response, rx/ $expected /;
+
 }, '--config options are stored in BAILADOR env';
 
 subtest {
