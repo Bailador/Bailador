@@ -82,8 +82,10 @@ subtest {
     my $p = run 'prove6', '-l', :out, :err;
     my $out = $p.out.slurp: :close;
     like $out, rx:s/Result\: PASS/;
+    diag $out;
     my $err = $p.err.slurp: :close;
     is $err, '';
+    diag $err;
     chdir '..';
 }
 
