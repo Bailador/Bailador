@@ -3,33 +3,34 @@ use v6.c;
 use Test;
 
 use Bailador::App;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 498;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
-        self.get: '/foo' => sub { "foo text" }
-        self.post: '/bar' => sub { "peti bar" }
+        self.add_route: make-simple-route('GET', '/foo' => sub { "foo text" });
+        self.add_route: make-simple-route('POST',  '/bar' => sub { "peti bar" });
 
-        self.get: '/baz' => sub { { foo => "bar", baz => 5 } }
+        self.add_route: make-simple-route('GET','/baz' => sub { { foo => "bar", baz => 5 } });
 
-        self.get: '/params/:foo'    => sub ($foo) { "a happy $foo" }
-        self.get: /'/regexes/'(.+)/ => sub ($foo) { "a happy $foo" }
+        self.add_route: make-simple-route('GET','/params/:foo'    => sub ($foo) { "a happy $foo" });
+        self.add_route: make-simple-route('GET',/'/regexes/'(.+)/ => sub ($foo) { "a happy $foo" });
 
-        self.get: '/header1' => sub {
+        self.add_route: make-simple-route('GET','/header1' => sub {
             self.response.headers{"X-Test"} = "header1";
             "added header X-Test";
-        }
+        });
 
-        self.get: '/header2' => sub {
+        self.add_route: make-simple-route('GET','/header2' => sub {
             self.response.headers{"X-Again"} = "header2";
             "added header X-Again";
-        }
+        });
 
-        self.post: '/utf8' => sub {
+        self.add_route: make-simple-route('POST',  '/utf8' => sub {
             self.request.params<text>;
-        }
+        });
     }
 }
 my $app = MyOwnWebApp.new;

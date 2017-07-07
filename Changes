@@ -1,3 +1,4 @@
+    - Ticket #177 - Route matching on / or "end of URI" works better
     - Ticket #190 - Added syntactic suggar for static-dir routes
 
 0.0.7 2017.07.04

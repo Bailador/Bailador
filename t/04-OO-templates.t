@@ -3,6 +3,7 @@ use v6.c;
 use Test;
 
 use Bailador::App;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 3;
@@ -10,7 +11,7 @@ plan 3;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
         self.location = $?FILE.IO.dirname;
-        self.get: '/' => sub { self.template: 'simple.tt', 'bar' }
+        self.add_route: make-simple-route('GET', '/' => sub { self.template: 'simple.tt', 'bar' });
     }
 }
 
