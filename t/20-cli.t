@@ -13,6 +13,12 @@ my $dir = tempdir();
 my $git_dir = $*CWD;
 chdir($dir);
 #diag $*CWD;
+diag QX('which prove6');
+diag QX('which perl6');
+diag QX('which zef');
+diag $*EXECUTABLE;
+diag %*ENV<PATH>;
+%*ENV<PATH> ~ ':/home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
 
 subtest {
     plan 2;
