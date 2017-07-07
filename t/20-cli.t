@@ -18,7 +18,8 @@ diag QX('which perl6');
 diag QX('which zef');
 diag $*EXECUTABLE;
 diag %*ENV<PATH>;
-%*ENV<PATH> ~ ':/home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
+%*ENV<PATH> ~= ':/home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
+diag QX('which prove6');
 
 subtest {
     plan 2;
