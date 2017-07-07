@@ -103,7 +103,8 @@ role Bailador::Routing {
     }
 }
 
-subset HttpMethod of Str where {$_ eq any <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH> }
+my Str @all-methods = <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>;
+subset HttpMethod of Str where {$_ eq any(@all-methods) }
 subset UrlMatcher where * ~~ Regex|Str;
 
 role Bailador::Route does Bailador::Routing {
@@ -115,7 +116,6 @@ role Bailador::Route does Bailador::Routing {
     method build-regex() { ... }
 
     submethod BUILD-ROLE(:$method, :$url-matcher) {
-        my @all-methods = <GET PUT POST HEAD PUT DELETE TRACE OPTIONS CONNECT PATCH>;
         @!method = 'ANY' ~~ any(@$method) ?? @all-methods !! $method;
         $!url-matcher = $url-matcher;
     }
@@ -152,6 +152,9 @@ role Bailador::Route does Bailador::Routing {
          }).join("'/'");
     }
 
+    method method-spec {
+        set(@.method) eqv set(@all-methods) ?? 'ANY' !! @.method.Str;
+    }
     method route-spec {
         $.url-matcher ~~ Str ??  $.url-matcher !! $.url-matcher.perl;
     }

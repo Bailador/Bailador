@@ -18,7 +18,7 @@ try {
     get '/foo' => sub { "other" };
     CATCH {
         default {
-            is $_.payload, "duplicate route: GET /foo";
+            is $_.payload, "duplicate route: GET /foo (Bailador::Route::Simple)";
         }
     }
 
