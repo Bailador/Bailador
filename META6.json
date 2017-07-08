@@ -16,7 +16,9 @@
     "Martin Barth (ufobat)",
     "Emeric Fischer"
   ],
-  "build-depends" : [ ],
+  "build-depends" : [
+    "TAP::Harness"
+  ],
   "depends" : [
     "Digest",
     "Digest::HMAC",
