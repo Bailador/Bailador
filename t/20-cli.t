@@ -12,14 +12,19 @@ my $dir = tempdir();
 
 my $git_dir = $*CWD;
 chdir($dir);
-#diag $*CWD;
-#diag QX('which prove6');
-#diag QX('which perl6');
-#diag QX('which zef');
-#diag $*EXECUTABLE;
-#diag %*ENV<PATH>;
-%*ENV<PATH> ~= ':/home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
-#diag QX('which prove6');
+# diag $*CWD;
+# diag QX('which prove6');
+# diag QX('which perl6');
+# diag QX('which zef');
+# diag $*EXECUTABLE;
+# $*EXECUTABLE   -> /home/travis/.rakudobrew/bin/../moar-nom/install/bin/perl6
+# want to append -> /home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
+#                ->$*EXECUTABLE.parent.parent.child('share/perl6/site/bin')
+# diag %*ENV<PATH>;
+
+%*ENV<PATH> ~= ':' ~ $*EXECUTABLE.parent.parent.child('share/perl6/site/bin');
+
+# diag QX('which prove6');
 
 subtest {
     plan 2;
