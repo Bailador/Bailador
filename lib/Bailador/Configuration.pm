@@ -6,6 +6,7 @@ my @config-file-extensions = 'yml', 'yaml';
 
 class Bailador::Configuration {
     ## CONFIGURATION FILE
+    has Str $.config-dir is rw = '.';
     has Str $.config-file is rw = 'settings.yaml';
 
     ## USER DEFINED STUFF
