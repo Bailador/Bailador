@@ -6,6 +6,7 @@ my @config-file-extensions = 'yml', 'yaml';
 
 class Bailador::Configuration {
     ## CONFIGURATION FILE
+    has Str $.config-dir is rw = '.';
     has Str $.config-file is rw = 'settings.yaml';
 
     ## USER DEFINED STUFF
@@ -35,6 +36,23 @@ class Bailador::Configuration {
     has Str $.log-format is rw = '\d (\s) \m';
     has @.log-filter is rw     = ('severity' => '>=warning');
 
+
+    sub local-variant($filename) {
+        my @pieces = $filename.split('.');
+        @pieces[*-2] ~= '-local';
+        join '.', @pieces;
+    }
+
+    method load-from-dir($app-dir) {
+        my $config-dir = $.config-dir.IO.is-absolute ?? $.config-dir.IO !! $app-dir.IO.child($.config-dir);
+        for $.config-file, local-variant($.config-file) -> $f {
+            my $config-file = $f.IO.is-absolute ?? $f.IO !! $config-dir.child($f);
+            if $.check-config-file($config-file) {
+                $.load-from-file($config-file);
+            }
+        }
+    }
+
     method load-from-array(@args) {
         for @args -> ($k, $v) {
             self.set($k, $v);
@@ -57,8 +75,7 @@ class Bailador::Configuration {
         }
     }
 
-    method check-config-file(IO::Path $path) {
-        my $file = $path.child(self.config-file);
+    method check-config-file(IO::Path $file) {
         if $file.IO ~~ :e && @config-file-extensions.contains($file.IO.extension) {
             return True;
         } elsif $file.IO !~~ :e {
@@ -70,8 +87,7 @@ class Bailador::Configuration {
         }
     }
 
-    method load-from-file(IO::Path $path) {
-        my $file = $path.child($.config-file);
+    method load-from-file(IO::Path $file) {
         if $file.IO.extension ~~ 'yaml' | 'yml' {
             try {
                 my $yaml = slurp $file;

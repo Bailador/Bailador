@@ -30,12 +30,13 @@ class Bailador::App does Bailador::Routing {
     }
 
     method load-config {
+        if %*ENV<BAILADOR_CONFIGDIR> {
+            $!config.config-dir = %*ENV<BAILADOR_CONFIGDIR>;
+        }
         if %*ENV<BAILADOR_CONFIGFILE> {
             $!config.config-file = %*ENV<BAILADOR_CONFIGFILE>;
         }
-        if $!config.check-config-file($!location.IO) {
-            $!config.load-from-file($!location.IO);
-        }
+        $!config.load-from-dir($.location);
         $!config.load-from-env();
     }
 

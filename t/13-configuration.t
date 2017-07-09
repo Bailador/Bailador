@@ -5,7 +5,7 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 3;
+plan 8;
 
 ## Test configuration from a file
 subtest {
@@ -63,7 +63,7 @@ subtest {
 subtest {
     plan 5;
     # Prepare ENV
-    %*ENV<BAILADOR> = 'port:9090';
+    temp %*ENV<BAILADOR> = 'port:9090';
 
     my $app = Bailador::App.new;
     isa-ok $app, Bailador::App;
@@ -77,4 +77,78 @@ subtest {
     is $config.mode, 'development', 'Mode from configuration file is development';
     is $config.host, 'localhost', 'Host from configuration file is localhost';
     is $config.port, 9090, 'Port from configuration from ENV is 9090 - override settings.yaml';
+}
+
+## Change config dir relative to application location
+subtest {
+    plan 2;
+
+    temp %*ENV<BAILADOR_CONFIGDIR> = 'config';
+
+    my $app = Bailador::App.new;
+    $app.location = $*PROGRAM.parent.absolute;
+    $app.load-config();
+    my $config = $app.config;
+
+    is $config.port, 9090, 'Port from alternate config directory is 9090';
+    is $config.host, 'www.example.com', 'Host from alternate config directory is www.example.com';
+}
+
+## Change config dir absolute
+subtest {
+    plan 2;
+
+    temp %*ENV<BAILADOR_CONFIGDIR> = $*PROGRAM.parent.child("config").absolute;
+
+    my $app = Bailador::App.new;
+    $app.location = $*PROGRAM.parent.absolute;
+    $app.load-config();
+    my $config = $app.config;
+
+    is $config.port, 9090, 'Port from absolute alternate config directory is 9090';
+    is $config.host, 'www.example.com', 'Host from absolute alternate config directory is www.example.com';
+}
+
+## Specify config file relative to application location
+subtest {
+    plan 2;
+
+    temp %*ENV<BAILADOR_CONFIGFILE> = 'config/config.yaml';
+
+    my $app = Bailador::App.new;
+    $app.location = $*PROGRAM.parent.absolute;
+    $app.load-config();
+    my $config = $app.config;
+
+    is $config.host, 'localhost', 'Host from relative config file is localhost';
+    is $config.name, 'Fred', 'Name from relative config file is Fred';
+}
+
+## Specify absolute config file
+subtest {
+    plan 2;
+
+    temp %*ENV<BAILADOR_CONFIGFILE> = $*PROGRAM.parent.child("config").child('config.yaml').absolute;
+
+    my $app = Bailador::App.new;
+    $app.location = $*PROGRAM.parent.absolute;
+    $app.load-config();
+    my $config = $app.config;
+
+    is $config.host, 'localhost', 'Host from absolute config file is localhost';
+    is $config.name, 'Fred', 'Name from absolute config file is Fred';
+}
+
+## Settings in -local override
+subtest {
+    plan 1;
+
+    temp %*ENV<BAILADOR_CONFIGFILE> = 'config/config.yaml';
+
+    my $app = Bailador::App.new;
+    $app.location = $*PROGRAM.parent.absolute;
+    $app.load-config();
+    my $config = $app.config;
+
+    is $config.port, 9999, 'Port from alternate config directory is 9999';
 }
