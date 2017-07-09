@@ -80,7 +80,7 @@ get '/env' => sub {
     $result;
 }
 
-static-dir / (.*) /  => $?FILE.IO.parent.child('examples/public');
+static-dir / (.*) /  => '/public';
 
 prefix '/media' => sub {
     prefix '/video' => sub {

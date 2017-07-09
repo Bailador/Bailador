@@ -7,8 +7,10 @@ use Bailador::Test;
 
 plan 1;
 
+chdir 'examples';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
-my $app = EVALFILE "examples/api.pl6";
+%*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
+my $app = EVALFILE "api.pl6";
 
 subtest {
     plan 3;

@@ -167,7 +167,8 @@ subtest {
     plan 1;
     my $port = 5005;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch',
-               $git_dir.IO.child('t').child('apps').child('app.pl6');
+               ~ $git_dir.IO.child('t').child('apps').child('app.pl6');
+    dd @args;
     my $server = start { run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args, :out, :err  }
 
     # Wait for server to come online

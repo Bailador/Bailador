@@ -7,41 +7,12 @@ use Bailador::Test;
 
 plan 8;
 
-## Test configuration from a file
-subtest {
-    plan 10;
-
-    my $app = Bailador::App.new;
-    isa-ok $app, Bailador::App;
-
-    $app.location = $*PROGRAM.parent.absolute;
-    $app.load-config();
-
-    my $config = $app.config;
-    isa-ok $config, Bailador::Configuration;
-
-    is $config.mode, 'development', 'Mode from configuration file is development';
-    is $config.host, 'localhost', 'Host from configuration file is localhost';
-    is $config.port, 8080, 'Port from configuration file is 8080';
-
-    is $config.cookie-name, 'Bailador-cookie', 'Cookie name is now Bailador-cookie';
-    is $config.cookie-path, '/', 'Cookie path is still /';
-    is $config.cookie-expiration, 2800, 'Cookie expiration is now 2800';
-    is $config.hmac-key, 'changeme', 'Hmac-key is still changeme';
-    is $config.backend, 'Bailador::Sessions::Store::Memory', 'Backend is still Bailador::Sessions::Store::Memory';
-}
-
 ## Test default configuration
 subtest {
     plan 11;
 
     my $app = Bailador::App.new;
     isa-ok $app, Bailador::App;
-
-    # without those 2 lines
-    # $app.location = $*PROGRAM.parent.absolute;
-    # $app.load-config();
-    # Bailador does not know to load the settings from t directory.
 
     my $config = $app.config;
     isa-ok $config, Bailador::Configuration;
@@ -57,6 +28,46 @@ subtest {
     is $config.cookie-expiration, 3600, 'Default cookie expiration is 3600';
     is $config.hmac-key, 'changeme', 'Default hmac-key is changeme';
     is $config.backend, 'Bailador::Sessions::Store::Memory', 'Default backend is Bailador::Sessions::Store::Memory';
+}
+
+my $file = "t/settings.yaml";
+
+my $content = q:to/EOT/;
+mode: 'development'
+host: 'localhost'
+port: 8080
+
+cookie-name: 'Bailador-cookie'
+cookie-expiration: 2800
+EOT
+
+END {
+    # remove the file after the tests
+    unlink $file;
+}
+
+spurt $file, $content;
+
+## Test configuration from a file
+subtest {
+    plan 10;
+
+    my $app = Bailador::App.new;
+    isa-ok $app, Bailador::App;
+
+    $app.load-config();
+    my $config = $app.config;
+    isa-ok $config, Bailador::Configuration;
+
+    is $config.mode, 'development', 'Mode from configuration file is development';
+    is $config.host, 'localhost', 'Host from configuration file is localhost';
+    is $config.port, 8080, 'Port from configuration file is 8080';
+
+    is $config.cookie-name, 'Bailador-cookie', 'Cookie name is now Bailador-cookie';
+    is $config.cookie-path, '/', 'Cookie path is still /';
+    is $config.cookie-expiration, 2800, 'Cookie expiration is now 2800';
+    is $config.hmac-key, 'changeme', 'Hmac-key is still changeme';
+    is $config.backend, 'Bailador::Sessions::Store::Memory', 'Backend is still Bailador::Sessions::Store::Memory';
 }
 
 ## Test configuration ENV must override settings.yaml

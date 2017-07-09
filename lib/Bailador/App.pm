@@ -12,10 +12,11 @@ use Bailador::LogAdapter;
 use Bailador::Route;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
+use Bailador::Tools;
 
 
 class Bailador::App does Bailador::Routing {
-    has Str $.location is rw = '.';
+    has Str $.location is rw = get-app-root().absolute;
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
