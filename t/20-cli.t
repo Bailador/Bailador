@@ -95,13 +95,13 @@ subtest {
     my $p = run 'prove6', '-l', :out, :err;
     my $exitcode = $p.exitcode;
     is $exitcode, 0, 'program terminated successfully';
-    diag "exitcode: " ~ $exitcode;
+    # diag "exitcode: " ~ $exitcode;
     my $out = $p.out.slurp: :close;
     like $out, rx:s/Result\: PASS/;
-    diag $out;
+    # diag $out;
     my $err = $p.err.slurp: :close;
     is $err, '';
-    diag $err;
+    # diag $err;
     chdir '..';
 }, 'test newly generated app with its test cases';
 
@@ -172,7 +172,7 @@ subtest {
     my $port = 5005;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch',
                ~ $git_dir.IO.child('t').child('apps').child('app.pl6');
-    dd @args;
+    #dd @args;
     my $server = start { run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args, :out, :err  }
 
     # Wait for server to come online
@@ -195,8 +195,8 @@ subtest {
     my $out = $p.out.slurp: :close;
     my $err = $p.err.slurp: :close;
 
-    diag $out;
-    diag $err;
+    # diag $out;
+    # diag $err;
 }, 'bin/bailador routes command'
 
 # vim: expandtab
