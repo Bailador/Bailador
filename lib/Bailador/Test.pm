@@ -126,7 +126,6 @@ sub get-psgi-env($meth, $url, $data, %headers, ErrorBuffer $error-buf) {
     };
 
     for %headers.keys -> $k {
-        next if $k eq 'http_cookie';
         $env{'HTTP_' ~ $k.uc}          = %headers{$k};
     }
 
