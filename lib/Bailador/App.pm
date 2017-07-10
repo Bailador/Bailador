@@ -62,6 +62,9 @@ class Bailador::App does Bailador::Routing {
         # probably a good place for a hook
         my $formatter = $.config.log-format;
         my @filter    = $.config.log-filter;
+        # https://github.com/jsimonet/log-any/issues/1
+        # black magic to increase the logging speed
+        Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
         Log::Any.add($.log-adapter, :$formatter, :@filter);
     }
 
