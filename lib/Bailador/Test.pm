@@ -122,7 +122,6 @@ sub get-psgi-env($meth, $url, $data, %headers, ErrorBuffer $error-buf) {
         "PATH_INFO"            => $uri.path,
         "SERVER_PORT"          => $uri.port,
         "SERVER_NAME"          => "0.0.0.0",
-        "HTTP_COOKIE"          => %headers<http_cookie>,
         "QUERY_STRING"         => $uri.query,
     };
 
