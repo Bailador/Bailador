@@ -51,7 +51,7 @@ subtest {
 subtest {
     plan 3;
 
-    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    my %data = run-psgi-request('GET', '/readsession', headers => { http_cookie => "$session-cookie-name=$first-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -70,7 +70,7 @@ subtest {
         $wrong-session-id.substr-rw(0,1) = '2';
     }
 
-    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$wrong-session-id");
+    my %data = run-psgi-request('GET', '/readsession', headers => { http_cookie => "$session-cookie-name=$wrong-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -84,7 +84,7 @@ subtest {
     # let the cookie expire!
     sleep 6;
 
-    my %data = run-psgi-request('GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    my %data = run-psgi-request('GET', '/readsession', headers => { http_cookie => "$session-cookie-name=$first-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -102,7 +102,7 @@ subtest {
 
 subtest {
     plan 1;
-    my %data = run-psgi-request('GET', '/deletesession', http_cookie => "$session-cookie-name=$second-session-id");
+    my %data = run-psgi-request('GET', '/deletesession', headers => { http_cookie => "$session-cookie-name=$second-session-id" });
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
 }, 'Session deletion';
 

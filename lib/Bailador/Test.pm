@@ -44,9 +44,9 @@ my class IO::Null is IO::Handle {
     }
 }
 
-multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $url, $data = '', :$http_cookie = '' ) is export {
+multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $url, $data = '', :%headers ) is export {
     my $error-buf = ErrorBuffer.new;
-    my $response  = get-psgi-response($app, $meth, $url, $data, :$http_cookie, :$error-buf),
+    my $response  = get-psgi-response($app, $meth, $url, $data, :%headers, :$error-buf),
 
     return {
         err      => $error-buf.Str,
@@ -54,9 +54,9 @@ multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $
     };
 }
 
-multi sub run-psgi-request($meth, $url, $data = '', :$http_cookie = '' ) is export {
+multi sub run-psgi-request($meth, $url, $data = '', :%headers ) is export {
     my $error-buf = ErrorBuffer.new;
-    my $response  = get-psgi-response($meth, $url, $data, :$http_cookie, :$error-buf),
+    my $response  = get-psgi-response($meth, $url, $data, :%headers, :$error-buf),
 
     return {
         err      => $error-buf.Str,
@@ -64,21 +64,21 @@ multi sub run-psgi-request($meth, $url, $data = '', :$http_cookie = '' ) is expo
     };
 }
 
-multi sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
+multi sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :%headers, ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, %headers, $error-buf);
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
 
-multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
+multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :%headers, ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, %headers, $error-buf);
     my $psgi-app = $app.baile('p6w');
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
 
-multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
+multi sub get-psgi-response($meth, $url, $data = '', :%headers, ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, %headers, $error-buf);
     my $psgi-app = baile('p6w');
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
@@ -95,7 +95,7 @@ sub de-supply-response($response) {
     die "body must be a Supply";
 }
 
-sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
+sub get-psgi-env($meth, $url, $data, %headers, ErrorBuffer $error-buf) {
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
@@ -122,7 +122,7 @@ sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
         "PATH_INFO"            => $uri.path,
         "SERVER_PORT"          => $uri.port,
         "SERVER_NAME"          => "0.0.0.0",
-        "HTTP_COOKIE"          => $http_cookie,
+        "HTTP_COOKIE"          => %headers<http_cookie>,
         "QUERY_STRING"         => $uri.query,
     };
 
