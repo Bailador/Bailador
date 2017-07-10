@@ -114,8 +114,8 @@ subtest {
     my $port = 5007;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch', 'bin/app.pl6';
     my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
-    $server.stdout.tap;
-    $server.stdout.tap;
+    $server.stdout.tap; # : -> $s {say "out: ", $s};
+    $server.stderr.tap; # : -> $s {say "err: ", $s};
     $server.start;
 
     # Wait for server to come online
@@ -145,8 +145,8 @@ subtest {
     my $port = 5006;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch', 'root.pl6';
     my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
-    $server.stdout.tap;
-    $server.stdout.tap;
+    $server.stdout.tap; # : -> $s {say "out: ", $s};
+    $server.stderr.tap; # : -> $s {say "err: ", $s};
     $server.start;
 
     # Wait for server to come online
@@ -172,8 +172,10 @@ subtest {
     my $port = 5005;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch',
                ~ $git_dir.IO.child('t').child('apps').child('app.pl6');
-    #dd @args;
-    my $server = start { run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args, :out, :err  }
+    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
+    $server.stdout.tap; #: -> $s {say "out: ", $s};
+    $server.stderr.tap; #: -> $s {say "err: ", $s};
+    $server.start;
 
     # Wait for server to come online
     wait-port($port, times => 600);

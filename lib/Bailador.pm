@@ -23,7 +23,7 @@ multi sub app(Bailador::App $myapp) is export {
 }
 
 our sub import(Str :$rootdir) {
-    app.location = $rootdir || callframe(1).file.IO.dirname;
+    app.location( $rootdir || callframe(1).file.IO.dirname);
 }
 
 sub error(Pair $x) is export {
@@ -68,7 +68,7 @@ sub head(Pair $x) is export {
 }
 
 sub static-dir(Pair $x) is export {
-    app.add_route: make-static-dir-route($x);
+    app.add_route: make-static-dir-route($x, app);
 }
 
 sub prefix(Pair $x) is export {

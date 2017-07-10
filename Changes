@@ -1,3 +1,4 @@
+    - Ticket #169 - All paths are relative to Bailador::App $!location. Use %*ENV<BAILADOR_APP_ROOT> explicitly set it.
     - Improved logging speed - https://github.com/jsimonet/log-any/issues/1
     - Ticket #138 - Added a fancy output Bailador::Command::routes, use bin/bailador routes -t <app> 
     - Ticket #177 - Route matching on / or "end of URI" works better

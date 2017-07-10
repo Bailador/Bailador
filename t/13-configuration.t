@@ -79,7 +79,7 @@ subtest {
     my $app = Bailador::App.new;
     isa-ok $app, Bailador::App;
 
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute );
     $app.load-config();
 
     my $config = $app.config;
@@ -97,7 +97,7 @@ subtest {
     temp %*ENV<BAILADOR_CONFIGDIR> = 'config';
 
     my $app = Bailador::App.new;
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute );
     $app.load-config();
     my $config = $app.config;
 
@@ -112,7 +112,7 @@ subtest {
     temp %*ENV<BAILADOR_CONFIGDIR> = $*PROGRAM.parent.child("config").absolute;
 
     my $app = Bailador::App.new;
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute);
     $app.load-config();
     my $config = $app.config;
 
@@ -127,7 +127,7 @@ subtest {
     temp %*ENV<BAILADOR_CONFIGFILE> = 'config/config.yaml';
 
     my $app = Bailador::App.new;
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute );
     $app.load-config();
     my $config = $app.config;
 
@@ -142,7 +142,7 @@ subtest {
     temp %*ENV<BAILADOR_CONFIGFILE> = $*PROGRAM.parent.child("config").child('config.yaml').absolute;
 
     my $app = Bailador::App.new;
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute );
     $app.load-config();
     my $config = $app.config;
 
@@ -157,7 +157,7 @@ subtest {
     temp %*ENV<BAILADOR_CONFIGFILE> = 'config/config.yaml';
 
     my $app = Bailador::App.new;
-    $app.location = $*PROGRAM.parent.absolute;
+    $app.location( $*PROGRAM.parent.absolute );
     $app.load-config();
     my $config = $app.config;
 

@@ -74,8 +74,7 @@
     "Bailador::Template" : "lib/Bailador/Template.pm",
     "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
     "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm",
-    "Bailador::Test" : "lib/Bailador/Test.pm",
-    "Bailador::Tools" : "lib/Bailador/Tools.pm"
+    "Bailador::Test" : "lib/Bailador/Test.pm"
   },
   "resources" : [
     "error.template"
