@@ -16,7 +16,7 @@ class Bailador::Configuration {
     has Str $.mode is rw where "production"|"development" = "production";
     has Str $.host is rw                                  = "127.0.0.1";
     has Int $.port is rw                                  = 3000;
-    has Str $.views is rw                                 = $*PROGRAM.dirname.IO.basename eq 'bin' ?? '../views' !!'views';
+    has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
 
     ## Commands
