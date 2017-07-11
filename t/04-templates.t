@@ -4,8 +4,6 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-Bailador::import;
-
 plan 9;
 
 get '/a' => sub { template 'simple.tt', 'bar' }
@@ -14,8 +12,6 @@ my $resp1 = get-psgi-response('GET',  '/a');
 is $resp1[0], 200;
 is-deeply $resp1[1], ["Content-Type" => "text/html"];
 ok $resp1[2] ~~ /^ 'a happy bar' \r?\n$/;
-
-#Bailador::import(rootdir => $?FILE.IO.dirname);
 
 get '/b' => sub { template 'simple.tt', 'bar' }
 

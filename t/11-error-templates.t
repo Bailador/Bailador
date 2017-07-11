@@ -5,8 +5,6 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-Bailador::import;
-
 plan 8;
 
 my $not-found-template will leave { .unlink } = $?FILE.IO.parent.child('views').child('404.xx');

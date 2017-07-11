@@ -6,8 +6,6 @@ use Bailador;
 use Bailador::Template::Mustache;
 use Bailador::Test;
 
-Bailador::import;
-
 plan 6;
 
 get '/a' => sub { template 'simple.mustache', { 'foo' => 'bar' } }

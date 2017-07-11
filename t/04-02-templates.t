@@ -5,12 +5,9 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-Bailador::import;
-
 plan 8;
 
 get '/' => sub { template 'index.tt'; }
-
 
 ## Default configuration
 

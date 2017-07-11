@@ -22,10 +22,6 @@ multi sub app(Bailador::App $myapp) is export {
     $app = $myapp;
 }
 
-our sub import(Str :$rootdir) {
-    app.location( $rootdir || callframe(1).file.IO.dirname);
-}
-
 sub error(Pair $x) is export {
     app.add_error: $x;
     return $x;
