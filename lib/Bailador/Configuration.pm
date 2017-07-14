@@ -25,6 +25,9 @@ class Bailador::Configuration {
     has Str  $.watch-command is rw = 'easy';
     has @.watch-list is rw;
 
+    ## Terminal output
+    has Bool $.terminal-color is rw = False;
+
     ## SESSION RELATED STUFF
     has Str $.cookie-name is rw       = 'bailador';
     has Str $.cookie-path is rw       = '/';
