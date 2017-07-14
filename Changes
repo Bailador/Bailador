@@ -1,3 +1,4 @@
+    - Ticket #203 - t/00-tidy.t avoids .precomp dir
     - Ticket #174 - Removed Bailador::import()
     - Ticket #169 - All paths are relative to Bailador::App $!location. Use %*ENV<BAILADOR_APP_ROOT> explicitly set it.
     - Improved logging speed - https://github.com/jsimonet/log-any/issues/1
