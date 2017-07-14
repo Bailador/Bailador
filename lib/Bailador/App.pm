@@ -16,7 +16,7 @@ use Bailador::Template::Mojo;
 class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
     has Str $!location;
-
+    has Bool $!started = False;
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
@@ -163,6 +163,9 @@ class Bailador::App does Bailador::Routing {
 
         $.config.load-from-args(@args);
         my $cmd = $.commands.get-command($command);
+
+        die 'can only baile once' if $!started;
+        $!started = True;
 
         $.before-run();
         $cmd.run(app => self );

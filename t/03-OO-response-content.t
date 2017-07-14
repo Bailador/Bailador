@@ -33,7 +33,7 @@ class MyOwnWebApp is Bailador::App {
         });
     }
 }
-my $app = MyOwnWebApp.new;
+my $app = MyOwnWebApp.new.baile('p6w');
 
 is-deeply get-psgi-response($app, 'GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
 is-deeply get-psgi-response($app, 'POST', '/bar'),  [200, ["Content-Type" => "text/html"], 'peti bar'],       'route POST /bar returns content';

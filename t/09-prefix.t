@@ -51,25 +51,28 @@ prefix '/xyz/:foo' => sub {
 
 get '/y' => sub { '/y' };
 
+# Call baile just once
+my $p6w-app = baile('p6w');
+
 subtest {
     plan 15;
 
-    is-deeply get-psgi-response('GET', '/x'),   [200, ["Content-Type" => "text/html"], '/x'], 'route GET /x';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/x'),   [200, ["Content-Type" => "text/html"], '/x'], 'route GET /x';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo not executed');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
 
-    is-deeply get-psgi-response('GET', '/inempty'),   [200, ["Content-Type" => "text/html"], '/inempty'], 'route GET /inempty';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/inempty'),   [200, ["Content-Type" => "text/html"], '/inempty'], 'route GET /inempty';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo not executed');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
 
-    is-deeply get-psgi-response('GET', '/abc/x'),   [200, ["Content-Type" => "text/html"], '/abc/x'], 'route GET /abc/x';
-    is-deeply get-psgi-response('GET', '/abc/y'),   [200, ["Content-Type" => "text/html"], '/abc/y'], 'route GET /abc/y';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/abc/x'),   [200, ["Content-Type" => "text/html"], '/abc/x'], 'route GET /abc/x';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/abc/y'),   [200, ["Content-Type" => "text/html"], '/abc/y'], 'route GET /abc/y';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo not executed');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
 
-    is-deeply get-psgi-response('GET', '/xyz/2/x'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/x'], 'route GET /xyz/2/x';
-    is-deeply get-psgi-response('GET', '/xyz/3/y'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /xyz/3/y';
-    is-deeply get-psgi-response('GET', '/xyz/2'),   [200, ["Content-Type" => "text/html"], '/xyz/:foo'], 'route GET /xyz/2';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/xyz/2/x'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/x'], 'route GET /xyz/2/x';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/xyz/3/y'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /xyz/3/y';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/xyz/2'),   [200, ["Content-Type" => "text/html"], '/xyz/:foo'], 'route GET /xyz/2';
     is($prefixone-execution , 3 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
 }
@@ -81,8 +84,8 @@ subtest {
     $prefixone-execution = 0;
     $prefixtwo-execution = 0;
 
-    is-deeply get-psgi-response('GET', '/xyz/2/next/x'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/next/x'], 'route GET /xyz/2/next/x';
-    is-deeply get-psgi-response('GET', '/xyz/2/next/y'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/next/y'], 'route GET /xyz/2/next/y';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/xyz/2/next/x'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/next/x'], 'route GET /xyz/2/next/x';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/xyz/2/next/y'), [200, ["Content-Type" => "text/html"], '/xyz/:foo/next/y'], 'route GET /xyz/2/next/y';
     is($prefixone-execution , 2 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 2 , 'prefix /xyz/:foo/next executed 4 times');
 };
@@ -93,7 +96,7 @@ subtest {
     $prefixone-execution = 0;
     $prefixtwo-execution = 0;
 
-    is-deeply get-psgi-response('GET', '/y'),   [200, ["Content-Type" => "text/html"], '/y'], 'route GET /y';
+    is-deeply get-psgi-response($p6w-app, 'GET', '/y'),   [200, ["Content-Type" => "text/html"], '/y'], 'route GET /y';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo executed 2 times');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next executed 4 times');
 };

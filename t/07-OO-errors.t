@@ -17,7 +17,7 @@ class MyOwnWebApp is Bailador::App {
     }
 }
 
-my $app = MyOwnWebApp.new;
+my $app = MyOwnWebApp.new.baile('p6w');
 my %data;
 
 %data = run-psgi-request($app, 'GET', '/die');

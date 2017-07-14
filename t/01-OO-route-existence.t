@@ -39,8 +39,7 @@ class MyOwnWebApp is Bailador::App {
     }
 }
 
-my $app = MyOwnWebApp.new;
-
+my $app = MyOwnWebApp.new.baile('p6w');
 
 is-deeply get-psgi-response($app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html"], Any],              'route GET /foo exists';
 is-deeply get-psgi-response($app, 'POST', '/foo'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';

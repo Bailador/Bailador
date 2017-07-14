@@ -29,7 +29,7 @@ class MyOwnWebApp is Bailador::App {
     }
 }
 
-my $app = MyOwnWebApp.new();
+my $app = MyOwnWebApp.new().baile('p6w');
 my $first-session-id;
 my $wrong-session-id;
 my $second-session-id;

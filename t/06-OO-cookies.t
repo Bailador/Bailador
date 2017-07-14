@@ -84,7 +84,7 @@ class MyOwnWebApp is Bailador::App {
     }
 }
 
-my $app = MyOwnWebApp.new;
+my $app = MyOwnWebApp.new.baile('p6w');
 
 
 is-deeply get-psgi-response($app, 'GET', '/cook1'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => "flavour=chocolate"], "cookie test #1" ], 'ROUTE GET /cook1 sets a cookie';

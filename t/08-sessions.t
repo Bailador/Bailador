@@ -25,6 +25,9 @@ get '/deletesession' => sub {
     "session should be deleted";
 }
 
+# Call baile just once
+my $p6w-app = baile('p6w');
+
 my $first-session-id;
 my $wrong-session-id;
 my $second-session-id;
@@ -34,7 +37,7 @@ my $session-cookie-name;
 subtest {
     plan 4;
 
-    my %data = run-psgi-request('GET', '/setsession');
+    my %data = run-psgi-request($p6w-app, 'GET', '/setsession');
     is %data<response>[0], 200, 'New session HTTP status 200';
 
     my %header = %data<response>[1];
@@ -51,7 +54,7 @@ subtest {
 subtest {
     plan 3;
 
-    my %data = run-psgi-request('GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
+    my %data = run-psgi-request($p6w-app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -70,7 +73,7 @@ subtest {
         $wrong-session-id.substr-rw(0,1) = '2';
     }
 
-    my %data = run-psgi-request('GET', '/readsession', headers => { cookie => "$session-cookie-name=$wrong-session-id" });
+    my %data = run-psgi-request($p6w-app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$wrong-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -84,7 +87,7 @@ subtest {
     # let the cookie expire!
     sleep 6;
 
-    my %data = run-psgi-request('GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
+    my %data = run-psgi-request($p6w-app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
     is %data<response>[0], 200, 'With session HTTP status 200';
     my %header = %data<response>[1];
 
@@ -102,7 +105,7 @@ subtest {
 
 subtest {
     plan 1;
-    my %data = run-psgi-request('GET', '/deletesession', headers => { cookie => "$session-cookie-name=$second-session-id" });
+    my %data = run-psgi-request($p6w-app, 'GET', '/deletesession', headers => { cookie => "$session-cookie-name=$second-session-id" });
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
 }, 'Session deletion';
 

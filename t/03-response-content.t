@@ -29,41 +29,44 @@ post '/utf8' => sub {
     request.params<text>;
 }
 
-is-deeply get-psgi-response('GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
-is-deeply get-psgi-response('POST', '/bar'),  [200, ["Content-Type" => "text/html"], 'peti bar'],       'route POST /bar returns content';
+# Call baile just once
+my $p6w-app = baile('p6w');
 
-is-deeply get-psgi-response('POST', '/foo'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route POST /foo not found';
-is-deeply get-psgi-response('GET',  '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route GET /bar not found';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
+is-deeply get-psgi-response($p6w-app, 'POST', '/bar'),  [200, ["Content-Type" => "text/html"], 'peti bar'],       'route POST /bar returns content';
 
-is-deeply get-psgi-response('GET',  '/params/bar'),   [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /params/bar returns content';
-is-deeply get-psgi-response('GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /regexes/bar returns content';
+is-deeply get-psgi-response($p6w-app, 'POST', '/foo'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route POST /foo not found';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route GET /bar not found';
+
+is-deeply get-psgi-response($p6w-app, 'GET',  '/params/bar'),   [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /params/bar returns content';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /regexes/bar returns content';
 
 #todo 'returning complex structs NYI';
 #response-content-is-deeply 'GET', '/baz', { foo => "bar", baz => 5 };
 
-my $res = get-psgi-response('GET',  '/regexes/bar');
+my $res = get-psgi-response($p6w-app, 'GET',  '/regexes/bar');
 is $res[0], 200, 'status code';
 is-deeply $res[1], ["Content-Type" => "text/html"], 'header';
 
 todo 'returning complex structs NYI';
 is-deeply $res[2], { foo => "bar", baz => 5 }; # this should be json, right?
 
-is-deeply get-psgi-response('GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
+is-deeply get-psgi-response($p6w-app, 'GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
 
-is-deeply get-psgi-response('GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
 
 my @hex = ('A'..'F', 'a'..'f', 0..9).flat;
 for @hex -> $first {
     for @hex -> $second {
-        lives-ok { get-psgi-response('POST', 'http://127.0.0.1/utf8',
+        lives-ok { get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1/utf8',
             'text=%' ~ $first ~ $second); }, "decoding \%$first$second works";
     }
 }
 
 {
-my $res0 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C3%86');
-my $res1 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C6');
-my $res2 = get-psgi-response('POST', 'http://127.0.0.1/utf8', 'text=%C3%86%C6');
+my $res0 = get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1/utf8', 'text=%C3%86');
+my $res1 = get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1/utf8', 'text=%C6');
+my $res2 = get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1/utf8', 'text=%C3%86%C6');
 
 is $res0[2], chr(198), 'utf8 encoding was correct';
 is $res1[2], chr(198), 'fallback encoding was correct';
