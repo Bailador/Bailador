@@ -37,7 +37,7 @@ multi sub MAIN('version') {
 }
 
 #| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected
-multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
+multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin,views', Str :$config) {
     bootup-file('watch', $app, $w, $config);
 }
 
