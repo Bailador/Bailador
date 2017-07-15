@@ -1,3 +1,4 @@
+    - Ticket #176 - Layered configuration file loading
     - Ticket #186 - added 'views' as default for bin/bailador watch
     - Ticket #203 - t/00-tidy.t avoids .precomp dir
     - Ticket #174 - Removed Bailador::import()

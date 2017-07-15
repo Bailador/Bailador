@@ -36,16 +36,23 @@ class Bailador::Configuration {
     has Str $.log-format is rw = '\d (\s) \m';
     has @.log-filter is rw     = ('severity' => '>=warning');
 
-
-    sub local-variant($filename) {
+    method !variants($filename) {
         my @pieces = $filename.split('.');
-        @pieces[*-2] ~= '-local';
-        join '.', @pieces;
+        my $extend-me = @pieces[*-2];
+        return gather {
+            take $filename;
+
+            @pieces[*-2] = $extend-me ~ '-local';
+            take join '.', @pieces;
+
+            @pieces[*-2] = $extend-me ~ '-' ~ $.mode;
+            take join '.', @pieces;
+        }
     }
 
     method load-from-dir($app-dir) {
         my $config-dir = $.config-dir.IO.is-absolute ?? $.config-dir.IO !! $app-dir.IO.child($.config-dir);
-        for $.config-file, local-variant($.config-file) -> $f {
+        for self!variants($.config-file) -> $f {
             my $config-file = $f.IO.is-absolute ?? $f.IO !! $config-dir.child($f);
             if $.check-config-file($config-file) {
                 $.load-from-file($config-file);
