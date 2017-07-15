@@ -7,7 +7,7 @@ use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.7>;
+unit module Bailador:ver<0.0.8>;
 
 my $app;
 
