@@ -1,3 +1,5 @@
+    - Ticket #194 - t/20-cli.t did not shut down processes properly
+
 0.0.8 2017.07.15
     - Ticket #176 - Layered configuration file loading
     - Ticket #186 - added 'views' as default for bin/bailador watch
