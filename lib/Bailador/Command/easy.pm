@@ -3,6 +3,7 @@ use v6.c;
 use HTTP::Easy::PSGI;
 
 use Bailador::Command;
+use Bailador::Utils;
 
 class Bailador::Command::easy does Bailador::Command {
     method run(:$app) {
@@ -14,7 +15,7 @@ class Bailador::Command::easy does Bailador::Command {
 
         given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
             .app($p6w-app);
-            say $msg;
+            terminal-color($msg, 'green', $config);
             .run;
         }
     }
