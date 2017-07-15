@@ -6,8 +6,9 @@ use Bailador::Test;
 
 plan 6;
 
-%*ENV<P6W_CONTAINER> = 'Bailador::Test';
 chdir 'examples/gradual';
+%*ENV<P6W_CONTAINER> = 'Bailador::Test';
+%*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
 my $app = EVALFILE "app.pl6";
 
 subtest {

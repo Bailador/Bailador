@@ -3,6 +3,7 @@ use v6.c;
 use Test;
 
 use Bailador::App;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 5;
@@ -10,25 +11,25 @@ plan 5;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
         self.config.cookie-expiration = 5;
-        self.get: '/setsession' => sub {
+        self.add_route: make-simple-route('GET','/setsession' => sub {
             my $session = self.session;
             $session<key> = 'value';
             "with session";
-        }
+        });
 
-        self.get: '/readsession' => sub {
+        self.add_route: make-simple-route('GET','/readsession' => sub {
             my $session = self.session;
             $session<key> || 'no value';
-        }
+        });
 
-        self.get: '/deletesession' => sub {
+        self.add_route: make-simple-route('GET','/deletesession' => sub {
             self.session-delete;
             "session should be deleted";
-        }
+        });
     }
 }
 
-my $app = MyOwnWebApp.new();
+my $app = MyOwnWebApp.new().baile('p6w');
 my $first-session-id;
 my $wrong-session-id;
 my $second-session-id;
@@ -54,7 +55,7 @@ subtest {
 
 subtest {
     plan 3;
-    my %data = run-psgi-request($app, 'GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    my %data = run-psgi-request($app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
     my $response = %data<response>;
     is $response[0], 200, 'With session HTTP status 200';
     my %header = $response[1];
@@ -74,7 +75,7 @@ subtest {
         $wrong-session-id.substr-rw(0,1) = '2';
     }
 
-    my %data = run-psgi-request($app, 'GET', '/readsession', http_cookie => "$session-cookie-name=$wrong-session-id");
+    my %data = run-psgi-request($app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$wrong-session-id" });
     my $response = %data<response>;
     is $response[0], 200, 'With session HTTP status 200';
     my %header = $response[1];
@@ -89,7 +90,7 @@ subtest {
     # let the cookie expire!
     sleep 6;
 
-    my %data = run-psgi-request($app, 'GET', '/readsession', http_cookie => "$session-cookie-name=$first-session-id");
+    my %data = run-psgi-request($app, 'GET', '/readsession', headers => { cookie => "$session-cookie-name=$first-session-id" });
     my $response = %data<response>;
     is $response[0], 200, 'With session HTTP status 200';
     my %header = $response[1];
@@ -108,7 +109,7 @@ subtest {
 
 subtest {
     plan 1;
-    my %data = run-psgi-request($app, 'GET', '/deletesession', http_cookie => "$session-cookie-name=$second-session-id");
+    my %data = run-psgi-request($app, 'GET', '/deletesession', headers => { cookie => "$session-cookie-name=$second-session-id" });
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
 }, 'Session deletion';
 

@@ -1,0 +1,5 @@
+mode: 'development'
+host: 'localhost'
+port: 9090
+
+name: 'Fred'

@@ -1,6 +1,6 @@
 # Bailador
 
-[![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/Bailador/Bailador/branch/main)
+[![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador) [![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/main)
 
 A light-weight route-based web application framework for Perl 6.
 
@@ -447,7 +447,7 @@ and set backend to this class name.
 
 ## Configuration
 
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using a configuration file. You can also change the configuration within your app. the Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method.
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using configuration files. You can also change the configuration within your app. The Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method. The order of adjusting the settings is: first the code in your app, second from the configuration files, thrid from the environment variaible. So the settings from the evironment variale `BAILADOR` will finally override what you might have stated in the config files.
 
 ```perl6
 # directly
@@ -464,7 +464,7 @@ config.set('database-password', 'xxxxxx')
 
 ```
 
-For now, Bailador only allows you to use a YAML formatted configuration file. Create at the root of your project directory a `settings.yaml` file :
+For now, Bailador only allows you to use YAML formatted configuration files. The default configuration file name is `settings.yaml`, but you could change this if you like. Just write `config.config-file = 'myconfig.yaml'` in the beggingin of your app. Create at the root of your project directory a `settings.yaml` file :
 
 ```yaml
 # settings.yaml
@@ -472,7 +472,9 @@ mode: "development"
 port: 8080
 ```
 
-Bailador will now use the paremeters defined in your file.
+Bailador will now generate 2 more config file variants and process the settings from there. In our example `settings-local.yaml` and, depending on our `config.mode` which is development, a file named `settings-development.yaml`. If our mode was production Bailador would have used `settings-production.yaml`.
+
+This allows you to have a general settings.yaml that you which to use on everywhere. Adaptions that only apply to a certain server could be placed into the `-local` configuration file. And settings that only apply during development mode can be stored in the `-development` file. As soon as you switch to production mode those settings will no longer be used.
 
 Using the `BAILADOR` environment variable is a comma seperated list of key-value pairs.
 

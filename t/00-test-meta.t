@@ -14,5 +14,6 @@ if AUTHOR {
 }
 else {
      skip-rest "Skipping author test";
+     diag "Skipping author test. Set AUTHOR_TESTING to enable.";
      exit;
 }

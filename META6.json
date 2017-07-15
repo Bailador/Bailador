@@ -16,7 +16,9 @@
     "Martin Barth (ufobat)",
     "Emeric Fischer"
   ],
-  "build-depends" : [ ],
+  "build-depends" : [
+    "TAP::Harness"
+  ],
   "depends" : [
     "Digest",
     "Digest::HMAC",
@@ -61,7 +63,11 @@
     "Bailador::Request::Multipart" : "lib/Bailador/Request/Multipart.pm",
     "Bailador::Response" : "lib/Bailador/Response.pm",
     "Bailador::Route" : "lib/Bailador/Route.pm",
+    "Bailador::Route::AutoHead" : "lib/Bailador/Route/AutoHead.pm",
+    "Bailador::Route::Prefix" : "lib/Bailador/Route/Prefix.pm",
+    "Bailador::Route::Simple" : "lib/Bailador/Route/Simple.pm",
     "Bailador::Route::StaticFile" : "lib/Bailador/Route/StaticFile.pm",
+    "Bailador::RouteHelper" : "lib/Bailador/RouteHelper.pm",
     "Bailador::Sessions" : "lib/Bailador/Sessions.pm",
     "Bailador::Sessions::Store" : "lib/Bailador/Sessions/Store.pm",
     "Bailador::Sessions::Store::Memory" : "lib/Bailador/Sessions/Store/Memory.pm",
@@ -84,5 +90,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.7"
+  "version" : "0.0.8"
 }

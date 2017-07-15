@@ -3,6 +3,7 @@ use v6.c;
 use Test;
 
 use Bailador::App;
+use Bailador::RouteHelper;
 use Bailador::Test;
 
 plan 14;
@@ -10,80 +11,80 @@ plan 14;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
 
-        self.get: '/cook1' => sub {
+        self.add_route: make-simple-route('GET','/cook1' => sub {
             self.response.cookie("flavour", "chocolate");
             "cookie test #1";
-        }
+        });
 
-        self.get: '/cook2' => sub {
+        self.add_route: make-simple-route('GET','/cook2' => sub {
             self.response.cookie("flavour", "chocolate", domain => "example.com");
             "cookie test #2";
-        }
+        });
 
-        self.get: '/cook3' => sub {
+        self.add_route: make-simple-route('GET','/cook3' => sub {
             self.response.cookie("flavour", "chocolate", path => "/test");
             "cookie test #3";
-        }
+        });
 
-        self.get: '/cook4' => sub {
+        self.add_route: make-simple-route('GET','/cook4' => sub {
             self.response.cookie("flavour", "chocolate", path => "/test", domain => "example.com");
             "cookie test #4";
-        }
+        });
 
-        self.get: '/cook5' => sub {
+        self.add_route: make-simple-route('GET','/cook5' => sub {
             self.response.cookie("flavour", "chocolate", expires => DateTime.new("2021-06-09T01:18:14-09"));
             "cookie test #5";
-        }
+        });
 
-        self.get: '/rfc1' => sub {
+        self.add_route: make-simple-route('GET','/rfc1' => sub {
             self.response.cookie("SID", "31d4d96e407aad42");
             "rfc";
-        }
+        });
 
-        self.get: '/rfc2' => sub {
+        self.add_route: make-simple-route('GET','/rfc2' => sub {
             self.response.cookie("SID", "31d4d96e407aad42", path=> "/", domain => "example.com");
             "rfc";
-        }
-        self.get: '/rfc3' => sub {
+        });
+        self.add_route: make-simple-route('GET','/rfc3' => sub {
             self.response.cookie("SID", "31d4d96e407aad42", path=> "/", :secure, :http-only);
             "rfc";
-        }
+        });
 
-        self.get: '/rfc4' => sub {
+        self.add_route: make-simple-route('GET','/rfc4' => sub {
             self.response.cookie("lang", "", expires => DateTime.new("1994-11-06T08:49:37"));
             "rfc";
-        }
+        });
 
-        self.get: '/wiki1' => sub {
+        self.add_route: make-simple-route('GET','/wiki1' => sub {
             self.response.cookie("LSID", "DQAAAKEaem_vYg", path => "/accounts", expires => DateTime.new("2021-01-13T22:23:01"), :secure, :http-only);
             "wikipedia";
-        }
+        });
 
-        self.get: '/wiki2' => sub {
+        self.add_route: make-simple-route('GET','/wiki2' => sub {
             self.response.cookie("SSID", "Ap4P.GTEq", domain => "foo.com", path => "/", expires => DateTime.new("2021-01-13T22:23:01"), :secure, :http-only);
             "wikipedia";
-        }
+        });
 
-        self.get: '/multi1' => sub {
+        self.add_route: make-simple-route('GET','/multi1' => sub {
             self.response.cookie("enwikiUserID", "127001", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :secure, :http-only);
             self.response.cookie("enwikiUserName", "localhost", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :secure, :http-only);
             self.response.cookie("forceHTTPS", "true", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :http-only);
             "multiple";
-        }
+        });
 
-        self.get: '/escape1' => sub {
+        self.add_route: make-simple-route('GET','/escape1' => sub {
             self.response.cookie("key", "value;", :secure);
             "escape";
-        }
+        });
 
-        self.get: '/escape2' => sub {
+        self.add_route: make-simple-route('GET','/escape2' => sub {
             self.response.cookie("the=key", "value", path => "/");
             "escape";
-        }
+        });
     }
 }
 
-my $app = MyOwnWebApp.new;
+my $app = MyOwnWebApp.new.baile('p6w');
 
 
 is-deeply get-psgi-response($app, 'GET', '/cook1'), [ 200, ["Content-Type" => "text/html", "Set-Cookie" => "flavour=chocolate"], "cookie test #1" ], 'ROUTE GET /cook1 sets a cookie';

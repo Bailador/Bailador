@@ -80,7 +80,7 @@ get '/env' => sub {
     $result;
 }
 
-app.add_route: Bailador::Route::StaticFile.new: directory => $?FILE.IO.parent.child('examples/public'), path => / (.*) /;
+static-dir / (.*) /  => '/public';
 
 prefix '/media' => sub {
     prefix '/video' => sub {

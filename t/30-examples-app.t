@@ -6,8 +6,10 @@ use Bailador::Test;
 
 plan 15;
 
+chdir 'examples';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
-my $app = EVALFILE "examples/app.pl6";
+%*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
+my $app = EVALFILE "app.pl6";
 
 subtest {
     plan 3;
@@ -71,7 +73,7 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/abc');
-    is-deeply %data<response>, [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /abc';
+    is-deeply %data<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], "<html>\n    <head>\n        <title>Custom 404 page</title>\n        <meta charset=\"UTF-8\">\n    </head>\n    <body>\n        <h1>Hello, this is 404 for you.</h1>\n    </body>\n</html>\n"], 'route GET /abc';
     is %data<err>, '';
 }, '/abc';
 
@@ -79,7 +81,7 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/hello/Foo/Bar');
-    is-deeply %data<response>, [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /hello/Foo/Bar';
+    is-deeply %data<response>, [404, ["Content-Type" => "text/html;charset=UTF-8"], "<html>\n    <head>\n        <title>Custom 404 page</title>\n        <meta charset=\"UTF-8\">\n    </head>\n    <body>\n        <h1>Hello, this is 404 for you.</h1>\n    </body>\n</html>\n"], 'route GET /hello/Foo/Bar';
     is %data<err>, '';
 }, '/hello/Foo/Bar';
 

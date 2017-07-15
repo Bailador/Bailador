@@ -44,9 +44,9 @@ my class IO::Null is IO::Handle {
     }
 }
 
-multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $url, $data = '', :$http_cookie = '' ) is export {
+sub run-psgi-request(Callable $app, $meth, $url, $data = '', :%headers ) is export {
     my $error-buf = ErrorBuffer.new;
-    my $response  = get-psgi-response($app, $meth, $url, $data, :$http_cookie, :$error-buf),
+    my $response  = get-psgi-response($app, $meth, $url, $data, :%headers, :$error-buf),
 
     return {
         err      => $error-buf.Str,
@@ -54,32 +54,8 @@ multi sub run-psgi-request($app where {$app ~~ Bailador::App|Callable}, $meth, $
     };
 }
 
-multi sub run-psgi-request($meth, $url, $data = '', :$http_cookie = '' ) is export {
-    my $error-buf = ErrorBuffer.new;
-    my $response  = get-psgi-response($meth, $url, $data, :$http_cookie, :$error-buf),
-
-    return {
-        err      => $error-buf.Str,
-        response => $response;
-    };
-}
-
-multi sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
-    my $promise = $psgi-app.($env);
-    return de-supply-response $promise.result;
-}
-
-multi sub get-psgi-response(Bailador::App $app, $meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
-    my $psgi-app = $app.baile('p6w');
-    my $promise = $psgi-app.($env);
-    return de-supply-response $promise.result;
-}
-
-multi sub get-psgi-response($meth, $url, $data = '', :$http_cookie = "", ErrorBuffer :$error-buf) is export {
-    my $env = get-psgi-env($meth, $url, $data, $http_cookie, $error-buf);
-    my $psgi-app = baile('p6w');
+sub get-psgi-response(Callable $psgi-app, $meth, $url, $data = '', :%headers, ErrorBuffer :$error-buf) is export {
+    my $env = get-psgi-env($meth, $url, $data, %headers, $error-buf);
     my $promise = $psgi-app.($env);
     return de-supply-response $promise.result;
 }
@@ -95,7 +71,7 @@ sub de-supply-response($response) {
     die "body must be a Supply";
 }
 
-sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
+sub get-psgi-env($meth, $url, $data, %headers, ErrorBuffer $error-buf) {
     # prefix with http://127.0.0.1:1234 because the URI module cannot handle URI that looks like /foo
     my $uri = URI.new(($url.substr(0, 1) eq '/' ?? 'http://127.0.0.1:1234' !! '') ~ $url);
 
@@ -122,60 +98,14 @@ sub get-psgi-env($meth, $url, $data, $http_cookie, ErrorBuffer $error-buf) {
         "PATH_INFO"            => $uri.path,
         "SERVER_PORT"          => $uri.port,
         "SERVER_NAME"          => "0.0.0.0",
-        "HTTP_COOKIE"          => $http_cookie,
         "QUERY_STRING"         => $uri.query,
     };
 
+    for %headers.keys -> $k {
+        $env{'HTTP_' ~ $k.uc}          = %headers{$k};
+    }
+
+    return $env;
 }
-
-
-#sub get-response($meth, $path) {
-#    my $req = Bailador::Request.new_for_request($meth, $path);
-#    Bailador::dispatch_request($req);
-#}
-
-#obsolete methods
-#sub route-exists($meth, $path, $desc = '') is export {
-#    my $req = Bailador::Request.new_for_request($meth, $path);
-#    ok Bailador::App.current.find_route($req), $desc;
-#}
-#
-#sub route-doesnt-exist($meth, $path, $desc = '') is export {
-#    my $req = Bailador::Request.new_for_request($meth, $path);
-#    ok !Bailador::App.current.find_route($req), $desc;
-#}
-
-#sub response-status-is($meth, $path, $status, $desc = '') is export {
-#    my $resp = get-response($meth, $path);
-#    is $resp.code, $status, $desc;
-#}
-#
-#sub response-status-isnt($meth, $path, $status, $desc = '') is export {
-#    my $resp = get-response($meth, $path);
-#    isnt $resp.code, $status, $desc;
-#}
-
-#sub response-content-is($meth, $path, $cont, $desc = '') is export {
-#    my $resp = get-response($meth, $path);
-#    is ~$resp.content, $cont, $desc;
-#}
-#
-#sub response-content-isnt($meth, $path, $cont, $desc = '') is export {
-#    my $resp = get-response($meth, $path);
-#    isnt ~$resp.content, $cont, $desc;
-#}
-#
-#sub response-content-is-deeply($meth, $path, $y, $desc = '') is export {
-#    my $resp = get-response($meth, $path);
-#    is_deeply ~$resp.content, $y, $desc;
-#}
-#
-#sub response-content-like($meth, $path, $cont, $desc) is export { ... }
-#sub response-content-unlike($meth, $path, $cont, $desc) is export { ... }
-
-#sub response-headers-are-deeply($meth, $path, $cont, $desc) is export { ... }
-#sub response-headers-include($meth, $path, $cont, $desc) is export { ... }
-
-#sub bailador-response($meth, $path, *%opts) is export { ... }
 
 sub read-logs is export { ... }

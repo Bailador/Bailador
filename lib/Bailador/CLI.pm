@@ -7,12 +7,11 @@ sub skeleton() is export {
 %skeleton{'bin/app.pl6'} =
 q{use v6.c;
 use Bailador;
-Bailador::import();
 
 my $version = '0.0.1';
 
 get '/' => sub {
-    template 'index.tt', { version => $version }
+    template 'index.html', { version => $version }
 }
 
 baile();
@@ -26,6 +25,7 @@ use Bailador::Test;
 plan 1;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
+%*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
 my $app = EVALFILE "bin/app.pl6";
 
 subtest {
@@ -36,11 +36,11 @@ subtest {
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
     is %data<err>, '';
     like $html, rx:s/\<h1\>Bailador App\<\/h1\>/;
-    like $html, rx:s/Version 0\.01/;
+    like $html, rx:s/Version 0\.0\.1/;
 }, '/';
 };
 
-%skeleton{'views/index.tt'} =
+%skeleton{'views/index.html'} =
 q{
 % my ($h) = @_;
 <!DOCTYPE html>
@@ -86,7 +86,14 @@ my multi sub bootup-file ('watch', Str $app, Str $w, Str $config?) is export {
     bootup-file($app);
 }
 
-my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre routes>}, Str $app, Str $config?) is export {
+my multi sub bootup-file ('routes', Str $app, Bool $tree, Str $config?) is export {
+    my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
+    $param ~= ',default-command:routes,routes-output:' ~ ($tree ?? 'tree' !! 'plain');
+    %*ENV<BAILADOR> = $param;
+    bootup-file($app);
+}
+
+my multi sub bootup-file (Str $cmd where {$cmd ~~ any <easy tiny ogre>}, Str $app, Str $config?) is export {
     my $param = ($config.defined ?? $config !! %*ENV<BAILADOR>);
     $param ~= ',default-command:' ~ $cmd;
     %*ENV<BAILADOR> = $param;

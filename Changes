@@ -1,3 +1,17 @@
+0.0.8 2017.07.15
+    - Ticket #176 - Layered configuration file loading
+    - Ticket #186 - added 'views' as default for bin/bailador watch
+    - Ticket #203 - t/00-tidy.t avoids .precomp dir
+    - Ticket #174 - Removed Bailador::import()
+    - Ticket #169 - All paths are relative to Bailador::App $!location. Use %*ENV<BAILADOR_APP_ROOT> explicitly set it.
+    - Improved logging speed - https://github.com/jsimonet/log-any/issues/1
+    - Ticket #138 - Added a fancy output Bailador::Command::routes, use bin/bailador routes -t <app> 
+    - Ticket #177 - Route matching on / or "end of URI" works better
+    - Ticket #190 - Added syntactic suggar for static-dir routes
+    - Ticket #189 - views directory is relative to where the application script is when it is in a directory called 'bin'. 
+    - Ticket #196 - Pass arbitrary header to run-psgi-request
+
+0.0.7 2017.07.04
     - Ticket #164 - bin/bailador version should work even after installation 
     - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
     - Named arguments to bin/bailador such as --config can now be anywhere
@@ -8,7 +22,7 @@
       that are stated in '-w' command line switch
     - Add custom error handing functions #131
 
-0.0.6 2017.6.27
+0.0.6 2017.06.27
     - Ticket #147 - no test output for t/08-* testcases
     - Added a test case for bailador watch command
     - Added Bailador::Commands for

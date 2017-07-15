@@ -13,9 +13,10 @@ use Bailador::Route;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
 
-
-class Bailador::App is Bailador::Route {
-    has Str $.location is rw = '.';
+class Bailador::App does Bailador::Routing {
+    # has Str $.location is rw = get-app-root().absolute;
+    has Str $!location;
+    has Bool $!started = False;
     has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
@@ -25,17 +26,14 @@ class Bailador::App is Bailador::Route {
     has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
     has %.error_handlers;
 
-    submethod TWEAK {
-        self.load-config();
-    }
-
     method load-config {
+        if %*ENV<BAILADOR_CONFIGDIR> {
+            $!config.config-dir = %*ENV<BAILADOR_CONFIGDIR>;
+        }
         if %*ENV<BAILADOR_CONFIGFILE> {
             $!config.config-file = %*ENV<BAILADOR_CONFIGFILE>;
         }
-        if $!config.check-config-file($!location.IO) {
-            $!config.load-from-file($!location.IO);
-        }
+        $!config.load-from-dir($.location);
         $!config.load-from-env();
     }
 
@@ -56,10 +54,42 @@ class Bailador::App is Bailador::Route {
         return $content;
     }
 
+    method before-add-routes() {
+        # this is a good place for a hook
+        self.load-config();
+    }
+
+    # do not use $!location outside of this subs
+    multi method location(Str $location) {
+        if $!location.defined {
+            die "can not set location, it is already defined. Set it before you add the first route";
+        }
+        $!location = $location;
+
+        # call after $!location is defined
+        self.before-add-routes();
+    }
+    multi method location() {
+        unless $!location.defined {
+            my $app-root;
+            if %*ENV<BAILADOR_APP_ROOT>:exists {
+                $app-root = %*ENV<BAILADOR_APP_ROOT>.IO.resolve;
+            } else {
+                my $parent = $*PROGRAM.parent.resolve;
+                $app-root = $parent.basename eq 'bin' ?? $parent.parent !! $parent;
+            }
+            self.location($app-root.Str);
+        }
+        return $!location;
+    }
+
     method before-run() {
         # probably a good place for a hook
         my $formatter = $.config.log-format;
         my @filter    = $.config.log-filter;
+        # https://github.com/jsimonet/log-any/issues/1
+        # black magic to increase the logging speed
+        Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
         Log::Any.add($.log-adapter, :$formatter, :@filter);
     }
 
@@ -112,6 +142,9 @@ class Bailador::App is Bailador::Route {
     }
 
     multi method baile() {
+        # initialize the location if we didnt need it so far. that reads the config
+        $.location();
+
         my $command;
         if $.config.default-command() {
             $command = $.config.default-command();
@@ -124,8 +157,16 @@ class Bailador::App is Bailador::Route {
     }
 
     multi method baile(Str $command, *@args) {
+        # initialize the location if we didnt need it so far. that reads the config
+        # in case we dont call baile() without parameters
+        $.location();
+
+        $.config.load-from-args(@args);
         my $cmd = $.commands.get-command($command);
-        $.config.load-from-args(@args),
+
+        die 'can only baile once' if $!started;
+        $!started = True;
+
         $.before-run();
         $cmd.run(app => self );
     }
@@ -183,7 +224,7 @@ class Bailador::App is Bailador::Route {
                     Log::Any.notice("No Route was Found for $method $uri");
                     if self.error_handlers{404} {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.error_handlers{404}());
-                    } elsif $!location.defined && "$!location/views/404.xx".IO.e {
+                    } elsif $.location.defined && "$.location/views/404.xx".IO.e {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.template("404.xx", []));
                     } else {
                         self.render(:status(404), :type<text/plain;charset=UTF-8>, content => 'Not found');
@@ -206,7 +247,7 @@ class Bailador::App is Bailador::Route {
                         self.render(status => 500, type => 'text/html;charset=UTF-8', content => $err-page);
                     } elsif self.error_handlers{500} {
                         self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.error_handlers{500}());
-                    } elsif $!location.defined && "$!location/views/500.xx".IO.e {
+                    } elsif $.location.defined && "$.location/views/500.xx".IO.e {
                         self.render(:status(500), :type<text/html;charset=UTF-8>, content => self.template("500.xx", []));
                     } else {
                         self.render(:status(500), :type<text/plain;charset=UTF-8>, content => 'Internal Server Error');

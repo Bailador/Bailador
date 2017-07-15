@@ -10,10 +10,10 @@ if AUTHOR {
     # check for trailing spaces
     # check for tabs
     my @dirs = '.';
-    for Path::Iterator.skip-vcs.ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
+    for Path::Iterator.skip-vcs.skip-dir('.precomp').ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
         check_tidy($file);
     }
-    for Path::Iterator.skip-vcs.in('examples') -> $file {
+    for Path::Iterator.skip-vcs.skip-dir('.precomp').in('examples') -> $file {
         next if not $file.f;
         check_tidy($file);
     }

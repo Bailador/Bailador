@@ -20,7 +20,7 @@ multi sub MAIN('new', Str :$name) {
     my %skeleton = skeleton();
     #say %skeleton;
 
-    for %skeleton.keys -> $file {
+    for %skeleton.keys.sort -> $file {
         say $file;
         if $file.rindex('/')
         {
@@ -37,7 +37,7 @@ multi sub MAIN('version') {
 }
 
 #| Invokes your app on top of HTTP::Easy, reloads your app when changes are detected
-multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin', Str :$config) {
+multi sub MAIN ('watch', Str $app, Str :$w = 'lib,bin,views', Str :$config) {
     bootup-file('watch', $app, $w, $config);
 }
 
@@ -46,9 +46,9 @@ multi sub MAIN ('easy', Str $app, Str :$config) {
     bootup-file('easy', $app, $config);
 }
 
-#| Displayes all the routes of your app
-multi sub MAIN ('routes', Str $app, Str :$config) {
-    bootup-file('routes', $app, $config);
+#| Displays all the routes of your app
+multi sub MAIN ('routes', Str $app, Bool :$t = False, Str :$config) {
+    bootup-file('routes', $app, $t, $config);
 }
 
 #| Invokes your app on top of HTTP::Server::Ogre

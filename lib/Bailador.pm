@@ -4,9 +4,10 @@ use HTTP::Easy::PSGI;
 
 use Bailador::App;
 use Bailador::Request;
+use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.7>;
+unit module Bailador:ver<0.0.8>;
 
 my $app;
 
@@ -21,10 +22,6 @@ multi sub app(Bailador::App $myapp) is export {
     $app = $myapp;
 }
 
-our sub import(Str :$rootdir) {
-    app.location = $rootdir || callframe(1).file.IO.dirname;
-}
-
 sub error(Pair $x) is export {
     app.add_error: $x;
     return $x;
@@ -37,37 +34,42 @@ sub use-feature(Str $feature-name) is export {
 }
 
 sub get(Pair $x) is export {
-    app.add_route: 'GET', $x;
+    app.add_route: make-simple-route('GET', $x);
     return $x;
 }
 
 sub post(Pair $x) is export {
-    app.add_route: 'POST', $x;
+    app.add_route: make-simple-route('POST', $x);
     return $x;
 }
 
 sub put(Pair $x) is export {
-    app.add_route: 'PUT', $x;
+    app.add_route: make-simple-route('PUT', $x);
     return $x;
 }
 
 sub delete(Pair $x) is export {
-    app.add_route: 'DELETE', $x;
+    app.add_route: make-simple-route('DELETE', $x);
     return $x;
 }
 
 sub patch(Pair $x) is export {
-    app.add_route: 'PATCH', $x;
+    app.add_route: make-simple-route('PATCH', $x);
     return $x;
 }
 
 sub head(Pair $x) is export {
-    app.add_route: 'HEAD', $x;
-    return $x
+    app.add_route: make-simple-route('HEAD', $x);
+    return $x;
+}
+
+sub static-dir(Pair $x) is export {
+    app.add_route: make-static-dir-route($x, app);
 }
 
 sub prefix(Pair $x) is export {
-    app.prefix($x);
+    my $route = make-prefix-route($x.key);
+    app.prefix($route, $x.value);
 }
 
 sub prefix-enter(Callable $code) is export {

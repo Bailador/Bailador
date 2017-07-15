@@ -12,6 +12,7 @@ chdir "examples";
 die "Directory examples/data exists. Remove it before running the test." if 'data'.IO.e;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
+%*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
 my $app = EVALFILE "pastebin.pl6";
 
 subtest {

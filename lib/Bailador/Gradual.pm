@@ -1,7 +1,6 @@
 use v6.c;
 
 use Bailador;
-use Bailador::Route::StaticFile;
 
 # experimental code
 # see the examples/gradual/  example
@@ -28,5 +27,5 @@ get '/(.*)' => sub ($url) {
     return False;
 }
 
-my $files = Bailador::Route::StaticFile.new: directory => $rel_root.IO.child('static'), path => /(.*)/;
-app.add_route: $files;
+static-dir /(.*)/ => $rel_root.IO.child('static');
+
