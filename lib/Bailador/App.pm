@@ -17,7 +17,6 @@ class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
     has Str $!location;
     has Bool $!started = False;
-    has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
     has Bailador::Sessions $!sessions;
@@ -95,7 +94,7 @@ class Bailador::App does Bailador::Routing {
 
     multi method render($result) {
         if $result ~~ IO::Path {
-            my $type = $.content-types.detect-type($result);
+            my $type = detect-type($result);
             self.render: content => $result.slurp(:bin), :$type;
         }
         else {
