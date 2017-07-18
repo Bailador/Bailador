@@ -106,7 +106,7 @@ subtest {
 subtest {
     plan 1;
     my %data = run-psgi-request($p6w-app, 'GET', '/deletesession', headers => { cookie => "$session-cookie-name=$second-session-id" });
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'session should be deleted'], 'Session deletion';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'session should be deleted'], 'Session deletion';
 }, 'Session deletion';
 
 done-testing;

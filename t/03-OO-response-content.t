@@ -35,28 +35,28 @@ class MyOwnWebApp is Bailador::App {
 }
 my $app = MyOwnWebApp.new.baile('p6w');
 
-is-deeply get-psgi-response($app, 'GET',  '/foo'),  [200, ["Content-Type" => "text/html"], 'foo text'],       'route GET /foo returns content';
-is-deeply get-psgi-response($app, 'POST', '/bar'),  [200, ["Content-Type" => "text/html"], 'peti bar'],       'route POST /bar returns content';
+is-deeply get-psgi-response($app, 'GET',  '/foo'),  [200, ["Content-Type" => "text/html;charset=UTF-8"], 'foo text'],       'route GET /foo returns content';
+is-deeply get-psgi-response($app, 'POST', '/bar'),  [200, ["Content-Type" => "text/html;charset=UTF-8"], 'peti bar'],       'route POST /bar returns content';
 
 is-deeply get-psgi-response($app, 'POST', '/foo'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route POST /foo not found';
 is-deeply get-psgi-response($app, 'GET',  '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'],      'route GET /bar not found';
 
-is-deeply get-psgi-response($app, 'GET',  '/params/bar'),   [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /params/bar returns content';
-is-deeply get-psgi-response($app, 'GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html"], 'a happy bar'],       'route GET /regexes/bar returns content';
+is-deeply get-psgi-response($app, 'GET',  '/params/bar'),   [200, ["Content-Type" => "text/html;charset=UTF-8"], 'a happy bar'],       'route GET /params/bar returns content';
+is-deeply get-psgi-response($app, 'GET',  '/regexes/bar'),  [200, ["Content-Type" => "text/html;charset=UTF-8"], 'a happy bar'],       'route GET /regexes/bar returns content';
 
 #todo 'returning complex structs NYI';
 #response-content-is-deeply 'GET', '/baz', { foo => "bar", baz => 5 };
 
 my $res = get-psgi-response($app, 'GET',  '/regexes/bar');
 is $res[0], 200, 'status code';
-is-deeply $res[1], ["Content-Type" => "text/html"], 'header';
+is-deeply $res[1], ["Content-Type" => "text/html;charset=UTF-8"], 'header';
 
 todo 'returning complex structs NYI';
 is-deeply $res[2], { foo => "bar", baz => 5 }; # this should be json, right?
 
-is-deeply get-psgi-response($app, 'GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
+is-deeply get-psgi-response($app, 'GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html;charset=UTF-8" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
 
-is-deeply get-psgi-response($app, 'GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
+is-deeply get-psgi-response($app, 'GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html;charset=UTF-8"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
 
 my @hex = ('A'..'F', 'a'..'f', 0..9).flat;
 for @hex -> $first {

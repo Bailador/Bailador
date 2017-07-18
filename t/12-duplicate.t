@@ -23,6 +23,5 @@ try {
 # Call baile just once
 my $p6w-app = baile('p6w');
 
-is-deeply get-psgi-response($p6w-app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html"], "hello"],              'route GET /foo exists';
-is-deeply get-psgi-response($p6w-app, 'GET', '/bar'),  [200, ["Content-Type" => "text/html"], "world"],              'route GET /bar exists';
-
+is-deeply get-psgi-response($p6w-app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html;charset=UTF-8"], "hello"],              'route GET /foo exists';
+is-deeply get-psgi-response($p6w-app, 'GET', '/bar'),  [200, ["Content-Type" => "text/html;charset=UTF-8"], "world"],              'route GET /bar exists';

@@ -17,7 +17,6 @@ class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
     has Str $!location;
     has Bool $!started = False;
-    has Bailador::ContentTypes $.content-types = Bailador::ContentTypes.new;
     has Bailador::Context  $.context  = Bailador::Context.new;
     has Bailador::Template $.renderer is rw = Bailador::Template::Mojo.new;
     has Bailador::Sessions $!sessions;
@@ -94,12 +93,16 @@ class Bailador::App does Bailador::Routing {
     }
 
     multi method render($result) {
-        if $result ~~ IO::Path {
-            my $type = $.content-types.detect-type($result);
-            self.render: content => $result.slurp(:bin), :$type;
-        }
-        else {
-            self.render(content => $result);
+        my $type = self.response.headers<Content-Type>;
+        if $type ~~ 'application/octet-stream' {
+            $type = detect-type($result);
+            if $result ~~ IO::Path {
+                self.render: content => $result.slurp(:bin), :$type;
+            } else {
+                self.render: content => $result, :$type;
+              }
+        } else {
+            self.render: content => $result, :$type;
         }
     }
 
