@@ -16,7 +16,7 @@ subtest {
     my %data = run-psgi-request($app, 'GET', '/');
     my $html = %data<response>[2];
     %data<response>[2] = '';
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route GET /';
     is %data<err>, '';
     like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';
@@ -35,7 +35,7 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/red');
-    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /red';
+    is-deeply %data<response>, [302, ["Content-Type" => "application/octet-stream", :Location("/index.html")], "Not found"], 'route GET /red';
     is %data<err>, '';
 }, '/red';
 
@@ -50,14 +50,14 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/about');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'about me'], 'route GET /about';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'about me'], 'route GET /about';
     is %data<err>, '';
 }, '/about';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/hello/Foo');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'Hello Foo!'], 'route GET /hello/Foo';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'Hello Foo!'], 'route GET /hello/Foo';
     is %data<err>, '';
 }, '/hello/Foo';
 
@@ -65,7 +65,7 @@ todo "See https://github.com/Bailador/Bailador/issues/178";
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/hello/Foo.html');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'Hello Foo.html!'], 'route GET /hello/Foo.html';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'Hello Foo.html!'], 'route GET /hello/Foo.html';
     is %data<err>, '';
 }, '/hello/foo.html';
 
@@ -88,7 +88,7 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/def/egy/ketto');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], q{Hello 'egy' and 'ketto'!}], 'route GET /def/egy/ketto';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], q{Hello 'egy' and 'ketto'!}], 'route GET /def/egy/ketto';
     is %data<err>, '';
 }, '/def/egy/ketto';
 
@@ -96,14 +96,14 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/foo-and-more');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'regexes! I got -and-more'], 'route GET /foo-and-more';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'regexes! I got -and-more'], 'route GET /foo-and-more';
     is %data<err>, '';
 }, '/foo-and-more';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/foo/and/more');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'regexes! I got /and/more'], 'route GET /foo/and/more';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'regexes! I got /and/more'], 'route GET /foo/and/more';
     is %data<err>, '';
 }, '/foo/and/more';
 
@@ -111,28 +111,28 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/two-parts');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], 'two and parts'], 'route GET /two-parts';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], 'two and parts'], 'route GET /two-parts';
     is %data<err>, '';
 }, '/two-parts';
 
 #subtest {
 #    plan 2;
 #    my %data = run-psgi-request($app, 'GET', '/template/Camelia');
-#    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /template/Camelia';
+#    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route GET /template/Camelia';
 #    is %data<err>, '';
 #}, '/template/Camelia';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'HEAD', '/');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route HEAD /';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route HEAD /';
     is %data<err>, '';
 }, '/';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'HEAD', '/about');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route HEAD /about';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route HEAD /about';
     is %data<err>, '';
 }, '/';
 

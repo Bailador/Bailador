@@ -19,5 +19,5 @@ my $app = MyOwnWebApp.new.baile('p6w');
 
 my $resp = get-psgi-response($app, 'GET',  '/');
 is $resp[0], 200;
-is-deeply $resp[1], ["Content-Type" => "text/html"];
+is-deeply $resp[1], ["Content-Type" => "text/html;charset=UTF-8"];
 ok $resp[2] ~~ /'a happy bar'\r?\n/;

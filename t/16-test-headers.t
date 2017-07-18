@@ -18,6 +18,5 @@ subtest {
     plan 1;
     my %data = run-psgi-request($p6w-app, 'GET', '/', headers => {  X_CORP_API_KEY => 'private-api-key', X_CORP_API_SECRET => '42' });
     my $response = %data<response>;
-    is-deeply $response, [ 200, ["Content-Type" => "text/html"], "key='private-api-key' secret='42'" ], 'header set';
+    is-deeply $response, [ 200, ["Content-Type" => "text/html;charset=UTF-8"], "key='private-api-key' secret='42'" ], 'header set';
 };
-

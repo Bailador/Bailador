@@ -23,7 +23,7 @@ subtest {
     <input type='submit' value='Paste it!' />
 </form>
 };
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], $main_html], 'route GET /';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], $main_html], 'route GET /';
     is %data<err>, '';
 }, '/';
 
@@ -37,7 +37,7 @@ subtest {
     ok $/;
     my $code = $/[1];
     is $/[0], $/[1];
-    is-deeply %data1<response>, [200, ["Content-Type" => "text/html"], ''], 'route POST /new_paste';
+    is-deeply %data1<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route POST /new_paste';
     is %data1<err>, '';
 
     my %data2 = run-psgi-request($app, 'GET', "/paste/$code");

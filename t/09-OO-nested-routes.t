@@ -53,7 +53,7 @@ my $response;
 
 # not logged in
 $response = get-psgi-response($app, 'GET', '/app/something');
-is-deeply $response, [200, [:Content-Type("text/html")], "this is the login page / catch all route"], "catch all route because we're not logged in";
+is-deeply $response, [200, [:Content-Type("text/html;charset=UTF-8")], "this is the login page / catch all route"], "catch all route because we're not logged in";
 
 $response = get-psgi-response($app, 'POST', '/login/ufobat');
 is $response[0], 200, "login successful - statuscode 200";
@@ -70,8 +70,8 @@ is $response[1][0].value, "text/plain", "Content-Type is text/plain";
 is $response[2], "no need to check if we're logged in", "access to the app without checking session in the route";
 
 $response = get-psgi-response($app, 'GET', '/app/logout', headers => { cookie => "$session-cookie-name=$session-id" });
-is-deeply $response, [200, [:Content-Type("text/html")], "logged out"] , "logged out";
+is-deeply $response, [200, [:Content-Type("text/html;charset=UTF-8")], "logged out"] , "logged out";
 
 # get the login page again, because we're not logged in -> catch all again
 $response = get-psgi-response($app, 'GET', '/app/logout', headers => { cookie => "$session-cookie-name=$session-id" });
-is-deeply $response, [200, [:Content-Type("text/html")], "this is the login page / catch all route"], "logout 2nd time - catchall";
+is-deeply $response, [200, [:Content-Type("text/html;charset=UTF-8")], "this is the login page / catch all route"], "logout 2nd time - catchall";

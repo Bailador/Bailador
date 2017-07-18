@@ -16,7 +16,7 @@ subtest {
     my %data = run-psgi-request($app, 'GET', '/');
     my $html = %data<response>[2];
     %data<response>[2] = '';
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html;charset=UTF-8"], ''], 'route GET /';
     is %data<err>, '';
     like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';

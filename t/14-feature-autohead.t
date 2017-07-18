@@ -29,21 +29,21 @@ prefix '/abc' => sub {
 # call baile just once
 my $p6w-app = baile('p6w');
 
-is-deeply get-psgi-response($p6w-app, 'GET',  '/123'),       [200, ["Content-Type" => "text/html"], '/123'],                     'route GET /abc/x';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/123'),       [200, ["Content-Type" => "text/html;charset=UTF-8"], '/123'],                     'route GET /abc/x';
 is-deeply get-psgi-response($p6w-app, 'GET',  '/abc'),       [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /abc';
-is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/x'),     [200, ["Content-Type" => "text/html"], '/abc/x'],                   'route GET /abc/x';
-is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/y'),     [200, ["Content-Type" => "text/html"], '/abc/y'],                   'route GET /abc/y';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/x'),     [200, ["Content-Type" => "text/html;charset=UTF-8"], '/abc/x'],                   'route GET /abc/x';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/y'),     [200, ["Content-Type" => "text/html;charset=UTF-8"], '/abc/y'],                   'route GET /abc/y';
 is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/def'),   [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /abc/def';
-is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/def/g'), [200, ["Content-Type" => "text/html"], '/abc/def/g'],               'route GET /abc/def/g';
+is-deeply get-psgi-response($p6w-app, 'GET',  '/abc/def/g'), [200, ["Content-Type" => "text/html;charset=UTF-8"], '/abc/def/g'],               'route GET /abc/def/g';
 
 # explicit HEAD
 is-deeply get-psgi-response($p6w-app, 'HEAD', '/abc/x'),     [200, ["Content-Type" => "text/plain"], ''],                        'route HEAD /abc/x';
 
 # autohead
-is-deeply get-psgi-response($p6w-app, 'HEAD',  '/123'),      [200, ["Content-Type" => "text/html"], ''],                         'route HEAD /123';
+is-deeply get-psgi-response($p6w-app, 'HEAD',  '/123'),      [200, ["Content-Type" => "text/html;charset=UTF-8"], ''],                         'route HEAD /123';
 
 # autohead in prefix
-is-deeply get-psgi-response($p6w-app, 'HEAD', '/abc/y'),     [200, ["Content-Type" => "text/html"], ''],                         'route HEAD /abc/y';
-is-deeply get-psgi-response($p6w-app, 'HEAD', '/abc/def/g'), [200, ["Content-Type" => "text/html"], ''],                         'route HEAD /abc/def/g';
+is-deeply get-psgi-response($p6w-app, 'HEAD', '/abc/y'),     [200, ["Content-Type" => "text/html;charset=UTF-8"], ''],                         'route HEAD /abc/y';
+is-deeply get-psgi-response($p6w-app, 'HEAD', '/abc/def/g'), [200, ["Content-Type" => "text/html;charset=UTF-8"], ''],                         'route HEAD /abc/def/g';
 
 done-testing;
