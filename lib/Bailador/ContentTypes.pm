@@ -46,3 +46,11 @@ multi sub detect-type(IO::Path $file) returns Str is export {
         return %mapping<fallback>;
     }
 }
+
+multi sub detect-type($result) returns Str is export {
+    if $result ~~ Str {
+        return %mapping<html>;
+    } else {
+        return %mapping<fallback>;
+    }
+}

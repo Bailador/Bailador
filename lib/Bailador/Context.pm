@@ -17,7 +17,7 @@ class Bailador::Context {
                 $!response.code    = 404;
                 $!response.content = 'Not found';
                 $!response.headers = {};
-                $!response.headers<Content-Type> = 'text/html';
+                $!response.headers<Content-Type> = 'application/octet-stream';
                 $!response.cookies = ();
                 $!env = $value;
                 $!request.reset($!env);

@@ -93,12 +93,16 @@ class Bailador::App does Bailador::Routing {
     }
 
     multi method render($result) {
-        if $result ~~ IO::Path {
-            my $type = detect-type($result);
-            self.render: content => $result.slurp(:bin), :$type;
-        }
-        else {
-            self.render(content => $result);
+        my $type = self.response.headers<Content-Type>;
+        if $type ~~ 'application/octet-stream' {
+            $type = detect-type($result);
+            if $result ~~ IO::Path {
+                self.render: content => $result.slurp(:bin), :$type;
+            } else {
+                self.render: content => $result, :$type;
+              }
+        } else {
+            self.render: content => $result, :$type;
         }
     }
 
