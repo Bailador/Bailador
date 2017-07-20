@@ -94,12 +94,13 @@ class Bailador::App does Bailador::Routing {
     }
 
     multi method render($result) {
+        my $type = self.config.default-content-type;
         if $result ~~ IO::Path {
-            my $type = $.content-types.detect-type($result);
+            $type = $.content-types.detect-type($result) unless $type;
             self.render: content => $result.slurp(:bin), :$type;
         }
         else {
-            self.render(content => $result);
+            self.render: content => $result, :$type;
         }
     }
 
