@@ -110,7 +110,7 @@ class Bailador::App does Bailador::Routing {
         self.response.content = $content;
     }
 
-    multi method redirect(Str $location, Int :$code = 302) {
+    method redirect(Str $location, Int :$code = 302) {
         $.context.autorender = False;
         self.response.code = $code;
         self.response.headers<Location> = $location;
