@@ -4,7 +4,7 @@ use Test;
 
 use Bailador::Test;
 
-plan 15;
+plan 16;
 
 chdir 'examples';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
@@ -38,6 +38,15 @@ subtest {
     is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /red';
     is %data<err>, '';
 }, '/red';
+
+todo "See https://github.com/Bailador/Bailador/issues/214";
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'HEAD', '/red');
+    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], "Not found"], 'route GET /red';
+    is %data<err>, '';
+}, '/';
+
 
 subtest {
     plan 3;
