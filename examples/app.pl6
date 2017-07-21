@@ -31,6 +31,11 @@ get '/red' => sub {
     redirect('/index.html');
 }
 
+get '/redir/:code' => sub ($code) {
+    redirect('/index.html', $code.Int);
+}
+
+
 get '/die' => sub {
     die 'This is an exception so you can see how it is handled';
     "hello world"
