@@ -119,8 +119,8 @@ sub get-psgi-app() is export {
     return app.get-psgi-app();
 }
 
-sub redirect(Str $location) is export {
-    app.redirect($location);
+sub redirect(Str $location, Int $code = 302) is export {
+    app.redirect($location, $code);
 }
 
 # for Dancer2 compatibility
