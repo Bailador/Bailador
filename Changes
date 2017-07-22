@@ -1,3 +1,4 @@
+    - Ticket #214 - auto generated head routes didnt work properly for redirections
     - Ticket #215 - redirect() can set different status codes - 302 is the default
     - Ticket #216 - Bailador::Feature::AutoHead is in core and allways used
     - Ticket #194 - t/20-cli.t did not shut down processes properly

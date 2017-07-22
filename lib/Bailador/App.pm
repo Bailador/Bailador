@@ -118,8 +118,7 @@ class Bailador::App does Bailador::Routing {
             unless %found-head{ $key }:exists {
                 my $code       = sub (Match $match) {
                     my $result = $orig-route.execute($match);
-                    # this turns off auto rendering
-                    self.render: "";
+                    $.context.autorender  = False;
                     # return the old result, because if boolean this is important for route dispatching
                     return $result;
                 };
@@ -141,9 +140,9 @@ class Bailador::App does Bailador::Routing {
         }
     }
 
-    multi method render(Int :$status = 200, Str :$type, :$content!) {
+    multi method render(Int :$status, Str :$type, :$content!) {
         $.context.autorender = False;
-        self.response.code = $status;
+        self.response.code = $status if $status;
         self.response.headers<Content-Type> = $type if $type;
         self.response.content = $content;
     }

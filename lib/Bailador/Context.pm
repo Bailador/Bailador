@@ -14,8 +14,8 @@ class Bailador::Context {
             FETCH => { $!env },
             STORE => -> $, $value {
                 # reset response to default
-                $!response.code    = 404;
-                $!response.content = 'Not found';
+                $!response.code    = 200;
+                $!response.content = '';
                 $!response.headers = {};
                 $!response.headers<Content-Type> = 'text/html';
                 $!response.cookies = ();
