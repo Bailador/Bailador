@@ -7,8 +7,6 @@ use Bailador::Test;
 
 plan 10;
 
-use-feature('AutoHead');
-
 get '/123' => sub { '/123' };
 
 prefix '/abc' => sub {
