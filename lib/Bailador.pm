@@ -115,6 +115,10 @@ sub renderer(Bailador::Template $renderer) is export {
     app.renderer = $renderer;
 }
 
+sub render(Int :$status = 200, Str :$type, :$content!) is export {
+    app.render(:$status, :$type, :$content);
+}
+
 sub get-psgi-app() is export {
     return app.get-psgi-app();
 }
