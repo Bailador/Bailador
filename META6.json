@@ -29,6 +29,7 @@
     "HTTP::MultiPartParser",
     "HTTP::Server::Ogre",
     "HTTP::Status",
+    "JSON::Fast",
     "Log::Any",
     "Path::Iterator",
     "Template::Mojo",

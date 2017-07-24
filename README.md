@@ -41,6 +41,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`status(Int $code)`](#statusint-code)
             - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
             - [`session()`](#session)
+            - [`to-json()`](#to-json)
     - [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
@@ -309,6 +310,10 @@ For more details see the Template section. Should only be used within the code b
 ##### `session()`
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
+
+#### `to-json()`
+
+Converts your data into JSON format, with useing JSON::Fast.
 
 ### Web Applications via Inheriting from `Bailador::App`
 

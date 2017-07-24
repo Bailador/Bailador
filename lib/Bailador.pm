@@ -1,6 +1,7 @@
 use v6.c;
 
 use HTTP::Easy::PSGI;
+use JSON::Fast;
 
 use Bailador::App;
 use Bailador::Request;
@@ -10,6 +11,10 @@ use Bailador::Template;
 unit module Bailador:ver<0.0.8>;
 
 my $app;
+
+my package EXPORT::DEFAULT {
+    OUR::{'&to-json'} := &to-json;
+}
 
 multi sub app {
     unless $app {
