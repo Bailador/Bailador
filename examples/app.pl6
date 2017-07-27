@@ -5,7 +5,6 @@ use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
 
-use-feature('AutoHead');
 app.config.mode = 'development';
 
 # simple cases

@@ -18,6 +18,9 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+    # has Str $.default-content-type is rw = 'text/html;charset=UTF-8';
+    has Str $.default-content-type is rw = 'text/html';
+    has Str $.file-discovery-content-type is rw = 'application/octet-stream';
 
     ## Commands
     has Bool $.command-detection is rw = True;

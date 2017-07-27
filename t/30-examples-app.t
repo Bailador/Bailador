@@ -35,28 +35,28 @@ subtest {
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/red');
-    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], ""], 'route GET /red';
+    is-deeply %data<response>, [302, [:Location("/index.html")], ""], 'route GET /red';
     is %data<err>, '';
 }, 'GET /red';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'HEAD', '/red');
-    is-deeply %data<response>, [302, ["Content-Type" => "text/html", :Location("/index.html")], ""], 'route GET /red';
+    is-deeply %data<response>, [302, [:Location("/index.html")], ""], 'route HEAD /red';
     is %data<err>, '';
 }, 'HEAD /red';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'GET', '/redir/301');
-    is-deeply %data<response>, [301, ["Content-Type" => "text/html", :Location("/index.html")], ""], 'route GET /redir';
+    is-deeply %data<response>, [301, [:Location("/index.html")], ""], 'route GET /redir';
     is %data<err>, '';
-}, '/redir/301';
+}, 'GET /redir/301';
 
 subtest {
     plan 2;
     my %data = run-psgi-request($app, 'HEAD', '/redir/301');
-    is-deeply %data<response>, [301, ["Content-Type" => "text/html", :Location("/index.html")], ""], 'route HEAD /redir/301';
+    is-deeply %data<response>, [301, [:Location("/index.html")], ""], 'route HEAD /redir/301';
     is %data<err>, '';
 }, 'HEAD /redir/301';
 

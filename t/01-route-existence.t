@@ -38,9 +38,9 @@ post '/i' => sub { request.body }
 # call baile just once
 my $p6w-app = baile('p6w');
 
-is-deeply get-psgi-response($p6w-app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html"], Any],              'route GET /foo exists';
+is-deeply get-psgi-response($p6w-app, 'GET', '/foo'),  [200, ["Content-Type" => "text/html"], ''],              'route GET /foo exists';
 is-deeply get-psgi-response($p6w-app, 'POST', '/foo'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';
-is-deeply get-psgi-response($p6w-app, 'POST', '/bar'), [200, ["Content-Type" => "text/html"], Any],              'route POST /bar exists';
+is-deeply get-psgi-response($p6w-app, 'POST', '/bar'), [200, ["Content-Type" => "text/html"], ''],              'route POST /bar exists';
 is-deeply get-psgi-response($p6w-app, 'GET', '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /bar does not exist';
 
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/echo'),               [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo';
@@ -56,8 +56,8 @@ is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/c?text=bar')
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/d?text=bar'), [200, ["Content-Type" => "text/html"], 'path=/d'], 'path';
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/e?text=bar'), [200, ["Content-Type" => "text/html"], 'method=GET'], 'method';
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/f?text=bar'), [200, ["Content-Type" => "text/html"], 'True-False-False-False-False-False'], 'is';
-is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/g?text=bar'), [200, ["Content-Type" => "text/html"], Any], 'content_type';  # ???
-is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/h?text=bar'), [200, ["Content-Type" => "text/html"], Any], 'content_length';  # ???
+is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/g?text=bar'), [200, ["Content-Type" => "text/html"], ''], 'content_type';
+is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/h?text=bar'), [200, ["Content-Type" => "text/html"],''], 'content_length';
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/i?text=bar'), [200, ["Content-Type" => "text/html"], ''], 'body';
 
 is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/a?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'port=9876'], 'port';
@@ -66,6 +66,6 @@ is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/c?text=bar'
 is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/d?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'path=/d'], 'path';
 is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/e?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'method=POST'], 'method';
 is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/f?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'False-True-False-False-False-False'], 'is';
-is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/g?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_type';  # ???
-is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/h?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], Any], 'content_length';  # ???
+is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/g?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], ''], 'content_type';
+is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/h?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], ''], 'content_length';
 is-deeply get-psgi-response($p6w-app, 'POST', 'http://127.0.0.1:9876/i?text=bar', 'text=foo'), [200, ["Content-Type" => "text/html"], 'text=foo'], 'body';

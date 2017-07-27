@@ -120,6 +120,14 @@ sub renderer(Bailador::Template $renderer) is export {
     app.renderer = $renderer;
 }
 
+multi sub render(*%param) is export {
+    app.render(|%param);
+}
+
+multi sub render($content) is export {
+    app.render(:$content);
+}
+
 sub get-psgi-app() is export {
     return app.get-psgi-app();
 }
