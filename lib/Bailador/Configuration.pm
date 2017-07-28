@@ -18,12 +18,18 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+    # has Str $.default-content-type is rw = 'text/html;charset=UTF-8';
+    has Str $.default-content-type is rw = 'text/html';
+    has Str $.file-discovery-content-type is rw = 'application/octet-stream';
 
     ## Commands
     has Bool $.command-detection is rw = True;
     has Str  $.default-command is rw;
     has Str  $.watch-command is rw = 'easy';
     has @.watch-list is rw;
+
+    ## Terminal output
+    has Bool $.terminal-color is rw = False;
 
     ## SESSION RELATED STUFF
     has Str $.cookie-name is rw       = 'bailador';

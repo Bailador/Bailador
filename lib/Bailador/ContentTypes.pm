@@ -35,9 +35,9 @@ class Bailador::ContentTypes {
         p6       => 'application/x-perl',
     );
 
-    method detect-type(IO::Path $file) returns Str {
+    method detect-type(IO::Path $file, Str $default) returns Str {
         my $ext = $file.extension.lc;
         return %.mapping{$ext} if %.mapping{$ext}:exists;
-        return 'application/octet-stream';
+        return $default;
     }
 }

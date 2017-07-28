@@ -5,7 +5,6 @@ use lib 'lib';
 use Bailador;
 use Bailador::Route::StaticFile;
 
-use-feature('AutoHead');
 app.config.mode = 'development';
 
 # simple cases
@@ -30,6 +29,11 @@ get '/' => sub {
 get '/red' => sub {
     redirect('/index.html');
 }
+
+get '/redir/:code' => sub ($code) {
+    redirect('/index.html', $code.Int);
+}
+
 
 get '/die' => sub {
     die 'This is an exception so you can see how it is handled';

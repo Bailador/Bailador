@@ -7,6 +7,8 @@ use Bailador::Command;
 
 
 class Bailador::Command::watch does Bailador::Command {
+    has $!process;
+
     method run(:$app) {
         my $config        = $app.config;
         my $watch-command = $config.watch-command;
@@ -26,16 +28,21 @@ class Bailador::Command::watch does Bailador::Command {
 
         my @watchlist = $config.watch-list;
         die 'nothing to watch, empty watch-list' unless @watchlist;
-        my $p = bootup-app();
+        $!process = bootup-app();
+        signal(SIGINT).tap: { self.kill-process(); exit }
         react {
             whenever watch-recursive(@watchlist.grep: *.IO.e) -> $e {
                 if $e.path() !~~ /\.sw.$/ and $e.path() !~~ /\~$/ {
                     say "Change detected [$e.path(), $e.event()]. Restarting app";
-                    $p.kill;
-                    $p = bootup-app();
+                    self.kill-process();
+                    $!process = bootup-app();
                 }
             }
         }
+    }
+
+    method kill-process() {
+        $!process.kill(SIGINT);
     }
 
     my sub bootup-app() {

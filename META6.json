@@ -29,10 +29,12 @@
     "HTTP::MultiPartParser",
     "HTTP::Server::Ogre",
     "HTTP::Status",
+    "JSON::Fast",
     "Log::Any",
     "Path::Iterator",
     "Template::Mojo",
     "Template::Mustache",
+    "Terminal::ANSIColor",
     "URI",
     "YAMLish"
   ],
@@ -74,7 +76,8 @@
     "Bailador::Template" : "lib/Bailador/Template.pm",
     "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
     "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm",
-    "Bailador::Test" : "lib/Bailador/Test.pm"
+    "Bailador::Test" : "lib/Bailador/Test.pm",
+    "Bailador::Utils" : "lib/Bailador/Utils.pm"
   },
   "resources" : [
     "error.template"
@@ -90,5 +93,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.8"
+  "version" : "0.0.9"
 }

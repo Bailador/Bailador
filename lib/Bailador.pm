@@ -1,15 +1,20 @@
 use v6.c;
 
 use HTTP::Easy::PSGI;
+use JSON::Fast;
 
 use Bailador::App;
 use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.8>;
+unit module Bailador:ver<0.0.9>;
 
 my $app;
+
+my package EXPORT::DEFAULT {
+    OUR::{'&to-json'} := &to-json;
+}
 
 multi sub app {
     unless $app {
@@ -115,12 +120,20 @@ sub renderer(Bailador::Template $renderer) is export {
     app.renderer = $renderer;
 }
 
+multi sub render(*%param) is export {
+    app.render(|%param);
+}
+
+multi sub render($content) is export {
+    app.render(:$content);
+}
+
 sub get-psgi-app() is export {
     return app.get-psgi-app();
 }
 
-sub redirect(Str $location) is export {
-    app.redirect($location);
+sub redirect(Str $location, Int $code = 302) is export {
+    app.redirect($location, $code);
 }
 
 # for Dancer2 compatibility

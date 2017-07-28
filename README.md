@@ -32,7 +32,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`config()`](#config)
             - [`set(Str $key, $value)`](#setstr-key-value)
             - [`baile()`](#baile)
-        - [Subroutines that sould only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
+        - [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
             - [`content_type(Str $type)`](#content_typestr-type)
             - [`request()`](#request)
             - [`uri-for(Str $path)`](#uri-forstr-path)
@@ -41,6 +41,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
             - [`status(Int $code)`](#statusint-code)
             - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
             - [`session()`](#session)
+            - [`to-json()`](#to-json)
     - [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
@@ -105,7 +106,7 @@ to create a skeleton project.
 ### Crust
 
 When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Allways use `baile()` in the end of your app, because in the default configuraton it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
+[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Always use `baile()` in the end of your app, because in the default configuration it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
 
 #### Example
 
@@ -132,7 +133,7 @@ and then type this in your shell:
 
 #### `--config`
 
-Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--conifg` overrides the [BAILADOR](#configuration) environment variable.
+Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
 For details of the available configuration parametes check the [Configuration](#configuration) section of the documentation.
 Currently available parameters:
 
@@ -185,7 +186,7 @@ New features like nested routes and whatever is yet to come are implemented in `
 
 ### Mixing both Approaches
 
-When you write your own application, but still want to use the exported subs described in [this](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route) section you MUST set your `$app` to be the default app.
+When you write your own application, but still want to use the exported subs described in [this](#subroutines-that-should-only-be-used-inside-the-code-block-of-a-route) section you MUST set your `$app` to be the default app.
 
 ```Perl6
 use Bailador;
@@ -203,7 +204,7 @@ app $app;
 
 #### `app(Bailador::App $app)`
 
-Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route).
+Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-should-only-be-used-inside-the-code-block-of-a-route).
 
 ##### `get(Pair $x)`
 ##### `post(Pair $x)`
@@ -275,7 +276,7 @@ or `baile($command)`
 
 Let's enter the dance floor. ¡Olé!
 
-#### Subroutines that sould only be used inside the Code block of a Route
+#### Subroutines that should only be used inside the Code block of a Route
 
 ##### `content_type(Str $type)`
 
@@ -303,12 +304,16 @@ Sets the status code of a response.
 
 #####  `template(Str $template-name, :$layout, *@params)`
 
-Calls the template which is a file in the views folder. You can specify a $:layout if you want to override the sesttings in Bailador::Configuration.
+Calls the template which is a file in the views folder. You can specify a $:layout if you want to override the settings in Bailador::Configuration.
 For more details see the Template section. Should only be used within the code block of a route.
 
 ##### `session()`
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
+
+#### `to-json()`
+
+Converts your data into JSON format using JSON::Fast.
 
 ### Web Applications via Inheriting from `Bailador::App`
 
@@ -447,7 +452,7 @@ and set backend to this class name.
 
 ## Configuration
 
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using configuration files. You can also change the configuration within your app. The Bailador::Configuration can also store custom-specifiy information, therefor please use the `set` / `get` method. The order of adjusting the settings is: first the code in your app, second from the configuration files, thrid from the environment variaible. So the settings from the evironment variale `BAILADOR` will finally override what you might have stated in the config files.
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using configuration files. You can also change the configuration within your app. The Bailador::Configuration can also store custom-specifiy information, therefore please use the `set` / `get` method. The order of adjusting the settings is: first the code in your app, second from the configuration files, third from the environment variaible. So the settings from the evironment variale `BAILADOR` will finally override what you might have stated in the config files.
 
 ```perl6
 # directly
@@ -500,7 +505,7 @@ Currently available parameters:
 * hmac-key          (defaults to 'changeme')
 * backend           (defaults to "Bailador::Sessions::Store::Memory")
 * log-format        (defaults to '\d (\s) \m'
-* log-filter        (defautls to `( 'severity' => '>=warning')`)
+* log-filter        (defaults to `( 'severity' => '>=warning')`)
 
 ## Bailador-based applications
 

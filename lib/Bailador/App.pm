@@ -10,6 +10,7 @@ use Bailador::Context;
 use Bailador::Exceptions;
 use Bailador::LogAdapter;
 use Bailador::Route;
+use Bailador::Route::AutoHead;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
 
@@ -91,29 +92,87 @@ class Bailador::App does Bailador::Routing {
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
         Log::Any.add($.log-adapter, :$formatter, :@filter);
+
+        self!generate-head-routes(self);
     }
 
-    multi method render($result) {
-        if $result ~~ IO::Path {
-            my $type = $.content-types.detect-type($result);
-            self.render: content => $result.slurp(:bin), :$type;
+    method !generate-head-routes(Bailador::Routing $route) {
+
+        my %found-head;
+        my %found-get;
+
+        for $route.routes -> $child-route {
+            self!generate-head-routes($child-route);
+
+            if 'GET' ~~ any( $child-route.method ) && 'HEAD' !~~ any ( $child-route.method ) {
+                # found a route with GET but no HEAD
+                %found-get{ $child-route.route-spec } = $child-route;
+            }
+            if 'HEAD' ~~ any( $child-route.method ) && 'GET' !~~ any ( $child-route.method ) {
+                # found a route with HEAD but no GET
+                %found-head{ $child-route.route-spec } = 1;
+            }
         }
-        else {
-            self.render(content => $result);
+
+        for %found-get.kv -> $key, $orig-route {
+            unless %found-head{ $key }:exists {
+                my $code       = sub (Match $match) {
+                    my $result = $orig-route.execute($match);
+                    if $result ~~ Bool {
+                        # no need to render for a route that defines access
+                        return $result;
+                    }
+                    if $.context.autorender {
+                        # no rendering happend so far
+                        self.render(content => '');
+                    } else {
+                        # rendering happend so far
+                        # keep statuscode, content-type but discard content
+                        self.render(
+                            status  => self.response.code,
+                            type    => self.response.headers<Content-Type> // '',
+                            content => '',
+                        );
+                    }
+                    # return the old result, because if boolean this is important for route dispatching
+                    return $result;
+                };
+                my $path       = $orig-route.url-matcher;
+                my $head-route = Bailador::Route::AutoHead.new( method => 'HEAD', url-matcher => $path, code => $code);
+                $route.add_route($head-route);
+            }
         }
     }
 
-    multi method render(Int :$status = 200, Str :$type, :$content!) {
-        $.context.autorender = False;
-        self.response.code = $status;
-        self.response.headers<Content-Type> = $type if $type;
-        self.response.content = $content;
+    multi method render($content) {
+        self.render( content => $content );
     }
 
-    multi method redirect(Str $location, Int :$code = 302) {
+    multi method render(Int :$status, Str :$type is copy, :$content is copy) {
+
+        # already set type manually, this type always wins
+        $type = self.response.headers<Content-Type> if ! $type.defined and self.response.headers<Content-Type>:exists;
+        if $content ~~ IO::Path {
+            my $fallback = self.config.file-discovery-content-type;
+            my $detected = $.content-types.detect-type($content, $fallback);
+            $type        = $detected if !$type.defined and $detected;
+            $content     = $content.slurp(:bin);
+        }
+
+        $type = self.config.default-content-type unless $type.defined;
+
+        # set values
         $.context.autorender = False;
-        self.response.code = $code;
+        self.response.code = $status                if $status;
+        self.response.headers<Content-Type> = $type if $type; # and $content.defined maybe?
+        self.response.content = $content            if $content;
+    }
+
+    method redirect(Str $location, Int $status = 302) {
         self.response.headers<Location> = $location;
+        self.render(:$status, content => '', type => '');
+        # $.context.autorender = False;
+        # self.response.code = $code;
     }
 
     method add_error(Pair $x) {

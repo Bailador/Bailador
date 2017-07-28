@@ -106,6 +106,7 @@ multi sub bootup-file (Str $app) {
     my Proc::Async $p .= new($*EXECUTABLE, |@includes, $app);
     $p.stdout.tap: -> $v { $*OUT.print: "# $v" };
     $p.stderr.tap: -> $v { $*ERR.print: "! $v" };
+    signal(SIGINT).tap: { $p.kill(SIGINT) }
     await $p.start;
 }
 

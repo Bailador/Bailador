@@ -1,6 +1,7 @@
 use v6.c;
 
 use Bailador::Command;
+use Bailador::Utils;
 
 class Bailador::Command::tiny does Bailador::Command {
     method run(:$app) {
@@ -12,7 +13,7 @@ class Bailador::Command::tiny does Bailador::Command {
         my $msg     = "Entering the dance floor{ $config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
 
         given HTTP::Server::Tiny.new(:$host, :$port) {
-            say $msg;
+            terminal-color($msg, 'green', $config);
             .run($p6w-app);
         }
     }

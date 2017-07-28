@@ -5,11 +5,10 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 10;
-
-use-feature('AutoHead');
+plan 12;
 
 get '/123' => sub { '/123' };
+get  '/a'  => sub { redirect('/123') };
 
 prefix '/abc' => sub {
 
@@ -28,6 +27,9 @@ prefix '/abc' => sub {
 
 # call baile just once
 my $p6w-app = baile('p6w');
+
+is-deeply get-psgi-response($p6w-app, 'GET',  '/a'),         [302, [:Location('/123')], ''],     'route GET /a';
+is-deeply get-psgi-response($p6w-app, 'HEAD', '/a'),         [302, [:Location('/123')], ''],     'route GET /a';
 
 is-deeply get-psgi-response($p6w-app, 'GET',  '/123'),       [200, ["Content-Type" => "text/html"], '/123'],                     'route GET /abc/x';
 is-deeply get-psgi-response($p6w-app, 'GET',  '/abc'),       [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /abc';
