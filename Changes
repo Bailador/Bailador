@@ -1,3 +1,4 @@
+0.0.0 2017.07.28
     - Ticket #208 - It is now possible to render without a content type, default values for content-types can be configured.
     - Ticket #116 - Added &to-json to be exported via Bailador
     - Ticket #214 - auto generated head routes didnt work properly for redirections
