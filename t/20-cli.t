@@ -12,7 +12,7 @@ my $dir = tempdir();
 
 my $git_dir = $*CWD;
 chdir($dir);
-# diag $*CWD;
+diag $*CWD;
 # diag QX('which prove6');
 # diag QX('which perl6');
 # diag QX('which zef');
@@ -30,7 +30,7 @@ subtest {
     plan 2;
 
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err;
-    is $p.err.get, 'Usage:';
+    is $p.err.get, 'Usage:' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
     is $p.out.get, Nil;
     #diag $p.out.slurp: :close;
 }, 'Show Usage when no parameter is supplied.';
@@ -39,7 +39,7 @@ subtest {
     plan 2;
 
     my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', :out, :err;
-    is $p.out.get, '--name=Project-Name is a required parameter';
+    is $p.out.get, '--name=Project-Name is a required parameter' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
     is $p.err.get, Nil;
     #diag $p.out.slurp: :close;
 }, 'Show Usage when --name is not supplied.';
@@ -57,7 +57,7 @@ t/app.t
 views/index.html
 };
     my $err = $p.err.slurp: :close;
-    is $err, ''; # TODO Why is this the empty string and above it is Nil?
+    is $err, '' or diag "Rest of STDERR:\n" ~ $p.err.slurp; # TODO Why is this the empty string and above it is Nil?
     my @main_dir = dir();
     is-deeply @main_dir.map(*.Str), ('App-Name',);
 
