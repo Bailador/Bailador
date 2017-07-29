@@ -26,6 +26,7 @@
     "File::Find",
     "File::Temp",
     "HTTP::Easy",
+    "HTTP::Easy::PSGI",
     "HTTP::MultiPartParser",
     "HTTP::Server::Ogre",
     "HTTP::Status",
