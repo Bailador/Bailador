@@ -10,9 +10,8 @@ env:
   - AUTHOR_TESTING=1
 install:
   - docker build -t bailador/bailador .
-  - docker run bailador/bailador /bin/bash
 script:
-  - prove6 -l
+  - docker run bailador/bailador prove6 -l
 after_success:
   - if [ "$TRAVIS_BRANCH" == "dev" ]; then
         docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
