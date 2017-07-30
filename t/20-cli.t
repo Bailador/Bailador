@@ -13,7 +13,7 @@ my $dir = tempdir();
 my $git_dir = $*CWD;
 chdir($dir);
 diag $*CWD;
-diag "PERL6LIB=" ~ %*ENV<PERL6LIB>;
+diag "PERL6LIB=" ~ %*ENV<PERL6LIB> // '';
 # diag $*EXECUTABLE;
 # $*EXECUTABLE   -> /home/travis/.rakudobrew/bin/../moar-nom/install/bin/perl6
 # want to append -> /home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
