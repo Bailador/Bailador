@@ -110,12 +110,21 @@ multi sub bootup-file (Str $app) {
     await $p.start;
 }
 
-sub repo-to-includes is export {
+sub get-path-from-repo is export {
     my @includes;
     for $*REPO.repo-chain -> $repo {
         if $repo ~~ CompUnit::Repository::FileSystem {
-            @includes.push: '-I' ~ $repo.prefix;
+            @includes.push: $repo.prefix;
         }
     }
     return @includes;
+}
+
+sub repo-to-includes is export {
+    get-path-from-repo().map: '-I' ~ *;
+}
+
+sub run-executable-with-includes(*@args, *%args) is export {
+    my @includes = repo-to-includes();
+    return run($*EXECUTABLE, |@includes, |@args, |%args);
 }
