@@ -1,21 +1,20 @@
 branches:
   except:
     - gh-pages
-dist: trusty
 sudo: required
 language: generic
 services:
     - docker
 env:
-  - AUTHOR_TESTING=1
+    - AUTHOR_TESTING=1
 install:
-  - docker build -t bailador/bailador .
+    - docker build -t pharv/bailador .
 script:
-  - docker run bailador/bailador prove6 -l
+    - docker run pharv/bailador prove6 -l
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "dev" ]; then
-        docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-        docker push pharv/bailador;
-    fi
+    - if [ "$TRAVIS_BRANCH" == "dev" ]; then
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+          docker push pharv/bailador;
+      fi
 notifications:
     slack: perl6-bailador:FuFG55nk94k5BSOeGMNO5nDh
