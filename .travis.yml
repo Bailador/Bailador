@@ -1,16 +1,17 @@
 branches:
   except:
     - gh-pages
+sudo: required
 language: perl6
-sudo: false
+services:
+    - docker
 perl6:
   - latest
-install:
-  - rakudobrew build-zef
-  - zef install Test::META
-  - zef install Path::Iterator
-#  - zef install TAP::Harness
-  - zef --depsonly install .
+before_install:
+  - docker build -t bailador/bailador .
+  - docker run bailador/bailador /bin/bash
+script:
+  - prove6 -l
 env:
   - AUTHOR_TESTING=1
 notifications:
