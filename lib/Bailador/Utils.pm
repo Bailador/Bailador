@@ -10,6 +10,7 @@ unit module Bailador::Utils;
 multi sub terminal-color(Str $text, Str $color, Bailador::Configuration $config) is export {
     if $config.terminal-color {
         say color($color), $text;
+        ## TODO: reset the color
     } else {
         say $text;
     }

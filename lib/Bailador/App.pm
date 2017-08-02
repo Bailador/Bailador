@@ -13,6 +13,7 @@ use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
+use Bailador::Utils;
 
 class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
@@ -199,6 +200,32 @@ class Bailador::App does Bailador::Routing {
         self!sessions.store(self.response, self.request.env);
     }
 
+    method log-console(DateTime $start, DateTime $end) {
+        my Str $text;
+        my Str $color;
+        given self.response.code {
+            when 200 <= * < 300 {
+                $color = 'green';
+            }
+            when 300 <= * < 400 {
+                $color = 'magenta';
+            }
+            when 400 <= * < 500 {
+                $color = 'yellow';
+            }
+            when * < 500 {
+                $color = 'red';
+            }
+            default {
+                $color = 'reset';
+            }
+        }
+        $text = 'HTTP Status: ' ~ self.response.code;
+        $text = $text ~ ' || Elapsed time : ' ~ $end - $start ~ 's';
+
+        terminal-color($text, $color, self.config);
+    }
+
     multi method baile() {
         # initialize the location if we didnt need it so far. that reads the config
         $.location();
@@ -252,6 +279,7 @@ class Bailador::App does Bailador::Routing {
     }
 
     method dispatch($env) {
+        my DateTime $start = DateTime.now;
         self.context.env = $env;
         try {
             self!adjust-log-adapter($env),
@@ -313,6 +341,8 @@ class Bailador::App does Bailador::Routing {
                 }
             }
         }
+        my DateTime $end = DateTime.now;
+        self.log-console($start, $end);
 
         return self.response;
     }
