@@ -1,5 +1,5 @@
 use v6.c;
-use lib 'lib','t/lib';
+use lib 'xt/lib';
 
 use File::Temp;
 use Helpers;
@@ -43,15 +43,14 @@ subtest {
 
 
 subtest {
-    plan 7;
+    plan 10;
 
     my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err);
     my $out = $p.out.slurp: :close;
-    is $out, q{Generating App-Name
-bin/app.pl6
-t/app.t
-views/index.html
-};
+    like $out, rx:s{Generating App\-Name};
+    like $out, rx{App\-Name\/bin\/app.pl6};
+    like $out, rx{App\-Name\/t\/app.t};
+    like $out, rx{App\-Name\/views\/index.html};
     my $err = $p.err.slurp: :close;
     is $err, '' or diag "Rest of STDERR:\n" ~ $p.err.slurp; # TODO Why is this the empty string and above it is Nil?
     my @main_dir = dir();
@@ -83,15 +82,14 @@ App-Name already exists. Exiting.
 }, 'Will not overwrite existing directory';
 
 subtest {
-    plan 7;
+    plan 10;
 
     my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', '--name=Foo-Bar', :out, :err);
     my $out = $p.out.slurp: :close;
-    is $out, q{Generating Foo-Bar
-bin/app.pl6
-t/app.t
-views/index.html
-};
+    like $out, rx:s{Generating Foo\-Bar};
+    like $out, rx{Foo\-Bar\/bin\/app.pl6};
+    like $out, rx{Foo\-Bar\/t\/app.t};
+    like $out, rx{Foo\-Bar\/views\/index.html};
     my $err = $p.err.slurp: :close;
     is $err, ''; # TODO Why is this the empty string and above it is Nil?
     my @main_dir = dir();
@@ -122,7 +120,6 @@ subtest {
     # my @includes = map { "-I=" ~ $_ } ("$git_dir/lib", |get-path-from-repo());
     my $prove6 = $*EXECUTABLE.parent.parent.child('share/perl6/site/bin/prove6');
     if $prove6.IO.e {
-        todo 'https://github.com/perl6/tap-harness6/issues/18', 3;
         # my $p = run($prove6, |@includes '-l', :out, :err);
         my $p = run($prove6, "-I=$git_dir/lib", '-l', :out, :err);
         my $exitcode = $p.exitcode;

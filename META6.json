@@ -80,7 +80,10 @@
     "Bailador::Utils" : "lib/Bailador/Utils.pm"
   },
   "resources" : [
-    "error.template"
+      "error.template",
+      "skeleton/default/bin/app.pl6",
+      "skeleton/default/t/app.t",
+      "skeleton/default/views/index.html"
   ],
   "source-url" : "git://github.com/Bailador/Bailador.git",
   "support" : {
