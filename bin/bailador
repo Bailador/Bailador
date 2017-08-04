@@ -16,20 +16,7 @@ multi sub MAIN('new', Str :$name) {
         say "$name already exists. Exiting.";
         exit;
     }
-    mkdir $name;
-    my %skeleton = skeleton();
-    #say %skeleton;
-
-    for %skeleton.keys.sort -> $file {
-        say $file;
-        if $file.rindex('/')
-        {
-            my $sep = $file.rindex('/');
-            my $dir = $file.substr(0, $sep);
-            mkdir "$name/$dir";
-        }
-        spurt "$name/$file", %skeleton{$file};
-    }
+    write-skeletonfiles($name);
 }
 
 multi sub MAIN('version') {

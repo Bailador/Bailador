@@ -124,14 +124,13 @@ class Bailador::App does Bailador::Routing {
                     }
                     if $.context.autorender {
                         # no rendering happend so far
-                        self.render(content => '');
+                        self.render();
                     } else {
                         # rendering happend so far
                         # keep statuscode, content-type but discard content
                         self.render(
                             status  => self.response.code,
                             type    => self.response.headers<Content-Type> // '',
-                            content => '',
                         );
                     }
                     # return the old result, because if boolean this is important for route dispatching
@@ -165,7 +164,7 @@ class Bailador::App does Bailador::Routing {
         $.context.autorender = False;
         self.response.code = $status                if $status;
         self.response.headers<Content-Type> = $type if $type; # and $content.defined maybe?
-        self.response.content = $content            if $content;
+        self.response.content = $content            if $content.defined;
     }
 
     method redirect(Str $location, Int $status = 302) {
@@ -277,7 +276,7 @@ class Bailador::App does Bailador::Routing {
 
             CATCH {
                 when X::Bailador::ControllerReturnedNoResult {
-                    self.render(content => Any);
+                    self.render();
                 }
                 when X::Bailador::NoRouteFound {
                     Log::Any.notice("No Route was Found for $method $uri");

@@ -1,17 +1,21 @@
-branches:
-  except:
-    - gh-pages
-language: perl6
-sudo: false
-perl6:
-  - latest
-install:
-  - rakudobrew build-zef
-  - zef install Test::META
-  - zef install Path::Iterator
-#  - zef install TAP::Harness
-  - zef --depsonly install .
+sudo: required
+language: generic
+services:
+    - docker
 env:
-  - AUTHOR_TESTING=1
+    - AUTHOR_TESTING=1
+install:
+    - docker build -t bailador/bailador .
+script:
+    - docker run -d -e 'AUTHOR_TESTING=1' --volume=$(pwd):/srv --name bailador-test bailador/bailador /bin/sleep infinity
+    - docker exec -it bailador-test zef --verbose install .
+    - docker exec -it bailador-test prove6 -v xt
+    - docker stop bailador-test
+    - docker rm bailador-test
+after_success:
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+          docker push bailador/bailador;
+      fi
 notifications:
     slack: perl6-bailador:FuFG55nk94k5BSOeGMNO5nDh
