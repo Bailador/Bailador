@@ -131,7 +131,7 @@ and then type this in your shell:
 
 ### bailador
 
-`bailador` can be used to start your your bailador web application. The command line tool converts the command line switches (e.g. `--config=port:8080`) to environment variables (`%*ENV`). There are different commands for bailador.
+`bailador` can be used to start your bailador web application. The command line tool converts the command line switches (e.g. `--config=port:8080`) to environment variables (`%*ENV`). There are different commands for bailador.
 
 #### `--config`
 
