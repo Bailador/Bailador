@@ -1,6 +1,6 @@
 use v6.c;
 
-use Log::Any;
+use Log::Any:ver('0.9.4');
 use Template::Mojo;
 
 use Bailador::Commands;
@@ -92,8 +92,15 @@ class Bailador::App does Bailador::Routing {
         # https://github.com/jsimonet/log-any/issues/1
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
-        Log::Any.add($.log-adapter, :$formatter, :@filter);
 
+        use Log::Any::Adapter::Stderr;
+        use Bailador::LogFormatter;
+        Log::Any.add( Log::Any::Adapter::Stderr.new,
+          :formatter( Bailador::LogFormatter.new( :format('combined') ) ),
+          # :formatter( Bailador::LogFormatter.new() ),
+          :filter( category => 'access' ),
+          :pipeline('web') );
+        Log::Any.add($.log-adapter, :$formatter, :@filter);
         self!generate-head-routes(self);
     }
 
@@ -298,7 +305,10 @@ class Bailador::App does Bailador::Routing {
 
             LEAVE {
                 my $http-code = self.response.code;
-                Log::Any.trace("Serving $method $uri with $http-code");
+                Log::Any.info( '',
+                  :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
+                  :category('access'),
+                  :pipeline('web'));
                 self!done-rendering();
             }
 
