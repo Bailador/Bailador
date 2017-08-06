@@ -12,7 +12,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
 - [Install](#install)
 - [Contribution](#contribution)
 - [Versioning model](#Versioning-model)
-- [Example](#example)
+- [Examples](#examples)
 - [Skeleton](#skeleton)
 - [How to Start Apps](#how-to-start-apps)
     - [bailador](#bailador)
@@ -59,14 +59,14 @@ Talk to the developers at https://perl6-bailador.slack.com/
 
 ## Install
 
-Once you have [Rakudo Star]() installed open a terminal (or command line on Windows) and type:
+Once you have [Rakudo Star](http://rakudo.org/) installed open a terminal (or command line on Windows) and type:
 ```
 zef update
 zef install Bailador
 ```
 This should download and install Bailador.
 
-You can test your installation, and see what is your Bailador installed version with the following command :
+You can test your installation, and see what is your Bailador installed version with the following command:
 ```
 bailador version
 ```
@@ -90,7 +90,7 @@ The Baildor repository holds two main branches with an infinite lifetime :
 When the source code in the `dev` branch reaches a stable point and is ready to be released, all of the changes are merged back into `main` and then tagged with a release number.
 
 
-## Example
+## Examples
 
 For more examples, please see the [examples](examples) folder.
 
@@ -107,14 +107,14 @@ to create a skeleton project.
 
 ### Crust
 
-When you have installed Crust from the ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of
-[HTTP::Easy::PSGI](https://github.com/supernovus/perl6-http-easy). Always use `baile()` in the end of your app, because in the default configuration it guesses wether your app is called via crustup or directly with perl6. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your your Application.
+When you have installed [Crust](http://modules.perl6.org/dist/Crust) from the Perl 6 ecosystem there is a command called `crustup` or `crustup.bat` which can be used to launch your Bailador App. Bailador was developed and runs best on top of [HTTP::Easy::PSGI](http://modules.perl6.org/dist/HTTP::Easy). Always use `baile()` at the end of your app, because in the default configuration it guesses whether your app is called via `crustup` or directly with `perl6`. Depending on that `baile()` chooses the right `Bailador::Command` to invoke your application with.
 
 #### Example
 
 Store this Example in a file called `example.p6w`
 
 ```Perl6
+use v6;
 use Bailador;
 
 # simple cases
@@ -135,7 +135,7 @@ and then type this in your shell:
 
 #### `--config`
 
-Takes comma-separated list of parameters that configure various aspects how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
+Takes a comma-separated list of parameters that configure various aspects how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
 For details of the available configuration parametes check the [Configuration](#configuration) section of the documentation.
 Currently available parameters:
 
@@ -154,7 +154,7 @@ The command watch watches the source code of your Bailador app for changes and a
 ##### `--w`
 
 Takes comma-separated list of directories to watch. By default,
-will watch `lib` and `bin` directories.
+will watch the `lib`, `bin`, and `views` directories.
 
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
 
@@ -168,6 +168,7 @@ If you have to watch a directory with a comma in its name, prefix it with a back
 In order to invoke the Bailador App directly, you could simply call baile() in your script.
 
 ```Perl6
+use v6;
 use Bailador;
 
 # simple cases
@@ -178,7 +179,7 @@ get '/' => sub {
 baile;
 ```
 
-This will install the Bailador server in default port 3000.
+This will launch the Bailador server on default port 3000.
 
 ## How to Write Web Apps
 
@@ -191,6 +192,7 @@ New features like nested routes and whatever is yet to come are implemented in `
 When you write your own application, but still want to use the exported subs described in [this](#subroutines-that-should-only-be-used-inside-the-code-block-of-a-route) section you MUST set your `$app` to be the default app.
 
 ```Perl6
+use v6;
 use Bailador;
 use Bailador::App;
 
@@ -216,7 +218,7 @@ Sets a Bailador::App to be the default app for all the other exported subs descr
 Adds a route for get, post, put or delete requests. The key of the
 `Pair` is either a `Str` or a `Regex`. If a string is passed it is
 automatically converted into a regex. The value of the pair must be a
-`Callable`. Whenever the route matches on the requested URL the
+`Callable`. Whenever the route matches the requested URL the
 callable is invoked with the list of the `Match` as its
 parameters. The return value of the callable will be auto rendered. So
 it is the content of your response. The request is available via the
@@ -236,7 +238,7 @@ subroutine parameters.
 ##### `prefix(Str $prefix, Callable $code)`
 ##### `prefix-enter(Callable $code)`
 
-The prefix sets up a [Nested Route](#nested-routes). All other routes that will be added within the $code will in fact be added to this nested route. With prefix-enter you can define code that will called whenever the prefix matches your HTTP request. Only if this code returns True the routes within the prefix can be reached during request dispatching. Without using prefix-enter the routes in the prefix are reachable - this means the default code for a prefix route is ``` sub { True } ```.
+The prefix sets up a [Nested Route](#nested-routes). All other routes that will be added within the $code will be added to this nested route. With prefix-enter you can define code that will be called whenever the prefix matches your HTTP request. Only if this code returns True the routes within the prefix can be reached during request dispatching. Without using prefix-enter the routes in the prefix are reachable - this means the default code for a prefix route is ``` sub { True } ```.
 
 ```Perl6
     prefix "/foo" => sub {
@@ -254,16 +256,16 @@ Redirect to the specified location, can be relative or absolute URL. Adds Locati
 
 ##### `renderer(Bailador::Template $renderer)`
 
-Sets the Renderer that's being used to render your templates. See the Template section for more details.
+Sets the Renderer that's being used to render your templates. See the [Templates](#templates) section for more details.
 
 ##### `config()`
 
 Returns the configuration. You can influence how sessions work, the mode, port and host of your Bailador app.
-See the Sessions and Configuration section for details.
+See the [Sessions](#sessions) and [Configuration](#configuration) sections for details.
 
 ##### `set(Str $key, $value)`
 
-This is a Dancer2 like way to set values to the config.
+This is a simple way to set values in the config.
 
 ```perl6
     # this:
@@ -286,7 +288,7 @@ Sets the Content Type for the response to $type.
 
 ##### `request()`
 
-Gets current the Request.
+Gets the object representing the current Request.
 
 ##### `uri-for(Str $path)`
 
