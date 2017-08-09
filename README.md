@@ -136,7 +136,7 @@ and then type this in your shell:
 #### `--config`
 
 Takes a comma-separated list of parameters that configure various aspects of how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
-For details of the available configuration parametes check the [Configuration](#configuration) section of the documentation.
+For details of the available configuration parameters check the [Configuration](#configuration) section of the documentation.
 Currently available parameters:
 
 ```
@@ -375,7 +375,7 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
 
   * anything that is `defined`
 
-    If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. If an `IO::Path` gets returned it automatically guesses its content type based on the filename extentions and renders the content of the file.
+    If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. If an `IO::Path` gets returned it automatically guesses its content type based on the filename extensions and renders the content of the file.
 
 Using `self.render` will turn off auto rendering.
 
@@ -420,11 +420,11 @@ In order to use layouts you can pass a layout option to the `template()` call.
 
     template 'template.tt', layout => 'main', $name, $something;
 
-First Bailador renders your template with its parameters, and then scanns the 'layout' sub directory for another layout template. The same rendering engine will be used for the layout template. The result of your first template rendering will be passed as only option to layout template. If the specified layout was not found the result of the first template rendering will be returned.
+First Bailador renders your template with its parameters, and then scans the 'layout' sub directory for another layout template. The same rendering engine will be used for the layout template. The result of your first template rendering will be passed as only option to layout template. If the specified layout was not found the result of the first template rendering will be returned.
 
 ### Error Templates
 
-In order to customize the error pages drop a template file with the filename of the HTTP status code and the suffix `.xx` in your views directory. Curently there only two different error codes: `404` and `500`.
+In order to customize the error pages drop a template file with the filename of the HTTP status code and the suffix `.xx` in your views directory. Currently there only two different error codes: `404` and `500`.
 
 ## Sessions
 
@@ -456,7 +456,7 @@ and set backend to this class name.
 
 ## Configuration
 
-Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using configuration files. You can also change the configuration within your app. The Bailador::Configuration can also store custom-specifiy information, therefore please use the `set` / `get` method. The order of adjusting the settings is: first the code in your app, second from the configuration files, third from the environment variaible. So the settings from the evironment variale `BAILADOR` will finally override what you might have stated in the config files.
+Bailador uses a default configuration, but you can customize it, using the Bailador environment variable, or using configuration files. You can also change the configuration within your app. The Bailador::Configuration can also store custom-specific information, therefore please use the `set` / `get` method. The order of adjusting the settings is: first the code in your app, second from the configuration files, third from the environment variables. So the settings from the environment variable `BAILADOR` will finally override what you might have stated in the config files.
 
 ```perl6
 # directly
@@ -473,7 +473,7 @@ config.set('database-password', 'xxxxxx')
 
 ```
 
-For now, Bailador only allows you to use YAML formatted configuration files. The default configuration file name is `settings.yaml`, but you could change this if you like. Just write `config.config-file = 'myconfig.yaml'` in the beggingin of your app. Create at the root of your project directory a `settings.yaml` file :
+For now, Bailador only allows you to use YAML formatted configuration files. The default configuration file name is `settings.yaml`, but you could change this if you like. Just write `config.config-file = 'myconfig.yaml'` in the beginning of your app. Create at the root of your project directory a `settings.yaml` file :
 
 ```yaml
 # settings.yaml
@@ -485,7 +485,7 @@ Bailador will now generate 2 more config file variants and process the settings 
 
 This allows you to have a general settings.yaml that you which to use on everywhere. Adaptions that only apply to a certain server could be placed into the `-local` configuration file. And settings that only apply during development mode can be stored in the `-development` file. As soon as you switch to production mode those settings will no longer be used.
 
-Using the `BAILADOR` environment variable is a comma seperated list of key-value pairs.
+Using the `BAILADOR` environment variable is a comma separated list of key-value pairs.
 
 ```
 BAILADOR=mode:development,host:0.0.0.0,port:5000 perl6 examples/app.pl6
