@@ -1,0 +1,58 @@
+[
+
+  {
+    "task" : "install git",
+    "plugin" : "package-generic",
+    "data" : {
+        "list" : "git"
+    }
+  },
+  {
+    "task" : "install zef modules",
+    "plugin" : "bash",
+    "data" : {
+        "command" : "zef install Path::Iterator TAP::Harness",
+        "debug" : true
+    }
+  },
+  {
+    "task" : "remove bailador scource code directory",
+    "plugin" : "directory",
+    "data" : {
+        "path" : "/var/bailador",
+        "action" : "delete"
+    }
+  },
+  {
+    "task" : "create bailador scource code directory",
+    "plugin" : "directory",
+    "data" : {
+        "path" : "/var/bailador",
+        "action" : "create"
+    }
+  },
+  {
+    "task" : "checkout bailador source code",
+    "plugin" : "bash",
+    "data" : {
+        "command" : "git clone https://github.com/Bailador/Bailador.git /var/bailador"
+    }
+  },
+  {
+    "task" : "installs bailador dependencies",
+    "plugin" : "bash",
+    "data" : {
+        "command" : "cd /var/bailador && zef install . --deps-only"
+    }
+  },
+  {
+    "task" : "run t/ tests",
+    "plugin" : "bash",
+    "data" : {
+        "command" : "cd /var/bailador && prove6 -l",
+        "envvars" : {
+          "PATH" : "/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH"
+        }
+    }
+  }
+]
