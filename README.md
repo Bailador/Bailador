@@ -441,7 +441,7 @@ The handling of sessions can be influenced with settings of Bailador::Configurat
     config()
 
 inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
-Following config options are available. Most of them should be self explaining.
+Following config options are available. Most of them should be self explanatory.
 
 * cookie-name = 'bailador';
 * cookie-path = '/';
