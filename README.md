@@ -135,7 +135,7 @@ and then type this in your shell:
 
 #### `--config`
 
-Takes a comma-separated list of parameters that configure various aspects how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
+Takes a comma-separated list of parameters that configure various aspects of how Bailador will run. `--config` overrides the [BAILADOR](#configuration) environment variable.
 For details of the available configuration parametes check the [Configuration](#configuration) section of the documentation.
 Currently available parameters:
 
