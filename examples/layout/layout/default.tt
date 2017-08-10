@@ -1,0 +1,8 @@
+% my ($h) = @_;
+
+
+<hr>
+<%= $h %>
+<hr>
+
+<h3>This is the default layout.</h3>

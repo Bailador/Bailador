@@ -1,0 +1,4 @@
+% my (%h) = @_;
+
+<h1><%= %h<title> %></h1>
+<h2>Main.tt file</h2>
