@@ -94,6 +94,14 @@ When the source code in the `dev` branch reaches a stable point and is ready to 
 
 For more examples, please see the [examples](examples) folder.
 
+[examples/reuse] 
+
+Showcase applications written in OO.
+Inheriting from such application.
+Including such application under a prefix. (TODO)
+
+[examples/layout] Show how to use layout either by configuring it in the settings.yaml or by passing the name to the template function.
+
 ## Skeleton
 
 Run
