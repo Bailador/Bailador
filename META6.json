@@ -61,6 +61,7 @@
     "Bailador::Feature::AutoHead" : "lib/Bailador/Feature/AutoHead.pm",
     "Bailador::Gradual" : "lib/Bailador/Gradual.pm",
     "Bailador::LogAdapter" : "lib/Bailador/LogAdapter.pm",
+    "Bailador::LogFormatter" : "lib/Bailador/LogFormatter.pm",
     "Bailador::Request" : "lib/Bailador/Request.pm",
     "Bailador::Request::Multipart" : "lib/Bailador/Request/Multipart.pm",
     "Bailador::Response" : "lib/Bailador/Response.pm",
