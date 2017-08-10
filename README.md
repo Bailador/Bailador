@@ -94,7 +94,7 @@ When the source code in the `dev` branch reaches a stable point and is ready to 
 
 For more examples, please see the [examples](examples) folder.
 
-[examples/reuse] 
+[examples/reuse]
 
 Showcase applications written in OO.
 Inheriting from such application.
