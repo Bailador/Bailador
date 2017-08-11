@@ -39,32 +39,32 @@ sub use-feature(Str $feature-name) is export {
 }
 
 sub get(Pair $x) is export {
-    app.add_route: make-simple-route('GET', $x);
+    app.add_route: make-route('GET', $x);
     return $x;
 }
 
 sub post(Pair $x) is export {
-    app.add_route: make-simple-route('POST', $x);
+    app.add_route: make-route('POST', $x);
     return $x;
 }
 
 sub put(Pair $x) is export {
-    app.add_route: make-simple-route('PUT', $x);
+    app.add_route: make-route('PUT', $x);
     return $x;
 }
 
 sub delete(Pair $x) is export {
-    app.add_route: make-simple-route('DELETE', $x);
+    app.add_route: make-route('DELETE', $x);
     return $x;
 }
 
 sub patch(Pair $x) is export {
-    app.add_route: make-simple-route('PATCH', $x);
+    app.add_route: make-route('PATCH', $x);
     return $x;
 }
 
 sub head(Pair $x) is export {
-    app.add_route: make-simple-route('HEAD', $x);
+    app.add_route: make-route('HEAD', $x);
     return $x;
 }
 

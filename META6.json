@@ -67,6 +67,7 @@
     "Bailador::Response" : "lib/Bailador/Response.pm",
     "Bailador::Route" : "lib/Bailador/Route.pm",
     "Bailador::Route::AutoHead" : "lib/Bailador/Route/AutoHead.pm",
+    "Bailador::Route::Controller" : "lib/Bailador/Route/Controller.pm",
     "Bailador::Route::Prefix" : "lib/Bailador/Route/Prefix.pm",
     "Bailador::Route::Simple" : "lib/Bailador/Route/Simple.pm",
     "Bailador::Route::StaticFile" : "lib/Bailador/Route/StaticFile.pm",
