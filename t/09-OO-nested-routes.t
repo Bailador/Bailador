@@ -15,7 +15,7 @@ class MyOwnWebApp is Bailador::App {
         self.config.cookie-expiration = 5;
 
         # routes
-        self.add_route: make-simple-route('POST',  '/login/:user' => sub {
+        self.add_route: make-route('POST',  '/login/:user' => sub {
             my $user = @_[0];
             my $session = self.session;
             $session<user> = $user;
@@ -29,15 +29,15 @@ class MyOwnWebApp is Bailador::App {
             # go to a next route that matches the request
             return False;
         });
-        $route.add_route: make-simple-route('GET','/something' => self.curry: 'something');
-        $route.add_route: make-simple-route('GET','/logout' => sub {
+        $route.add_route: make-route('GET','/something' => self.curry: 'something');
+        $route.add_route: make-route('GET','/logout' => sub {
             self.session-delete;
             self.render: "logged out";
         });;
         self.add_route: $route;
 
         # catch all route
-        self.add_route: make-simple-route('GET',/.*/ => sub {
+        self.add_route: make-route('GET',/.*/ => sub {
             self.session-delete;
             self.render: "this is the login page / catch all route";
         });

@@ -1,11 +1,11 @@
 use v6.c;
 
 use Bailador::App;
+use Bailador::Route;
 use Bailador::Route::Controller;
 use Bailador::Route::Prefix;
 use Bailador::Route::Simple;
 use Bailador::Route::StaticFile;
-use Bailador::Route;
 
 unit module Bailador::RouteHelper;
 

@@ -11,18 +11,18 @@ plan 5;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
         self.config.cookie-expiration = 5;
-        self.add_route: make-simple-route('GET','/setsession' => sub {
+        self.add_route: make-route('GET','/setsession' => sub {
             my $session = self.session;
             $session<key> = 'value';
             "with session";
         });
 
-        self.add_route: make-simple-route('GET','/readsession' => sub {
+        self.add_route: make-route('GET','/readsession' => sub {
             my $session = self.session;
             $session<key> || 'no value';
         });
 
-        self.add_route: make-simple-route('GET','/deletesession' => sub {
+        self.add_route: make-route('GET','/deletesession' => sub {
             self.session-delete;
             "session should be deleted";
         });

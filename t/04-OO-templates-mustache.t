@@ -13,7 +13,7 @@ class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
         self.location( $?FILE.IO.dirname );
         self.renderer = Bailador::Template::Mustache.new;
-        self.add_route: make-simple-route('GET', '/' => sub { self.template: 'simple.mustache', { 'foo' => 'bar' } });
+        self.add_route: make-route('GET', '/' => sub { self.template: 'simple.mustache', { 'foo' => 'bar' } });
     }
 }
 
