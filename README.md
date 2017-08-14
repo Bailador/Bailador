@@ -19,36 +19,35 @@ Talk to the developers at https://perl6-bailador.slack.com/
     - [Crust](#crust)
     - [Baile](#baile)
 - [How to Write Web Apps](#how-to-write-web-apps)
-    - [Mixing both Approaches](#mixing-both-approaches)
-    - [Classical Approach](#classical-approach)
-        - [Subroutines for your Application](#subroutines-for-your-application)
-            - [`app(Bailador::App $app)`](#appbailadorapp-app)
-            - [`get(Pair $x)`](#getpair-x)
-            - [`post(Pair $x)`](#postpair-x)
-            - [`put(Pair $x)`](#putpair-x)
-            - [`delete(Pair $x)`](#deletepair-x)
-            - [`prefix(Pair $x)`](#prefixstr-prefix-callable-code)
-            - [`prefix-enter(Callable $code)`](#prefix-entercallable-code)
-            - [`redirect(Str $location)`](#redirectstr-location)
-            - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
-            - [`config()`](#config)
-            - [`set(Str $key, $value)`](#setstr-key-value)
-            - [`baile()`](#baile)
-        - [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
-            - [`content_type(Str $type)`](#content_typestr-type)
-            - [`request()`](#request)
-            - [`uri-for(Str $path)`](#uri-forstr-path)
-            - [`header(Str $name, Cool $value)`](#headerstr-name-cool-value)
-            - [`cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`](#cookiestr-name-str-value-str-domain-str-path-datetime-expires-bool-http-only-bool-secure)
-            - [`status(Int $code)`](#statusint-code)
-            - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
-            - [`session()`](#session)
-            - [`to-json()`](#to-json)
-    - [Web Applications via Inheriting from `Bailador::App`](#web-applications-via-inheriting-from-bailadorapp)
+    - [Subroutines for your Application](#subroutines-for-your-application)
+        - [`app(Bailador::App $app)`](#appbailadorapp-app)
+        - [`get(Pair $x)`](#getpair-x)
+        - [`post(Pair $x)`](#postpair-x)
+        - [`put(Pair $x)`](#putpair-x)
+        - [`delete(Pair $x)`](#deletepair-x)
+        - [`prefix(Pair $x)`](#prefixstr-prefix-callable-code)
+        - [`prefix-enter(Callable $code)`](#prefix-entercallable-code)
+        - [`redirect(Str $location)`](#redirectstr-location)
+        - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
+        - [`config()`](#config)
+        - [`set(Str $key, $value)`](#setstr-key-value)
+        - [`baile()`](#baile)
+    - [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
+        - [`content_type(Str $type)`](#content_typestr-type)
+        - [`request()`](#request)
+        - [`uri-for(Str $path)`](#uri-forstr-path)
+        - [`header(Str $name, Cool $value)`](#headerstr-name-cool-value)
+        - [`cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`](#cookiestr-name-str-value-str-domain-str-path-datetime-expires-bool-http-only-bool-secure)
+        - [`status(Int $code)`](#statusint-code)
+        - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
+        - [`session()`](#session)
+        - [`to-json()`](#to-json)
+    - [Advanced Concepts](#advanced-concepts)
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
         - [Return Values of Routes](#return-values-of-routes)
         - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
+        - [Using Controller Classes](#using-controller-classes)
 - [Templates](#templates)
     - [Error Templates](#error-templates)
 - [Sessions](#sessions)
@@ -195,33 +194,16 @@ Bailador offers two different approaches to write web applications. The first an
 
 New features like nested routes and whatever is yet to come are implemented in `Bailador::App` and can be used through the object oriented interface. Your own web application just inherits from `Bailador::App`.
 
-### Mixing both Approaches
-
-When you write your own application, but still want to use the exported subs described in [this](#subroutines-that-should-only-be-used-inside-the-code-block-of-a-route) section you MUST set your `$app` to be the default app.
-
-```Perl6
-use v6;
-use Bailador;
-use Bailador::App;
-
-class MyWebApp is Bailador::App { ... }
-my $app = MyWebApp.new;
-
-app $app;
-```
-
-### Classical Approach
-
-#### Subroutines for your Application
+### Subroutines for your Application
 
 #### `app(Bailador::App $app)`
 
 Sets a Bailador::App to be the default app for all the other exported subs described in [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-should-only-be-used-inside-the-code-block-of-a-route).
 
-##### `get(Pair $x)`
-##### `post(Pair $x)`
-##### `put(Pair $x)`
-##### `delete(Pair $x)`
+#### `get(Pair $x)`
+#### `post(Pair $x)`
+#### `put(Pair $x)`
+#### `delete(Pair $x)`
 
 Adds a route for get, post, put or delete requests. The key of the
 `Pair` is either a `Str` or a `Regex`. If a string is passed it is
@@ -243,8 +225,8 @@ subroutine parameters.
     }
 ```
 
-##### `prefix(Str $prefix, Callable $code)`
-##### `prefix-enter(Callable $code)`
+#### `prefix(Str $prefix, Callable $code)`
+#### `prefix-enter(Callable $code)`
 
 The prefix sets up a [Nested Route](#nested-routes). All other routes that will be added within the $code will be added to this nested route. With prefix-enter you can define code that will be called whenever the prefix matches your HTTP request. Only if this code returns True the routes within the prefix can be reached during request dispatching. Without using prefix-enter the routes in the prefix are reachable - this means the default code for a prefix route is ``` sub { True } ```.
 
@@ -258,20 +240,20 @@ The prefix sets up a [Nested Route](#nested-routes). All other routes that will 
     }
 ```
 
-##### `redirect(Str $location)`
+#### `redirect(Str $location)`
 
 Redirect to the specified location, can be relative or absolute URL. Adds Location-header to response and sets status code to 302.
 
-##### `renderer(Bailador::Template $renderer)`
+#### `renderer(Bailador::Template $renderer)`
 
 Sets the Renderer that's being used to render your templates. See the [Templates](#templates) section for more details.
 
-##### `config()`
+#### `config()`
 
 Returns the configuration. You can influence how sessions work, the mode, port and host of your Bailador app.
 See the [Sessions](#sessions) and [Configuration](#configuration) sections for details.
 
-##### `set(Str $key, $value)`
+#### `set(Str $key, $value)`
 
 This is a simple way to set values in the config.
 
@@ -282,44 +264,44 @@ This is a simple way to set values in the config.
     config.foo = True;
 ```
 
-##### `baile()`
+#### `baile()`
 
 or `baile($command)`
 
 Let's enter the dance floor. ¡Olé!
 
-#### Subroutines that should only be used inside the Code block of a Route
+### Subroutines that should only be used inside the Code block of a Route
 
-##### `content_type(Str $type)`
+#### `content_type(Str $type)`
 
 Sets the Content Type for the response to $type.
 
-##### `request()`
+#### `request()`
 
 Gets the object representing the current Request.
 
-##### `uri-for(Str $path)`
+#### `uri-for(Str $path)`
 
 Constructs a URI String from the base and the passed $path.
 
-##### `header(Str $name, Cool $value)`
+#### `header(Str $name, Cool $value)`
 
 Adds a Header to the Response.
 
-##### `cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`
+#### `cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`
 
 Adds a Cookie to the response.
 
-##### `status(Int $code)`
+#### `status(Int $code)`
 
 Sets the status code of a response.
 
-#####  `template(Str $template-name, :$layout, *@params)`
+####  `template(Str $template-name, :$layout, *@params)`
 
 Calls the template which is a file in the views folder. You can specify a $:layout if you want to override the settings in Bailador::Configuration.
 For more details see the Template section. Should only be used within the code block of a route.
 
-##### `session()`
+#### `session()`
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
@@ -327,32 +309,7 @@ Returns the Session Hash. Session Hashes are empty if you start a new session. F
 
 Converts your data into JSON format using JSON::Fast.
 
-### Web Applications via Inheriting from `Bailador::App`
-
-```Perl6
-class MyWebApp is Bailador::App {
-    submethod BUILD(|) {
-        my $rootdir = $?FILE.IO.parent.parent;
-        self.location = $rootdir.child("views").dirname;
-        self.config.cookie-expiration = 180;
-
-        self.get:  '/login' => sub { self.session-delete; self.template: 'login.tt' };
-        self.post: '/login' => self.curry: 'login-post';
-
-        my $only-if-loggedin = Bailador::Route.new: path => /.*/, code => sub {
-            return True if self.session<user>;
-            return False;
-        };
-        $only-if-loggedin.get:  '/the/app'  => sub { ... };
-        self.add_route: $only-if-loggedin;
-
-        self.add_route: Bailador::Route::StaticFile.new: path => / (<[\w\.]>+ '/' <[\w\.\-]>+)/, directory => $rootdir.child("public");
-        self.get: / .* / => sub {self.redirect: '/login' };
-
-    }
-    method login-post { ... }
-}
-```
+### Advanced Concepts
 
 #### Nested Routes
 
@@ -386,6 +343,12 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
     If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. If an `IO::Path` gets returned it automatically guesses its content type based on the filename extensions and renders the content of the file.
 
 Using `self.render` will turn off auto rendering.
+
+#### Using Controller Classes
+
+Instead of using simple subs for routes (e.g in combination with `get`, `post`, `delete` etc) you could also use Controller Classes. Controller Classes are most likely the way to go for applications that grow bigger. You need to specify a class and a method name. The class gets instanciated for each HTTP request that matches the route definition. It is also possible to use an object instead of a class name, so you avoid the generation of new instances. In oder words your Controller is no longer stateless. You should still considder the controllers as glue code which glues your bailador-agnostic model, a model that is not even aware of bailador and does not use Bailadors DSL) to the HTTP requests. This allows to your model classes to be easily tested in tests. A small example can be found [here](examples/controllers.pl6).
+
+    get '/v1/data/:id' => { class => 'My::Controller::Class', method => 'get-data' };
 
 #### Bailador::Route::StaticFile
 
