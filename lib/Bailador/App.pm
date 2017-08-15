@@ -1,5 +1,6 @@
 use v6.c;
 
+use HTTP::Status;
 use Log::Any;
 use Template::Mojo;
 
@@ -217,16 +218,16 @@ class Bailador::App does Bailador::Routing {
     method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
         my $message = "Serving $method $uri with $http-code in " ~ $end - $start ~ 's';
         given $http-code {
-            when 200 <= * < 300 {
+            when is-success($_) {
                 Log::Any.info($message);
             }
-            when 300 <= * < 400 {
+            when is-redirect($_) {
                 Log::Any.debug($message);
             }
-            when 400 <= * < 500 {
+            when is-client-error($_) {
                 Log::Any.notice($message);
             }
-            when * < 500 {
+            when is-server-error($_) {
                 Log::Any.error($message);
             }
             default {
