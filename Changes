@@ -1,3 +1,4 @@
+    - Added support for Controller classes and objects
     - Ticket #231 - fixed includes (related to #224)
     - Ticket #180 - allow to colorize terminal output
 
