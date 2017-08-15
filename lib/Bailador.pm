@@ -104,6 +104,10 @@ sub template(Str $tmpl, *@params, *%params) is export {
     app.template($tmpl, @params, |%params);
 }
 
+sub render-file(Str $filename, Str :$mime-type) is export {
+    app.render-file($filename, :$mime-type);
+}
+
 sub session is export {
     return app.session();
 }
