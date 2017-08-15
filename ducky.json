@@ -28,7 +28,7 @@
     "data" : {
         "command" : "prove6 -l",
         "envvars" : {
-          "PATH" : "/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH"
+          "PATH" : "/opt/rakudo/bin:/opt/rakudo/share/perl6/site/bin:/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH"
         }
     }
   }
