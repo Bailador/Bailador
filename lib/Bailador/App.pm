@@ -71,6 +71,32 @@ class Bailador::App does Bailador::Routing {
         return $content;
     }
 
+    method render-file(Str:D $filename is copy, Str :$mime-type) {
+        # The supplied path in $filename should be relative to our root. By default directory traversal
+        # is disabled because security, so basically only relavite paths from our applications location
+        # is possible. The file is rendered and served by this method.
+        $filename = $.location.IO.child($filename).resolve.Str;
+
+        if (!$filename.starts-with($.location)) {
+            # File is outside our $.location
+            Log::Any.error("Serving file outside of root is denied: " ~ $filename);
+            #return;
+        }
+
+        if ($filename.IO.e) {
+            if ($mime-type.defined) {
+                self.render(status => 200, type => $mime-type, content => $filename.IO);
+            }
+            else {
+                # Content type auto-detection via render()
+                self.render(status => 200, content => $filename.IO);
+            }
+        }
+        else {
+            Log::Any.error("File not found! " ~ $filename);
+        }
+    }
+
     method before-add-routes() {
         # this is a good place for a hook
         self.load-config();
