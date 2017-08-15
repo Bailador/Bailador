@@ -1,0 +1,35 @@
+[
+
+  {
+    "task" : "install perl6",
+    "plugin" : "rakudo-install",
+    "data" : {
+      "url" : "https://github.com/nxadm/rakudo-pkg/releases/download/2017.07/perl6-rakudo-moarvm-CentOS7.3.1611-20170700-01.x86_64.rpm"
+    }
+  },
+  {
+    "task" : "install git",
+    "plugin" : "package-generic",
+    "data" : {
+        "list" : "git"
+    }
+  },
+  {
+    "task" : "installs Bailador dependencies",
+    "plugin" : "zef",
+    "data" : {
+        "list" : [ "." ],
+        "options" : "--deps-only"
+    }
+  },
+  {
+    "task" : "run t/ tests",
+    "plugin" : "bash",
+    "data" : {
+        "command" : "prove6 -l",
+        "envvars" : {
+          "PATH" : "/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH"
+        }
+    }
+  }
+]
