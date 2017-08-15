@@ -1,4 +1,5 @@
-   - Ticket #180 - allow to colorize terminal output
+    - Ticket #231 - fixed includes (related to #224)
+    - Ticket #180 - allow to colorize terminal output
 
 0.0.10 2017.08.04
     - Little code and documentation clean
