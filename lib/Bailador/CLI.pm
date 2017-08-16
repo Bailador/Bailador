@@ -78,7 +78,12 @@ multi sub bootup-file (Str $app) {
 }
 
 sub get-path-from-repo is export {
-    my @includes = "-I" <<~<< $*REPO.repo-chain.map(*.path-spec);
+    my @includes;
+    for $*REPO.repo-chain -> $repo {
+        if $repo ~~ CompUnit::Repository::FileSystem {
+            @includes.push: $repo.prefix;
+        }
+    }
     return @includes;
 }
 
