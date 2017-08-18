@@ -27,6 +27,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
         - [`delete(Pair $x)`](#deletepair-x)
         - [`prefix(Pair $x)`](#prefixstr-prefix-callable-code)
         - [`prefix-enter(Callable $code)`](#prefix-entercallable-code)
+        - [`static-dir(Pair $x)`](#static-dirpair-x)
         - [`redirect(Str $location)`](#redirectstr-location)
         - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
         - [`config()`](#config)
@@ -46,7 +47,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
         - [Return Values of Routes](#return-values-of-routes)
-        - [Bailador::Route::StaticFile](#bailadorroutestaticfile)
         - [Using Controller Classes](#using-controller-classes)
 - [Templates](#templates)
     - [Error Templates](#error-templates)
@@ -240,6 +240,14 @@ The prefix sets up a [Nested Route](#nested-routes). All other routes that will 
     }
 ```
 
+##### `static-dir(Pair $x)` #####
+
+A static file route can be used to serve files in a directory. This sets up a get and head route which checks for an existing file in the given directory. The `path` ( `Regex` or `Str` ) must return a match with a single capture grupe, which will be turned into a `.Str`. If there is a file in the directory with that name it will be rendered otherwise the route returns a `False`, so in the end the route is left and maybe other routes can handle your request.
+
+```Perl6
+    static-dir / (.+) / => 'data/';
+```
+
 #### `redirect(Str $location)`
 
 Redirect to the specified location, can be relative or absolute URL. Adds Location-header to response and sets status code to 302.
@@ -349,15 +357,6 @@ Using `self.render` will turn off auto rendering.
 Instead of using simple subs for routes (e.g in combination with `get`, `post`, `delete` etc) you could also use Controller Classes. Controller Classes are most likely the way to go for applications that grow bigger. You need to specify a class and a method name. The class gets instanciated for each HTTP request that matches the route definition. It is also possible to use an object instead of a class name, so you avoid the generation of new instances. In oder words your Controller is no longer stateless. You should still considder the controllers as glue code which glues your bailador-agnostic model, a model that is not even aware of bailador and does not use Bailadors DSL) to the HTTP requests. This allows to your model classes to be easily tested in tests. A small example can be found [here](examples/controllers.pl6).
 
     get '/v1/data/:id' => { class => 'My::Controller::Class', method => 'get-data' };
-
-#### Bailador::Route::StaticFile
-
-```Perl6
-my $files = Bailador::Route::StaticFile.new: directory => $dir, path => '/public/:file';
-self.add_route: $files;
-```
-
-A static file route can be used to serve files in a directory. The `path` `Regex` or `Str` must return a single match which will be turned into a `.Str`. If there is a file in the directory with that name it will be rendered otherwise the route returns a `False`, so in the end the route is left and maybe other routes can handle your request.
 
 ## Templates
 

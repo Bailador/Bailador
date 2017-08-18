@@ -10,8 +10,11 @@ class Bailador::Route::StaticFile does Bailador::Route {
     }
 
     method execute(Match $path) {
-        my $file = $.directory.child($path.Str);
-        return $file if $file.e && $file.f;
+        my $name = $path[0].Str;
+        if $name {
+            my $file = $.directory.child($name);
+            return $file if $file.e && $file.f;
+        }
         return False;
     }
 
