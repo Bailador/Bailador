@@ -9,7 +9,7 @@
 
 Bailador
 
-# SNYOPSIS
+# SYNOPSIS
 
 ```Perl6
 use Bailador;
