@@ -11,7 +11,7 @@ Bailador
 
 # SYNOPSIS
 
-```Perl6
+```perl6
 use Bailador;
 
 get '/' => sub {
@@ -72,7 +72,11 @@ If you'd like to contribute to Bailador, see the [CONTRIBUTING](CONTRIBUTING.md)
 
 Bailador is released under the MIT License.
 
+---
+
 # BAILADOR RESOURCES
+
+You can find a list of Bailador ressources (articles, posts, talks, books, ...) [here](https://github.com/Bailador/Ressources).
 
 ## Bailador-based applications
 
