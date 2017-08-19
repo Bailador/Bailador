@@ -324,7 +324,7 @@ Converts your data into JSON format using JSON::Fast.
 #### `render($content)`
 #### `render(Int :$status, Str :$type is copy, :$content is copy)`
 
-Renderes a result the http status code given in `$status`, the header `Content-Type: $type` and the body given in `$content`. `render($content)` is the same as `render(content => $content)`. 
+Renderes a result the http status code given in `$status`, the header `Content-Type: $type` and the body given in `$content`. `render($content)` is the same as `render(content => $content)`.
 
 ### Advanced Concepts
 
