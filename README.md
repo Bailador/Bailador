@@ -47,6 +47,8 @@ Talk to the developers at https://perl6-bailador.slack.com/
         - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
         - [`session()`](#session)
         - [`to-json()`](#to-json)
+        - [`render($content)`](#render-content)
+        - [`render(Int :$status, Str :$type is copy, :$content is copy)`](#renderint-status-str-type-is-copy-content-is-copy)
     - [Advanced Concepts](#advanced-concepts)
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
@@ -321,6 +323,11 @@ Returns the Session Hash. Session Hashes are empty if you start a new session. F
 
 Converts your data into JSON format using JSON::Fast.
 
+#### `render($content)`
+#### `render(Int :$status, Str :$type is copy, :$content is copy)`
+
+Renderes a result the http status code given in `$status`, the header `Content-Type: $type` and the body given in `$content`. `render($content)` is the same as `render(content => $content)`. 
+
 ### Advanced Concepts
 
 #### Nested Routes
@@ -330,7 +337,7 @@ Nesting routes make sense if you want to enter routes just under conditions. The
 
 #### Auto Rendering
 
-Auto rendering means that whatever (except `True` and `False`) the return value of the sub is, it will be rendered. Using `self.render` will turn of auto rendering, because you obviously have rendered something manually. In the classical approach auto rendering is always used.
+Auto rendering means that whatever (except `True` and `False`) the return value of the sub is, it will be rendered. Using `render($content)` or `render(Int :$status, Str :$type is copy, :$content is copy)`will turn of auto rendering, because you obviously have rendered something manually.
 
 #### Return Values of Routes
 
@@ -353,8 +360,6 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
   * anything that is `defined`
 
     If anything defined is returned this will be the content of the response as long as you don't have rendered something in the callable of the route. If an `IO::Path` gets returned it automatically guesses its content type based on the filename extensions and renders the content of the file.
-
-Using `self.render` will turn off auto rendering.
 
 #### Using Controller Classes
 

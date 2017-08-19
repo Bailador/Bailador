@@ -1,3 +1,5 @@
+    - Ticket #222 - update documentation on render
+    - Ticket #242 - update documentation on static-dir including bug at capture group in B::Route::StaticFile
     - Added support for Controller classes and objects
     - Ticket #231 - fixed includes (related to #224)
     - Ticket #180 - allow to colorize terminal output
