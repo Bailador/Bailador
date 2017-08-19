@@ -43,6 +43,7 @@ Talk to the developers at https://perl6-bailador.slack.com/
         - [`cookie(Str $name, Str $value, Str :$domain, Str :$path, DateTime :$expires, Bool :$http-only; Bool :$secure)`](#cookiestr-name-str-value-str-domain-str-path-datetime-expires-bool-http-only-bool-secure)
         - [`status(Int $code)`](#statusint-code)
         - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
+        - [`render-file(Str $filename, Str :$mime-type)`](#render-filestr-filename-strmime-type)
         - [`session()`](#session)
         - [`to-json()`](#to-json)
         - [`render($content)`](#render-content)
@@ -312,6 +313,11 @@ Sets the status code of a response.
 
 Calls the template which is a file in the views folder. You can specify a $:layout if you want to override the settings in Bailador::Configuration.
 For more details see the Template section. Should only be used within the code block of a route.
+
+#### `render-file(Str $filename, Str :$mime-type)`
+
+Serve a file as-is to the client. $filename can be a path, but has to be relative and inside your $.location. Optionally a content type can be specified.
+
 
 #### `session()`
 
