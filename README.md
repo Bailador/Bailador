@@ -68,20 +68,6 @@ We encourage you to contribute to Bailador !
 
 If you'd like to contribute to Bailador, see the [CONTRIBUTION](doc/CONTRIBUTION.md).
 
-# VERSIONING MODEL
-
-The Baildor repository holds two main branches with an infinite lifetime :
-
- - Main branch :
-
- We consider `origin/main` to be the main branch where the source code of HEAD always reflects a production-ready state.
-
- - Dev branch :
-
- We consider `origin/dev` to be the branch where the source code of HEAD always reflects a state with the latest delivered development changes for the next release.
-
-When the source code in the `dev` branch reaches a stable point and is ready to be released, all of the changes are merged back into `main` and then tagged with a release number.
-
 # LICENSE
 
 Bailador is released under the MIT License.
