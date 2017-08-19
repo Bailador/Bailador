@@ -1,3 +1,16 @@
+## Versioning model
+
+The Baildor repository holds two main branches with an infinite lifetime :
+
+ - Main branch :
+
+ We consider `origin/main` to be the main branch where the source code of HEAD always reflects a production-ready state.
+
+ - Dev branch :
+
+ We consider `origin/dev` to be the branch where the source code of HEAD always reflects a state with the latest delivered development changes for the next release.
+
+When the source code in the `dev` branch reaches a stable point and is ready to be released, all of the changes are merged back into `main` and then tagged with a release number.
 
 ## Setup Environment
 
@@ -19,8 +32,7 @@ prove -e 'perl6 -Ilib' t
 
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
 
-
-## Release
+## How to make a release
 
 * Install mi6 package `zef install App:Mi6`
 * Upgrade the version in lib/Bailador.pm
