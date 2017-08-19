@@ -66,7 +66,7 @@ For more examples, please see the [examples](examples) folder.
 
 We encourage you to contribute to Bailador !
 
-If you'd like to contribute to Bailador, see the [CONTRIBUTION](doc/CONTRIBUTION.md).
+If you'd like to contribute to Bailador, see the [CONTRIBUTING](CONTRIBUTING.md).
 
 # LICENSE
 

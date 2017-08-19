@@ -76,7 +76,7 @@ bailador version
 
 ## Contribution
 
-If you'd like to contribute to Bailador see the [CONTRIBUTION](CONTRIBUTION.md).
+If you'd like to contribute to Bailador see the [CONTRIBUTING](../CONTRIBUTING.md).
 
 ## Examples
 
