@@ -1,4 +1,4 @@
-# Bailador
+# NAME
 
 [![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador)
 [![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/dev)
@@ -7,11 +7,25 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Maintenance](https://img.shields.io/maintenance/yes/2017.svg)]()
 
-A light-weight route-based web application framework for Perl 6.
+Bailador
 
-Talk to the developers at https://perl6-bailador.slack.com/
+# SNYOPSIS
 
-## Install
+```Perl6
+use Bailador;
+
+get '/' => sub {
+    "Hello World";
+}
+
+baile();
+```
+
+# DESCRIPTION
+
+Bailador is a light-weight route-based web application framework for Perl 6. Talk to the developers at https://perl6-bailador.slack.com/
+
+# INSTALLATION
 
 Once you have [Rakudo Star](http://rakudo.org/) installed open a terminal (or command line on Windows) and type:
 ```
@@ -25,34 +39,36 @@ You can test your installation, and see what is your Bailador installed version 
 bailador version
 ```
 
-## Getting Started
+# GETTING STARTED
 
-At the command prompt, create a new Bailador application :
+At the command prompt, create a new Bailador application:
 ```
 bailador --name App-Name new
 ```
 Then, change directory to `App-Name` and start the web server:
 ```
-bailador easy bin/app.pl6
+bailador watch bin/app.pl6
 ```
-That's it !
-Using a browser, go to http://localhost:3000. Wonderful ?
+That's it!
+Using a browser, go to http://localhost:3000. Wonderful?
+
+You can now edit the files and Bailador reloads the aplication while you're developing.
 
 If you want to learn more about Bailador, please visit our [documentation](doc/README.md).
 
-## Examples
+# EXAMPLES
 
 For more examples, please see the [examples](examples) folder.
 
-## Contributing
+# CONTRIBUTION
 
 [![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)]()
 
 We encourage you to contribute to Bailador !
 
-If you'd like to contribute to Bailador, see the [DEVELOPMENT](doc/DEVELOPMENT.md).
+If you'd like to contribute to Bailador, see the [CONTRIBUTION](doc/CONTRIBUTION.md).
 
-## Versioning model
+# VERSIONING MODEL
 
 The Baildor repository holds two main branches with an infinite lifetime :
 
@@ -66,15 +82,16 @@ The Baildor repository holds two main branches with an infinite lifetime :
 
 When the source code in the `dev` branch reaches a stable point and is ready to be released, all of the changes are merged back into `main` and then tagged with a release number.
 
+# LICENSE
+
+Bailador is released under the MIT License.
+
+# BAILADOR RESOURCES
+
 ## Bailador-based applications
 
 * https://github.com/szabgab/Perl6-Maven serving http://perl6maven.com/
 * https://github.com/perl6/cpandatesters.perl6.org/ used to serve http://testers.p6c.org/ but currently not in use
-
-
-## License
-
-Bailador is released under the MIT License.
 
 ## Related projects
 
