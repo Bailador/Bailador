@@ -38,6 +38,10 @@ You can test your installation, and see what is your Bailador installed version 
 ```
 bailador version
 ```
+NB: If using Rakudobrew you may need to run the following command to make B=bailador available in your terminal:
+```
+rakudobrew rehash
+```
 
 # GETTING STARTED
 
