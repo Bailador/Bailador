@@ -1,11 +1,5 @@
 # Bailador
 
-[![Build Status](https://travis-ci.org/Bailador/Bailador.png)](https://travis-ci.org/Bailador/Bailador)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/Bailador/Bailador?svg=true)](https://ci.appveyor.com/project/ufobat/Bailador/branch/dev)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/bailador/Bailador.svg)](http://isitmaintained.com/project/bailador/Bailador "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/bailador/Bailador.svg)](http://isitmaintained.com/project/bailador/Bailador "Percentage of issues still open")
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 A light-weight route-based web application framework for Perl 6.
 
 Talk to the developers at https://perl6-bailador.slack.com/
