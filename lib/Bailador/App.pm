@@ -95,11 +95,34 @@ class Bailador::App does Bailador::Routing {
 
         use Log::Any::Adapter::Stderr;
         use Bailador::LogFormatter;
-        Log::Any.add( Log::Any::Adapter::Stderr.new,
-          :formatter( Bailador::LogFormatter.new( :format('combined') ) ),
-          # :formatter( Bailador::LogFormatter.new() ),
-          :filter( category => 'access' ),
-          :pipeline('web') );
+        # Error stream
+
+        if $.config.log-error-format -> $format {
+          # todo: empty adapter if no logging, prevent error log to be logged elsewhere
+          Log::Any.add( $.log-adapter,
+            :formatter( Bailador::LogFormatter.new( :format($format) ) ),
+            :filter( [ severity => '>=error' ] ),
+            # :continue-on-match,
+            :pipeline('web') );
+        } else {
+          # BlackHole
+          Log::Any.add(
+            :filter( [ severity => '>=error' ] ),
+            :pipeline( 'web' )
+          );
+        }
+        # Access stream
+        if $.config.log-access-format -> $format {
+          Log::Any.add( Log::Any::Adapter::Stderr.new,
+            :formatter( Bailador::LogFormatter.new( :format($format) ) ),
+            :pipeline('web') );
+        } else {
+          # BlackHole
+          Log::Any.add(
+            :pipeline( 'web' )
+          );
+        }
+        # Every other logs
         Log::Any.add($.log-adapter, :$formatter, :@filter);
         self!generate-head-routes(self);
     }
@@ -307,7 +330,6 @@ class Bailador::App does Bailador::Routing {
                 my $http-code = self.response.code;
                 Log::Any.info( '',
                   :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
-                  :category('access'),
                   :pipeline('web'));
                 self!done-rendering();
             }
@@ -327,7 +349,13 @@ class Bailador::App does Bailador::Routing {
                     }
                 }
                 default {
+                    Log::Any.error(
+                      .gist,
+                      :extra-fields( Hash.new( ( $env.kv, :file-and-line($?FILE~':'~$?LINE), :pid($*PID), :client-ip('-') ) ) ),
+                      :pipeline('web')
+                    );
                     Log::Any.error(.gist);
+
                     #if ($env<p6w.errors>:exists) {
                     #    my $err = $env<p6w.errors>;
                     #    #$err.say(.gist);

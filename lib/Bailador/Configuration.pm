@@ -41,6 +41,16 @@ class Bailador::Configuration {
     ## LOGGING
     has Str $.log-format is rw = '\d (\s) \m';
     has @.log-filter is rw     = ('severity' => '>=warning');
+    # Specify the access log format
+    # An empty string means no logging
+    has Str $.log-access-format is rw
+      where * ~~ '' | 'common' | 'combined' | 'bailador'
+      = '';
+    # has $.log-access-file = ''; # or log-access-output?
+    has Str $.log-error-format is rw
+      where * ~~ '' | 'simple'
+      = '';
+    # has $.log-error-file = ''; # TODO: use this variable to determine if log should be used
 
     method !variants($filename) {
         my @pieces = $filename.split('.');

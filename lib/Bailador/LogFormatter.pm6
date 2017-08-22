@@ -12,7 +12,7 @@ use Log::Any::Formatter:ver('0.9.4');
 # }
 
 class Bailador::LogFormatter is Log::Any::Formatter {
-  has $.format = 'apache-combined';
+  has $.format = '';
   has $!backend;
 
   use Log::Any::Formatter;
@@ -30,6 +30,17 @@ class Bailador::LogFormatter is Log::Any::Formatter {
           :format(  '\e{h} \e{l} \e{u} [\e{t}] \e{r} \e{s} \e{b}' )
         );
       }
+      when 'simple' {
+        # "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+        $!backend = Log::Any::FormatterBuiltIN.new(
+          :format(  '[\e{t}] [\e{l}] [pid \e{P}] \e{F}: \e{E}: [client \e{a}] "\e{M}"' )
+        );
+      }
+      when 'mpm' {
+        #  [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+        # "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"
+        ...
+      }
       default {
         $!backend = Log::Any::FormatterBuiltIN.new(
           # Serving GET /test HTTP/1.0 with 200
@@ -41,10 +52,13 @@ class Bailador::LogFormatter is Log::Any::Formatter {
 
   method format( :$date-time, :$msg!, :$category!, :$severity!, :%extra-fields ) {
     my %data;
+    my $query-uri = %extra-fields<REQUEST_URI>
+      ?? %extra-fields<REQUEST_URI>.split('?')[0]
+      !! '';
     my $request =
-      %extra-fields<REQUEST_METHOD> ~ ' '
-      ~ %extra-fields<PATH_INFO> // %extra-fields<REQUEST_URI>.split('?')[0] ~ ' '
-      ~ %extra-fields<SERVER_PROTOCOL>;
+        ( %extra-fields<REQUEST_METHOD> || '' ) ~ ' '
+      ~ ( %extra-fields<PATH_INFO> || $query-uri ) ~ ' '
+      ~ ( %extra-fields<SERVER_PROTOCOL> || '' );
 
     sub dateTime-to-Str( DateTime:D $date-time ) {
       my @month = <Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec>;
@@ -79,13 +93,30 @@ class Bailador::LogFormatter is Log::Any::Formatter {
           :b( '-' ), # todo, response content size, '-' if null
         ));
       }
+      when 'simple' {
+        # "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
+        %data = Hash.new((
+          :t( dateTime-to-Str( DateTime.now ) ),
+          :l( $severity ),
+          :P( %extra-fields<pid> ),
+          :F( %extra-fields<file-and-line>),
+          :E( '-' ), # APR/OS error status code and string
+          :a( %extra-fields<client-ip> ),
+          :M( $msg )
+        ));
+      }
+      when 'mpm' {
+        #  [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
+        # "[%{u}t] [%-m:%l] [pid %P:tid %T] %7F: %E: [client\ %a] %M% ,\ referer\ %{Referer}i"
+        ...
+      }
       default {
         %data = Hash.new( ( :r($request), :s(%extra-fields<HTTP_CODE>) ) );
       }
     }
 
     $!backend.format(
-      :date-time(''), :msg(''), :category(''), :severity(''),
+      :$date-time, :$msg, :$category, :$severity,
       :extra-fields( %data )
     );
   }
