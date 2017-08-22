@@ -215,7 +215,7 @@ The prefix sets up a [Nested Route](#nested-routes). All other routes that will 
 
 ```Perl6
     prefix "/foo" => sub {
-        prefix-enter sub {
+        prefix-enter => sub {
             ... something that returns True or False ...
         }
         get "/bar" => sub { ... }
