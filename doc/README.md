@@ -1,14 +1,6 @@
-# Bailador
+# Bailador documentation
 
-A light-weight route-based web application framework for Perl 6.
-
-Talk to the developers at https://perl6-bailador.slack.com/
-
-# TABLE OF CONTENTS
-- [Install](#install)
-- [Contribution](#contribution)
-- [Versioning model](#Versioning-model)
-- [Examples](#examples)
+## TABLE OF CONTENTS
 - [Skeleton](#skeleton)
 - [How to Start Apps](#how-to-start-apps)
     - [bailador](#bailador)
@@ -50,39 +42,6 @@ Talk to the developers at https://perl6-bailador.slack.com/
     - [Error Templates](#error-templates)
 - [Sessions](#sessions)
 - [Configuration](#configuration)
-- [Bailador-based applications](#bailador-based-applications)
-- [Articles about Bailador](#articles-about-bailador)
-- [License](#license)
-
-## Install
-
-Once you have [Rakudo Star](http://rakudo.org/) installed open a terminal (or command line on Windows) and type:
-```
-zef update
-zef install Bailador
-```
-This should download and install Bailador.
-
-You can test your installation, and see what is your Bailador installed version with the following command:
-```
-bailador version
-```
-
-## Contribution
-
-If you'd like to contribute to Bailador see the [CONTRIBUTING](../CONTRIBUTING.md).
-
-## Examples
-
-For more examples, please see the [examples](examples) folder.
-
-[examples/reuse]
-
-Showcase applications written in OO.
-Inheriting from such application.
-Including such application under a prefix. (TODO)
-
-[examples/layout] Show how to use layout either by configuring it in the settings.yaml or by passing the name to the template function.
 
 ## Skeleton
 
@@ -466,25 +425,3 @@ Currently available parameters:
 * backend           (defaults to "Bailador::Sessions::Store::Memory")
 * log-format        (defaults to '\d (\s) \m'
 * log-filter        (defaults to `( 'severity' => '>=warning')`)
-
-## Bailador-based applications
-
-* https://github.com/szabgab/Perl6-Maven serving http://perl6maven.com/
-* https://github.com/perl6/cpandatesters.perl6.org/ used to serve http://testers.p6c.org/ but currently not in use
-
-
-## Articles about Bailador
-
-http://perl6maven.com/bailador
-
-## Book about Bailador
-
-In the planning phase, currently crowdfunding it: https://leanpub.com/bailador
-
-## License
-
-MIT License
-
-## Related projects
-
-https://github.com/pnu/heroku-buildpack-rakudo
