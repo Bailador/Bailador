@@ -29,29 +29,29 @@ Bailador is a light-weight route-based web application framework for Perl 6. Tal
 
 Once you have [Rakudo Star](http://rakudo.org/) installed open a terminal (or command line on Windows) and type:
 ```
-zef update
-zef install Bailador
+$ zef update
+$ zef install Bailador
 ```
 This should download and install Bailador.
 
 You can test your installation, and see what is your Bailador installed version with the following command:
 ```
-bailador version
+$ bailador version
 ```
 NB: If using Rakudobrew you may need to run the following command to make B=bailador available in your terminal:
 ```
-rakudobrew rehash
+$ rakudobrew rehash
 ```
 
 # GETTING STARTED
 
 At the command prompt, create a new Bailador application:
 ```
-bailador --name App-Name new
+$ bailador --name App-Name new
 ```
 Then, change directory to `App-Name` and start the web server:
 ```
-bailador watch bin/app.pl6
+$ bailador watch bin/app.pl6
 ```
 That's it!
 Using a browser, go to http://localhost:3000. Wonderful?
