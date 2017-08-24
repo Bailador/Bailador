@@ -48,7 +48,7 @@
 Run
 
 ```
-bailador --name App-Name new
+$ bailador --name App-Name new
 ```
 to create a skeleton project.
 
@@ -75,8 +75,9 @@ baile();
 ```
 
 and then type this in your shell:
-
-`crustup --server HTTP:::Easy example.p6w`
+```
+$ crustup --server HTTP:::Easy example.p6w
+```
 
 ### bailador
 
@@ -88,8 +89,8 @@ Takes a comma-separated list of parameters that configure various aspects of how
 For details of the available configuration parameters check the [Configuration](#configuration) section of the documentation.
 Currently available parameters:
 
-```
-    bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
+```sehll
+$ bailador --config=host:0.0.0.0,port:3001 watch bin/your-bailador-app.p6
 ```
 
 #### `bailador easy`
@@ -106,11 +107,11 @@ Takes comma-separated list of directories to watch. By default,
 will watch the `lib`, `bin`, and `views` directories.
 
 If you have to watch a directory with a comma in its name, prefix it with a backslash:
+```
+$ bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
 
-    bailador --w=x\\,y bin/app.p6  # watches directory "x,y"
-
-    bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
-
+$ bailador --w=lib,bin,views,public watch bin/your-bailador-app.p6
+```
 
 ### Baile
 
@@ -413,7 +414,7 @@ This allows you to have a general settings.yaml that you which to use on everywh
 Using the `BAILADOR` environment variable is a comma separated list of key-value pairs.
 
 ```
-BAILADOR=mode:development,host:0.0.0.0,port:5000 perl6 examples/app.pl6
+$ BAILADOR=mode:development,host:0.0.0.0,port:5000 perl6 examples/app.pl6
 ```
 
 Currently available parameters:
