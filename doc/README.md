@@ -162,9 +162,9 @@ The strings captured by the regular expression are available as
 subroutine parameters.
 
 ```Perl6
-    get "/foo/(.+)" => sub ( $route ) {
-        return "What a $route";
-    }
+get "/foo/(.+)" => sub ( $route ) {
+    return "What a $route";
+}
 ```
 
 #### `prefix(Str $prefix, Callable $code)`
@@ -173,13 +173,13 @@ subroutine parameters.
 The prefix sets up a [Nested Route](#nested-routes). All other routes that will be added within the $code will be added to this nested route. With prefix-enter you can define code that will be called whenever the prefix matches your HTTP request. Only if this code returns True the routes within the prefix can be reached during request dispatching. Without using prefix-enter the routes in the prefix are reachable - this means the default code for a prefix route is ``` sub { True } ```.
 
 ```Perl6
-    prefix "/foo" => sub {
-        prefix-enter sub {
-            ... something that returns True or False ...
-        }
-        get "/bar" => sub { ... }
-        get "/baz" => sub { ... }
+prefix "/foo" => sub {
+    prefix-enter sub {
+        ... something that returns True or False ...
     }
+    get "/bar" => sub { ... }
+    get "/baz" => sub { ... }
+}
 ```
 
 ##### `static-dir(Pair $x)` #####
@@ -187,7 +187,7 @@ The prefix sets up a [Nested Route](#nested-routes). All other routes that will 
 A static file route can be used to serve files in a directory. This sets up a get and head route which checks for an existing file in the given directory. The `path` ( `Regex` or `Str` ) must return a match with a single capture grupe, which will be turned into a `.Str`. If there is a file in the directory with that name it will be rendered otherwise the route returns a `False`, so in the end the route is left and maybe other routes can handle your request.
 
 ```Perl6
-    static-dir / (.+) / => 'data/';
+static-dir / (.+) / => 'data/';
 ```
 
 #### `redirect(Str $location)`
@@ -208,10 +208,10 @@ See the [Sessions](#sessions) and [Configuration](#configuration) sections for d
 This is a simple way to set values in the config.
 
 ```perl6
-    # this:
-    set("foo", True);
-    # is doing exactly the same as this:
-    config.foo = True;
+# this:
+set("foo", True);
+# is doing exactly the same as this:
+config.foo = True;
 ```
 
 #### `baile()`
@@ -300,16 +300,16 @@ Auto rendering means that whatever (except `True` and `False`) the return value 
 #### Using Controller Classes
 
 Instead of using simple subs for routes (e.g in combination with `get`, `post`, `delete` etc) you could also use Controller Classes. Controller Classes are most likely the way to go for applications that grow bigger. You need to specify a class and a method name. The class gets instanciated for each HTTP request that matches the route definition. It is also possible to use an object instead of a class name, so you avoid the generation of new instances. In oder words your Controller is no longer stateless. You should still considder the controllers as glue code which glues your bailador-agnostic model, a model that is not even aware of bailador and does not use Bailadors DSL) to the HTTP requests. This allows to your model classes to be easily tested in tests. A small example can be found [here](examples/controllers.pl6).
-
-    get '/v1/data/:id' => { class => 'My::Controller::Class', method => 'get-data' };
-
+```perl6
+get '/v1/data/:id' => { class => 'My::Controller::Class', method => 'get-data' };
+```
 ## Templates
 
 Currently there are 2 different engines supported out of the box: Template::Mojo and Template::Mustache.
 Where Template::Mojo is the default engine but if you want to switch to Template::Mustache you just call
-
-    renderer(Bailador::Template::Mustache.new);
-
+```perl6
+renderer(Bailador::Template::Mustache.new);
+```
 It is possible to user other template engines as well.
 Therefore you need to create a class that implements the role Bailador::Template. Its basically just required to implement the render method.
 
@@ -320,20 +320,26 @@ views: "templates"
 
 When you call the subroutine
 
-    template 'template.tt', $name, $something;
+```perl6
+template 'template.tt', $name, $something;
+```
 
 the template (or in other words the file views/template.tt) gets invoked "as a subroutine" and the |@params get passed. This is a example of a template file with Template::Mojo:
 
-    % my ($name, $something) = @_;
-    <html ... codes goes here ...>
-        <h1><%= $name %></h1>
-    <html>
+```html
+% my ($name, $something) = @_;
+<html ... codes goes here ...>
+    <h1><%= $name %></h1>
+<html>
+```
 
 ### Layouts
 
 In order to use layouts you can pass a layout option to the `template()` call.
 
-    template 'template.tt', layout => 'main', $name, $something;
+```perl6
+template 'template.tt', layout => 'main', $name, $something;
+```
 
 First Bailador renders your template with its parameters, and then scans the 'layout' sub directory for another layout template. The same rendering engine will be used for the layout template. The result of your first template rendering will be passed as only option to layout template. If the specified layout was not found the result of the first template rendering will be returned.
 
@@ -347,13 +353,17 @@ Sessions are implemented using a Session Cookie. If the browser rejects cookies,
 
 In order to create a session just call the subroutine
 
-    session()
+```perl6
+session()
+```
 
 inside the code block of a route. This subroutine returns a Hash in which you can just toss in all data or objects that should be be in the session context.
 After your route code is finished the session will be stored automatically. How this should be done can be configured.
 The handling of sessions can be influenced with settings of Bailador::Configuration.
 
-    config()
+```perl6
+config()
+```
 
 inside the bailador script before you call `baile`. As soon as you have requested the first session it is of no use to change the configure any further.
 Following config options are available. Most of them should be self explanatory.
