@@ -8,6 +8,7 @@ use Bailador::Test;
 plan 9 + 9 + 9;
 
 get '/foo' => sub { }
+#get '/x-y' => sub { }
 get '/echo' => sub { return 'Echo: ' ~ (request.params<text> // '')}
 get '/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (request.params<text> // ''), (request.params('body')<text> // ''), (request.params('query')<text> // ''))}
 post '/bar' => sub { }

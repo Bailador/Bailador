@@ -13,7 +13,7 @@ class Bailador::Command::easy does Bailador::Command {
         my $port    = $config.port;
         my $msg     = "Entering the dance floor{ $config.mode eq 'development' ?? ' in development mode' !! ''}: http://$host:$port";
 
-        given HTTP::Easy::PSGI.new(:host($host),:port($port)) {
+        given HTTP::Easy::PSGI.new(:host($host),:port($port), :silent(True)) {
             .app($p6w-app);
             terminal-color($msg, 'green', $config);
             .run;

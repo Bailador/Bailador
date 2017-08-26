@@ -9,33 +9,33 @@ plan 9 + 9 + 9;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
-        self.add_route: make-simple-route('GET','/foo' => sub { });
-        self.add_route: make-simple-route('GET','/echo' => sub { return 'Echo: ' ~ (self.request.params<text> // '')});
-        self.add_route: make-simple-route('GET','/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (self.request.params<text> // ''), (self.request.params('body')<text> // ''), (self.request.params('query')<text> // ''))});
-        self.add_route: make-simple-route('POST', '/bar' => sub { });
-        self.add_route: make-simple-route('POST', '/echo3/:text' => sub ($text) { return 'Echo3: ' ~ join('-', $text,  (self.request.params<text> // ''), (self.request.params('body')<text> // ''), (self.request.params('query')<text> // ''))});
+        self.add_route: make-route('GET','/foo' => sub { });
+        self.add_route: make-route('GET','/echo' => sub { return 'Echo: ' ~ (self.request.params<text> // '')});
+        self.add_route: make-route('GET','/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (self.request.params<text> // ''), (self.request.params('body')<text> // ''), (self.request.params('query')<text> // ''))});
+        self.add_route: make-route('POST', '/bar' => sub { });
+        self.add_route: make-route('POST', '/echo3/:text' => sub ($text) { return 'Echo3: ' ~ join('-', $text,  (self.request.params<text> // ''), (self.request.params('body')<text> // ''), (self.request.params('query')<text> // ''))});
 
 
         # request methods when using GET requests
-        self.add_route: make-simple-route('GET','/a' => sub { 'port=' ~ self.request.port });
-        self.add_route: make-simple-route('GET','/b' => sub { 'request_uri=' ~ self.request.request_uri });
-        self.add_route: make-simple-route('GET','/c' => sub { 'uri=' ~ self.request.uri });
-        self.add_route: make-simple-route('GET','/d' => sub { 'path=' ~ self.request.path });
-        self.add_route: make-simple-route('GET','/e' => sub { 'method=' ~ self.request.method });
-        self.add_route: make-simple-route('GET','/f' => sub { join '-', self.request.is_get, self.request.is_post, self.request.is_put, self.request.is_delete, self.request.is_head, self.request.is_patch });
-        self.add_route: make-simple-route('GET','/g' => sub { self.request.content_type });
-        self.add_route: make-simple-route('GET','/h' => sub { self.request.content_length });
-        self.add_route: make-simple-route('GET','/i' => sub { self.request.body });
+        self.add_route: make-route('GET','/a' => sub { 'port=' ~ self.request.port });
+        self.add_route: make-route('GET','/b' => sub { 'request_uri=' ~ self.request.request_uri });
+        self.add_route: make-route('GET','/c' => sub { 'uri=' ~ self.request.uri });
+        self.add_route: make-route('GET','/d' => sub { 'path=' ~ self.request.path });
+        self.add_route: make-route('GET','/e' => sub { 'method=' ~ self.request.method });
+        self.add_route: make-route('GET','/f' => sub { join '-', self.request.is_get, self.request.is_post, self.request.is_put, self.request.is_delete, self.request.is_head, self.request.is_patch });
+        self.add_route: make-route('GET','/g' => sub { self.request.content_type });
+        self.add_route: make-route('GET','/h' => sub { self.request.content_length });
+        self.add_route: make-route('GET','/i' => sub { self.request.body });
 
-        self.add_route: make-simple-route('POST', '/a' => sub { 'port=' ~ self.request.port });
-        self.add_route: make-simple-route('POST', '/b' => sub { 'request_uri=' ~ self.request.request_uri });
-        self.add_route: make-simple-route('POST', '/c' => sub { 'uri=' ~ self.request.uri });
-        self.add_route: make-simple-route('POST', '/d' => sub { 'path=' ~ self.request.path });
-        self.add_route: make-simple-route('POST', '/e' => sub { 'method=' ~ self.request.method });
-        self.add_route: make-simple-route('POST', '/f' => sub { join '-', self.request.is_get, self.request.is_post, self.request.is_put, self.request.is_delete, self.request.is_head, self.request.is_patch });
-        self.add_route: make-simple-route('POST', '/g' => sub { self.request.content_type });
-        self.add_route: make-simple-route('POST', '/h' => sub { self.request.content_length });
-        self.add_route: make-simple-route('POST', '/i' => sub { self.request.body });
+        self.add_route: make-route('POST', '/a' => sub { 'port=' ~ self.request.port });
+        self.add_route: make-route('POST', '/b' => sub { 'request_uri=' ~ self.request.request_uri });
+        self.add_route: make-route('POST', '/c' => sub { 'uri=' ~ self.request.uri });
+        self.add_route: make-route('POST', '/d' => sub { 'path=' ~ self.request.path });
+        self.add_route: make-route('POST', '/e' => sub { 'method=' ~ self.request.method });
+        self.add_route: make-route('POST', '/f' => sub { join '-', self.request.is_get, self.request.is_post, self.request.is_put, self.request.is_delete, self.request.is_head, self.request.is_patch });
+        self.add_route: make-route('POST', '/g' => sub { self.request.content_type });
+        self.add_route: make-route('POST', '/h' => sub { self.request.content_length });
+        self.add_route: make-route('POST', '/i' => sub { self.request.body });
     }
 }
 

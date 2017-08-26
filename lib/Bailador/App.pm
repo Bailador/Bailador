@@ -1,5 +1,6 @@
 use v6.c;
 
+use HTTP::Status;
 use Log::Any;
 use Template::Mojo;
 
@@ -9,6 +10,7 @@ use Bailador::ContentTypes;
 use Bailador::Context;
 use Bailador::Exceptions;
 use Bailador::LogAdapter;
+use Bailador::LogFormatter;
 use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
@@ -86,8 +88,22 @@ class Bailador::App does Bailador::Routing {
 
     method before-run() {
         # probably a good place for a hook
-        my $formatter = $.config.log-format;
         my @filter    = $.config.log-filter;
+        my $formatter = Bailador::LogFormatter.new(
+            format   => $.config.log-format,
+            colorize => $.config.terminal-color,
+            colors   => {
+                trace     =>  $.config.terminal-color-trace,
+                debug     =>  $.config.terminal-color-debug,
+                info      =>  $.config.terminal-color-info,
+                notice    =>  $.config.terminal-color-notice,
+                warning   =>  $.config.terminal-color-warning,
+                errors    =>  $.config.terminal-color-error,
+                critical  =>  $.config.terminal-color-critical,
+                alert     =>  $.config.terminal-color-alert,
+                emergency =>  $.config.terminal-color-emergency,
+            },
+        );
         # https://github.com/jsimonet/log-any/issues/1
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
@@ -199,6 +215,27 @@ class Bailador::App does Bailador::Routing {
         self!sessions.store(self.response, self.request.env);
     }
 
+    method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
+        my $message = "Serving $method $uri with $http-code in " ~ $end - $start ~ 's';
+        given $http-code {
+            when is-success($_) {
+                Log::Any.info($message);
+            }
+            when is-redirect($_) {
+                Log::Any.debug($message);
+            }
+            when is-client-error($_) {
+                Log::Any.notice($message);
+            }
+            when is-server-error($_) {
+                Log::Any.error($message);
+            }
+            default {
+                Log::Any.error($message);
+            }
+        }
+    }
+
     multi method baile() {
         # initialize the location if we didnt need it so far. that reads the config
         $.location();
@@ -252,6 +289,7 @@ class Bailador::App does Bailador::Routing {
     }
 
     method dispatch($env) {
+        my DateTime $start = DateTime.now;
         self.context.env = $env;
         try {
             self!adjust-log-adapter($env),
@@ -270,7 +308,8 @@ class Bailador::App does Bailador::Routing {
 
             LEAVE {
                 my $http-code = self.response.code;
-                Log::Any.trace("Serving $method $uri with $http-code");
+                my DateTime $end = DateTime.now;
+                self.log-request($start, $end, $method, $uri, $http-code);
                 self!done-rendering();
             }
 
@@ -279,7 +318,6 @@ class Bailador::App does Bailador::Routing {
                     self.render();
                 }
                 when X::Bailador::NoRouteFound {
-                    Log::Any.notice("No Route was Found for $method $uri");
                     if self.error_handlers{404} {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.error_handlers{404}());
                     } elsif $.location.defined && "$.location/views/404.xx".IO.e {
@@ -290,13 +328,6 @@ class Bailador::App does Bailador::Routing {
                 }
                 default {
                     Log::Any.error(.gist);
-                    #if ($env<p6w.errors>:exists) {
-                    #    my $err = $env<p6w.errors>;
-                    #    #$err.say(.gist);
-                    #}
-                    #else {
-                    #    note .gist;
-                    #}
 
                     my $err-page;
                     if $!config.mode eq 'development' {
