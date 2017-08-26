@@ -1,3 +1,4 @@
+0.0.11 2017.08.26
     - Ticket #245 - created doc directory
     - Ticket #185 - let run-psgi-request accept Hash
     - Ticket #251 - created a CONTRIBUTING.md for github
