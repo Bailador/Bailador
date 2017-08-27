@@ -1,3 +1,4 @@
+    - require classes in controllers if they're not loaded
     - Convert Failure to Exception - error handling for missing controller classes
     - Log if template or layouts were not found and avoid "internal server errors".
 
