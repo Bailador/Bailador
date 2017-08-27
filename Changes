@@ -1,3 +1,4 @@
+    - Convert Failure to Exception - error handling for missing controller classes
     - Log if template or layouts were not found and avoid "internal server errors".
 
 0.0.11 2017.08.26
