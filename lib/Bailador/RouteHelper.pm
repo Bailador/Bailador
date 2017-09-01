@@ -3,10 +3,10 @@ use v6.c;
 use Bailador::App;
 use Bailador::Route;
 use Bailador::Route::Controller;
+use Bailador::Route::IoC;
 use Bailador::Route::Prefix;
 use Bailador::Route::Simple;
 use Bailador::Route::StaticFile;
-use Bailador::Route::IoC;
 
 unit module Bailador::RouteHelper;
 subset UrlMatcher where Str|Regex;
