@@ -6,8 +6,10 @@ use Bailador::Route::Controller;
 use Bailador::Route::Prefix;
 use Bailador::Route::Simple;
 use Bailador::Route::StaticFile;
+use Bailador::Route::IoC;
 
 unit module Bailador::RouteHelper;
+subset UrlMatcher where Str|Regex;
 
 multi sub make-prefix-route($url-matcher) is export {
     my @method = <ANY>;
@@ -18,17 +20,22 @@ multi sub make-prefix-route($url-matcher, Callable $prefix-enter-code) is export
     Bailador::Route::Prefix.new( :@method, :$url-matcher, :$prefix-enter-code );
 }
 
-multi sub make-route(Str $method, Pair $x) is export {
-    make-route($method, $x.key, $x.value);
+multi sub make-route(Str $method, Pair $x, :$container) is export {
+    make-route($method, $x.key, |$x.value, :$container);
 }
-multi sub make-route(Str $method, $url-matcher, Callable $code) is export {
+multi sub make-route(Str $method, UrlMatcher $url-matcher, Callable $code, *%param) is export {
     Bailador::Route::Simple.new( :$method, :$url-matcher, :$code);
 }
 
-multi sub make-route(Str $method, $url-matcher, %param) is export {
-    die "there must be a 'class' or 'controller'" unless %param<class> || %param<controller>;
+multi sub make-route(Str $method, UrlMatcher $url-matcher, *%param) is export {
     die "no method specified with 'to'"           unless %param<to>;
-    Bailador::Route::Controller.new(:$method, :$url-matcher, |%param);
+    if %param<class> || %param<controller> {
+        return Bailador::Route::Controller.new(:$method, :$url-matcher, |%param);
+    } elsif %param<container> && %param<service> {
+        return Bailador::Route::IoC.new(:$method, :$url-matcher, |%param);
+    } else {
+        die "there must be a 'class' or 'controller' or 'service' with an 'container'";
+    }
 }
 
 sub make-simple-route(Str $method, Pair $x) is export {
