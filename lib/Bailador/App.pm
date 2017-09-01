@@ -324,6 +324,7 @@ class Bailador::App does Bailador::Routing {
 
             CATCH {
                 when X::Bailador::ControllerReturnedNoResult {
+                    Log::Any.warning("nothing to render, looks suspicious");
                     self.render();
                 }
                 when X::Bailador::NoRouteFound {
