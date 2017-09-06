@@ -183,7 +183,7 @@ prefix "/foo" => sub {
 }
 ```
 
-Check out the [prefix example](examples/prefix/prefix.pl6) and the corresponding [tests](t/30-examples-prefix.t).
+Check out the [prefix example](../examples/prefix/prefix.pl6) and the corresponding [tests](t/30-examples-prefix.t).
 
 ##### `static-dir(Pair $x)` #####
 
