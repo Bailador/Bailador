@@ -183,7 +183,7 @@ prefix "/foo" => sub {
 }
 ```
 
-Check out the [prefix example](../examples/prefix/prefix.pl6) and the corresponding [tests](t/30-examples-prefix.t).
+Check out the [prefix example](../examples/prefix/prefix.pl6) and the corresponding [tests](../t/30-examples-prefix.t).
 
 ##### `static-dir(Pair $x)` #####
 
@@ -232,7 +232,7 @@ Sets the Content Type for the response to $type.
 #### `request()`
 
 Gets the object representing the current Request.
-For a list of methods check out the [request](examples/request/request.pl6) example.
+For a list of methods check out the [request](../examples/request/request.pl6) example.
 
 #### `uri-for(Str $path)`
 
@@ -259,9 +259,13 @@ For more details see the Template section. Should only be used within the code b
 
 Returns the Session Hash. Session Hashes are empty if you start a new session. For details see the Sessions section.
 
+Check out the [session example](../examples/sessions/sessions.pl6).
+
 #### `to-json()`
 
 Converts your data into JSON format using JSON::Fast.
+
+Check out the [api example](../examples/api/api.pl6) and the corresponding [test case](../t/30-examples-api.t).
 
 #### `render($content)`
 #### `render(Int :$status, Str :$type is copy, :$content is copy)`
