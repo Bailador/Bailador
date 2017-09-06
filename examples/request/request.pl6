@@ -8,7 +8,7 @@ use Bailador;
 # simple cases
 get '/.*' => sub {
     my $r = request;
-    my $html = "Show the parameters of the request object<b><hr>\n";
+    my $html = "<h2>Show the parameters of the request object</h2><hr>\n";
     $html ~= "<table>\n";
     for <
         port
@@ -41,7 +41,7 @@ get '/.*' => sub {
         user
         scheme
     >  -> $f {
-        $html ~= sprintf('<tr><td>%s</td><td>%s</td></tr>', $f, ($r."$f"() // ''));
+        $html ~= sprintf('<tr><td>%s</td><td>%s</td></tr>', $f, ($r."$f"() // '')) ~ "\n";
     }
     $html ~= "</table>\n";
 
