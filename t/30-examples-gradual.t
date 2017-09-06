@@ -4,7 +4,7 @@ use Test;
 
 use Bailador::Test;
 
-plan 6;
+plan 8;
 
 chdir 'examples/gradual';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
@@ -63,6 +63,21 @@ subtest {
     is %data<response>[2].decode('utf-8'), "Disallow: /media/*\n";
     is %data<err>, '', 'stderr';
 }, '/xyz';
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/cakes/carrot');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Carrot Cake\n"], 'route GET /cakes/carrot';
+    is %data<err>, '';
+};
+
+
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/cakes/');
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Root Cake\n"], 'route GET /cakes/';
+    is %data<err>, '';
+};
 
 
 

@@ -19,8 +19,20 @@ my $views = 'views';
 config.views = $rel_root.IO.child($views).Str;
 
 get '/(.*)' => sub ($url) {
-    my $file  = ($url eq '' ?? 'index' !! $url) ~ '.html';
+    #if $url eq 'index' or $url eq 'index.html' {
+    #    redirect('/');
+    #}
+
+    my $file  = $url;
+    my $tmp_path = $rel_root.IO.child($views).child($url).Str;
+
+    if $tmp_path.IO.e and $tmp_path.IO.d {
+        $file = $url ~ 'index';
+    }
+    $file ~= '.html';
+
     my $path = $rel_root.IO.child($views).child($file).Str;
+
     if $path.IO.e {
         return template($file)
     }
