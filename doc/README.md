@@ -230,6 +230,7 @@ Sets the Content Type for the response to $type.
 #### `request()`
 
 Gets the object representing the current Request.
+For a list of methods check out the [request](examples/request.pl6) example.
 
 #### `uri-for(Str $path)`
 
