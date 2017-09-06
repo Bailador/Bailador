@@ -180,6 +180,7 @@ class Bailador::Request {
     method request_uri { $.env<REQUEST_URI>      }
     method uri         { self.request_uri        }
     method path        { $.env<PATH_INFO>        }
+    method url_root    { self.scheme ~ '://' ~ self.server ~ (self.port ?? ':' ~ self.port !! '') }
 
     method method      { $.env<REQUEST_METHOD>   }
     method is_get      { self.method eq 'GET'    }

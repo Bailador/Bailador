@@ -16,6 +16,7 @@ get '/.*' => sub {
         request_uri
         uri
         path
+        url_root
 
         method
         is_get
