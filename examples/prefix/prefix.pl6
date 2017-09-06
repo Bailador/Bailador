@@ -11,7 +11,7 @@ prefix '/books' => sub {
     get '/fiction'      => sub { '/books/fiction' }
     get '/nonfiction'   => sub { '/books/nonfiction' }
     prefix '/childrens' => sub {
-        get '/alpha' => sub { }
+        get '/alpha' => sub { 'alpha' }
         get '/beta' => sub { }
         get '/gamma' => sub { }
     }
