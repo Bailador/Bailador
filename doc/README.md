@@ -183,6 +183,8 @@ prefix "/foo" => sub {
 }
 ```
 
+Check out the [prefix example](examples/prefix/prefix.pl6) and the corresponding [tests](t/30-examples-prefix.t).
+
 ##### `static-dir(Pair $x)` #####
 
 A static file route can be used to serve files in a directory. This sets up a get and head route which checks for an existing file in the given directory. The `path` ( `Regex` or `Str` ) must return a match with a single capture grupe, which will be turned into a `.Str`. If there is a file in the directory with that name it will be rendered otherwise the route returns a `False`, so in the end the route is left and maybe other routes can handle your request.
