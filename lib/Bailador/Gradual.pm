@@ -15,11 +15,12 @@ if $rel_root.IO.basename eq 'bin'|'t' {
 }
 
 # TODO: https://github.com/Bailador/Bailador/issues/169
-config.views = $rel_root.IO.child('views').Str;
+my $views = 'views';
+config.views = $rel_root.IO.child($views).Str;
 
 get '/(.*)' => sub ($url) {
     my $file  = ($url eq '' ?? 'index' !! $url) ~ '.html';
-    my $path = $rel_root.IO.child('views').child($file).Str;
+    my $path = $rel_root.IO.child($views).child($file).Str;
     if $path.IO.e {
         return template($file)
     }
