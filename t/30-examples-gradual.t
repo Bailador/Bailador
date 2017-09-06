@@ -4,7 +4,7 @@ use Test;
 
 use Bailador::Test;
 
-plan 8;
+plan 9;
 
 chdir 'examples/gradual';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
@@ -77,6 +77,28 @@ subtest {
     my %data = run-psgi-request($app, 'GET', '/cakes/');
     is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Root Cake\n"], 'route GET /cakes/';
     is %data<err>, '';
+};
+
+subtest {
+    plan 2 + 7;
+
+    my %data = run-psgi-request($app, 'GET', '/sitemap.xml');
+    my $html = %data<response>[2];
+    %data<response>[2] = '';
+    is-deeply %data<response>, [200, ["Content-Type" => "text/xml"], ''], 'route GET /sitemap.xml';
+    is %data<err>, '';
+
+    for (
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+        '<loc>http://0.0.0.0:1234/bar.html</loc>',
+        '<loc>http://0.0.0.0:1234/foo.html</loc>',
+        '<loc>http://0.0.0.0:1234/</loc>',
+        '<loc>http://0.0.0.0:1234/cakes/carrot.html</loc>',
+        '<loc>http://0.0.0.0:1234/cakes/</loc>',
+    ) -> $url {
+        ok $html.index($url) > -1, $url;
+    }
 };
 
 
