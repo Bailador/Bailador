@@ -1,3 +1,4 @@
+    - Class attribute in Routes with Controllers are no longer of type Str but a class type
     - gradual serving now creates the sitemap.xml on the fly.
     - Examples have been reorganized and some more tests were added.
     - require classes in controllers if they're not loaded
