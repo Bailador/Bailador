@@ -29,7 +29,7 @@ multi sub make-route(Str $method, UrlMatcher $url-matcher, Callable $code, *%par
 
 multi sub make-route(Str $method, UrlMatcher $url-matcher, *%param) is export {
     die "no method specified with 'to'"           unless %param<to>;
-    if %param<class> || %param<controller> {
+    if (%param<class>:exists or %param<controller>:exists) {
         return Bailador::Route::Controller.new(:$method, :$url-matcher, |%param);
     } elsif %param<container> && %param<service> {
         return Bailador::Route::IoC.new(:$method, :$url-matcher, |%param);

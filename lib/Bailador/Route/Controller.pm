@@ -13,10 +13,7 @@ class Bailador::Route::Controller does Bailador::Route {
 
     method !instantiate-controller {
         try {
-            ## Ticket - https://rt.perl.org/Public/Bug/Display.html?id=131971
-            my $class = $.class;
-            require ::($class);
-            return ::($.class).new();
+            return $.class.new();
             CATCH {
                 default {
                     $_.throw;

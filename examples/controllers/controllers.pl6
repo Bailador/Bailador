@@ -8,15 +8,14 @@ class My::Controller::Whatever {
     }
 }
 
-get '/whatever/:id' => { class => 'My::Controller::Whatever', to => 'show-whatever' };
+get '/whatever/:id' => { class => My::Controller::Whatever, to => 'show-whatever' };
 
 ## EXAMPLE 2 - with controller that is a 'persistant between call
 class My::Controller::Hash {
     has %.data is required;
 
     method get($id) {
-        %.data{$id};
-        "data for $id is %.data{$id}";
+        "data for $id is " ~ ($.data{$id} // '');
     }
     method delete($id) {
         %.data{$id}:delete;
