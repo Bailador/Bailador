@@ -8,7 +8,7 @@ use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.11>:auth<github:Bailador>;
+unit module Bailador:ver<0.0.12>:auth<github:Bailador>;
 
 my $app;
 my $container;
