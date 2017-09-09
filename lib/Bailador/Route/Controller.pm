@@ -11,8 +11,19 @@ class Bailador::Route::Controller does Bailador::Route {
         self.BUILD-ROLE(|%_);
     }
 
+    method !instantiate-controller {
+        try {
+            return $.class.new();
+            CATCH {
+                default {
+                    $_.throw;
+                }
+            }
+        }
+    }
+
     method execute(Match $match) {
-        my $controller = $.controller // ::($.class).new();
+        my $controller = $.controller // self!instantiate-controller();
         $controller."$.to"(| $match.list)
     }
 

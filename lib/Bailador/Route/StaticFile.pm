@@ -1,5 +1,6 @@
 use v6.c;
 
+use Log::Any;
 use Bailador::Route;
 
 class Bailador::Route::StaticFile does Bailador::Route {
@@ -13,7 +14,11 @@ class Bailador::Route::StaticFile does Bailador::Route {
         my $name = $path[0].Str;
         if $name {
             my $file = $.directory.child($name);
-            return $file if $file.e && $file.f;
+            if $file.e && $file.f {
+                return $file;
+            } else {
+                Log::Any.notice("StaticFile route could not find requested file $file");
+            }
         }
         return False;
     }

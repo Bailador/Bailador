@@ -68,6 +68,7 @@
     "Bailador::Route" : "lib/Bailador/Route.pm",
     "Bailador::Route::AutoHead" : "lib/Bailador/Route/AutoHead.pm",
     "Bailador::Route::Controller" : "lib/Bailador/Route/Controller.pm",
+    "Bailador::Route::IoC" : "lib/Bailador/Route/IoC.pm",
     "Bailador::Route::Prefix" : "lib/Bailador/Route/Prefix.pm",
     "Bailador::Route::Simple" : "lib/Bailador/Route/Simple.pm",
     "Bailador::Route::StaticFile" : "lib/Bailador/Route/StaticFile.pm",
@@ -98,5 +99,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.11"
+  "version" : "0.0.12"
 }

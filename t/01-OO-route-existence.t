@@ -9,6 +9,7 @@ plan 9 + 9 + 9;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
+        self.config.log-filter = (severity => '>=error');
         self.add_route: make-route('GET','/foo' => sub { });
         self.add_route: make-route('GET','/echo' => sub { return 'Echo: ' ~ (self.request.params<text> // '')});
         self.add_route: make-route('GET','/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (self.request.params<text> // ''), (self.request.params('body')<text> // ''), (self.request.params('query')<text> // ''))});

@@ -42,16 +42,30 @@ class Bailador::App does Bailador::Routing {
 
     method request  { $.context.request  }
     method response { $.context.response }
+
+    method !templatefile-extentions(Str:D $file) {
+        for ('', '.tt', '.mustache', '.html', '.template') -> $ext {
+            my $filename = $file ~ $ext;
+            return $filename if $filename.IO.e;
+        }
+        Log::Any.error("template file not found: $file");
+        return Str:U;
+    }
+
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
-        my $content = $!renderer.render("$.location/" ~ self.config.views ~ "/$tmpl", |@params, |%params);
+        my $content = "";
+        my $content-template = self!templatefile-extentions("$.location/" ~ self.config.views ~ "/$tmpl");
+        $content = $!renderer.render($content-template, |@params, |%params) if $content-template;
 
         my $use-this-layout = $layout // $.config.layout;
         if $use-this-layout {
-            my $filename;
-            for ('', '.tt', '.mustache', '.html', '.template') -> $ext {
-                $filename = "$.location/layout/$use-this-layout" ~ $ext;
-                return $!renderer.render($filename, $content) if $filename.IO.e
+            my $layout-template = self!templatefile-extentions("$.location/layout/$use-this-layout");
+            if $layout-template {
+                Log::Any.debug("Rendering with layout $use-this-layout");
+                $content = $!renderer.render($layout-template, $content);;
             }
+        } else {
+            Log::Any.debug("Rendering without a layout");
         }
 
         return $content;
@@ -315,6 +329,7 @@ class Bailador::App does Bailador::Routing {
 
             CATCH {
                 when X::Bailador::ControllerReturnedNoResult {
+                    Log::Any.warning("nothing to render, looks suspicious");
                     self.render();
                 }
                 when X::Bailador::NoRouteFound {

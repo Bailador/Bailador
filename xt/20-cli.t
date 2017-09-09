@@ -221,7 +221,7 @@ subtest {
 
 subtest {
     plan 1;
-    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'routes', "$git_dir/examples/prefix.pl6", :out, :err);
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'routes', "$git_dir/examples/prefix/prefix.pl6", :out, :err);
 
     my $exitcode = $p.exitcode;
     is $exitcode, 0, 'program terminated successfully';
