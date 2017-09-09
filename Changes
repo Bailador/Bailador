@@ -1,7 +1,8 @@
+    - Added logging to StaticRoute, if a requested file was not found
     - Class attribute in Routes with Controllers are no longer of type Str but a class type
-    - gradual serving now creates the sitemap.xml on the fly.
+    - Gradual serving now creates the sitemap.xml on the fly.
     - Examples have been reorganized and some more tests were added.
-    - require classes in controllers if they're not loaded
+    - Require classes in controllers if they're not loaded
     - Convert Failure to Exception - error handling for missing controller classes
     - Log if template or layouts were not found and avoid "internal server errors".
 
