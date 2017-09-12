@@ -1,3 +1,5 @@
+    - Fixed a bug that caused error messages never to be colorized
+
 0.0.12 2017.09.09
     - Added logging to StaticRoute, if a requested file was not found
     - Class attribute in Routes with Controllers are no longer of type Str but a class type

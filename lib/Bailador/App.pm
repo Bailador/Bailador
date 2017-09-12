@@ -112,7 +112,7 @@ class Bailador::App does Bailador::Routing {
                 info      =>  $.config.terminal-color-info,
                 notice    =>  $.config.terminal-color-notice,
                 warning   =>  $.config.terminal-color-warning,
-                errors    =>  $.config.terminal-color-error,
+                error     =>  $.config.terminal-color-error,
                 critical  =>  $.config.terminal-color-critical,
                 alert     =>  $.config.terminal-color-alert,
                 emergency =>  $.config.terminal-color-emergency,
