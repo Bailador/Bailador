@@ -280,6 +280,20 @@ class Bailador::App does Bailador::Routing {
         $cmd.run(app => self );
     }
 
+    multi method baile(Int $port, *@args) {
+        die qq:to/ERROR/;
+        baile is no longer called with the port as only argument.
+        Please call baile without arguments and put this line in front:
+        
+            config.port      = $port;
+        
+        For more information, please see the Configuration section
+        of the Bailador manual:
+
+            https://github.com/Bailador/Bailador/blob/dev/doc/README.md#configuration
+        ERROR
+    }
+
     method get-psgi-app {
         # quotes from https://github.com/zostay/P6SGI
         # draft 0.7
