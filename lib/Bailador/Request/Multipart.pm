@@ -44,4 +44,8 @@ class Bailador::Request::Multipart {
     method Str {
         return $.content.decode;
     }
+
+    method Num {
+        .Str.Num;
+    }
 }
