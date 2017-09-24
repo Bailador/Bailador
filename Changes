@@ -1,3 +1,4 @@
+    - Added method Bailador::Request::Multipart.Num()
     - Fixed a bug that caused error messages never to be colorized
 
 0.0.12 2017.09.09

@@ -46,6 +46,6 @@ class Bailador::Request::Multipart {
     }
 
     method Num {
-        .Str.Num;
+        self.Str.Num;
     }
 }
