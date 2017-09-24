@@ -284,9 +284,9 @@ class Bailador::App does Bailador::Routing {
         die qq:to/ERROR/;
         baile is no longer called with the port as only argument.
         Please call baile without arguments and put this line in front:
-        
+
             config.port      = $port;
-        
+
         For more information, please see the Configuration section
         of the Bailador manual:
 
