@@ -1,3 +1,4 @@
+    - fixed a LTA error message for baile($port) calls that are outdated
     - Fixed a bug in Bailador::Request:Multipart that caused all parts, but the first one, to contain data from the previous ones
     - Added method Bailador::Request::Multipart.Num()
     - Fixed a bug that caused error messages never to be colorized
