@@ -66,7 +66,7 @@ For more examples, please see the [examples](examples) folder.
 
 # CONTRIBUTION
 
-[![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)]()
+[![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)](https://github.com/Bailador/Bailador/graphs/contributors)
 
 We encourage you to contribute to Bailador !
 
