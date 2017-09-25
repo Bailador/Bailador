@@ -11,7 +11,7 @@ If you have an installation problem please include the output of `zef install Ba
 Otherwise please describe the problem and include the files you feel we will need to reproduce the problem.
 
 Put command between single backticks ``.
-Put output and code snippets betwee tripple-backticks:
+Put output and code snippets betwee triple-backticks:
 ```
 code or output
 ```
