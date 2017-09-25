@@ -1,3 +1,4 @@
+    - Ticket #144 - added render-file($filename, :$mime-type)
     - fixed a LTA error message for baile($port) calls that are outdated
     - Fixed a bug in Bailador::Request:Multipart that caused all parts, but the first one, to contain data from the previous ones
     - Added method Bailador::Request::Multipart.Num()

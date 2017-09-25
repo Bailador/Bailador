@@ -80,7 +80,7 @@ class Bailador::App does Bailador::Routing {
         if (!$filename.starts-with($.location)) {
             # File is outside our $.location
             Log::Any.error("Serving file outside of root is denied: " ~ $filename);
-            #return;
+            return;
         }
 
         if ($filename.IO.e) {
