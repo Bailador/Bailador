@@ -1,7 +1,7 @@
 use v6.c;
 
-use Log::Any:ver('0.9.4');
 use HTTP::Status;
+use Log::Any:ver('0.9.4');
 use Template::Mojo;
 
 use Bailador::Commands;
