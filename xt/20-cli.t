@@ -32,20 +32,19 @@ subtest {
 }, 'Show Usage when no parameter is supplied.';
 
 subtest {
-    plan 2;
+    plan 1;
 
     my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', :out, :err);
-    is $p.out.get, '--name=Project-Name is a required parameter' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
-    is $p.err.get, Nil;
+    is $p.err.get, 'Usage:' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
     #diag $p.out.slurp: :close;
-}, 'Show Usage when --name is not supplied.';
+}, 'Show Usage when <name> is not supplied.';
 
 
 
 subtest {
     plan 10;
 
-    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err);
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'App-Name', :out, :err);
     my $out = $p.out.slurp: :close;
     like $out, rx:s{Generating App\-Name};
     like $out, rx{App\-Name\/bin\/app.pl6};
@@ -72,7 +71,7 @@ subtest {
 subtest {
     plan 2;
 
-    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err);
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'App-Name', :out, :err);
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 App-Name already exists. Exiting.
@@ -84,7 +83,7 @@ App-Name already exists. Exiting.
 subtest {
     plan 10;
 
-    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', '--name=Foo-Bar', :out, :err);
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'Foo-Bar', :out, :err);
     my $out = $p.out.slurp: :close;
     like $out, rx:s{Generating Foo\-Bar};
     like $out, rx{Foo\-Bar\/bin\/app.pl6};

@@ -7,10 +7,6 @@ use Bailador;
 my $*MAIN-ALLOW-NAMED-ANYWHERE = True;
 
 multi sub MAIN('new', Str $name) {
-    if not $name {
-        say "--name=Project-Name is a required parameter";
-        return;
-    }
     say "Generating $name";
     if $name.IO.e {
         say "$name already exists. Exiting.";
