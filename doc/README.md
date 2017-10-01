@@ -33,6 +33,7 @@
         - [`to-json()`](#to-json)
         - [`render($content)`](#render-content)
         - [`render(Int :$status, Str :$type is copy, :$content is copy)`](#renderint-status-str-type-is-copy-content-is-copy)
+        - [`render-file(Str $filename, Str :$mime-type)`](#render-filestr-filename-strmime-type)
     - [Advanced Concepts](#advanced-concepts)
         - [Nested Routes](#nested-routes)
         - [Auto Rendering](#auto-rendering)
@@ -271,6 +272,10 @@ Check out the [api example](../examples/api/api.pl6) and the corresponding [test
 #### `render(Int :$status, Str :$type is copy, :$content is copy)`
 
 Renderes a result the http status code given in `$status`, the header `Content-Type: $type` and the body given in `$content`. `render($content)` is the same as `render(content => $content)`.
+
+#### `render-file(Str $filename, Str :$mime-type)`
+
+Serve a file as-is to the client. $filename can be a path, but has to be relative and inside your $.location. Optionally a content type can be specified.
 
 ### Advanced Concepts
 

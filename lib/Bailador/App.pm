@@ -71,6 +71,32 @@ class Bailador::App does Bailador::Routing {
         return $content;
     }
 
+    method render-file(Str:D $filename is copy, Str :$mime-type) {
+        # The supplied path in $filename should be relative to our root. By default directory traversal
+        # is disabled because security, so basically only relavite paths from our applications location
+        # is possible. The file is rendered and served by this method.
+        $filename = $.location.IO.child($filename).resolve.Str;
+
+        if (!$filename.starts-with($.location)) {
+            # File is outside our $.location
+            Log::Any.error("Serving file outside of root is denied: " ~ $filename);
+            return;
+        }
+
+        if ($filename.IO.e) {
+            if ($mime-type.defined) {
+                self.render(status => 200, type => $mime-type, content => $filename.IO);
+            }
+            else {
+                # Content type auto-detection via render()
+                self.render(status => 200, content => $filename.IO);
+            }
+        }
+        else {
+            Log::Any.error("File not found! " ~ $filename);
+        }
+    }
+
     method before-add-routes() {
         # this is a good place for a hook
         self.load-config();
@@ -112,7 +138,7 @@ class Bailador::App does Bailador::Routing {
                 info      =>  $.config.terminal-color-info,
                 notice    =>  $.config.terminal-color-notice,
                 warning   =>  $.config.terminal-color-warning,
-                errors    =>  $.config.terminal-color-error,
+                error     =>  $.config.terminal-color-error,
                 critical  =>  $.config.terminal-color-critical,
                 alert     =>  $.config.terminal-color-alert,
                 emergency =>  $.config.terminal-color-emergency,
@@ -278,6 +304,20 @@ class Bailador::App does Bailador::Routing {
 
         $.before-run();
         $cmd.run(app => self );
+    }
+
+    multi method baile(Int $port, *@args) {
+        die qq:to/ERROR/;
+        baile is no longer called with the port as only argument.
+        Please call baile without arguments and put this line in front:
+
+            config.port      = $port;
+
+        For more information, please see the Configuration section
+        of the Bailador manual:
+
+            https://github.com/Bailador/Bailador/blob/dev/doc/README.md#configuration
+        ERROR
     }
 
     method get-psgi-app {

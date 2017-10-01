@@ -8,7 +8,7 @@ use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.12>:auth<github:Bailador>;
+unit module Bailador:ver<0.0.13>:auth<github:Bailador>;
 
 my $app;
 my $container;
@@ -107,6 +107,10 @@ sub status(Int $code) is export {
 
 sub template(Str $tmpl, *@params, *%params) is export {
     app.template($tmpl, @params, |%params);
+}
+
+sub render-file(Str $filename, Str :$mime-type) is export {
+    app.render-file($filename, :$mime-type);
 }
 
 sub session is export {

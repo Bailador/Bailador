@@ -108,6 +108,7 @@ class Bailador::Request {
                     my $multipart = Bailador::Request::Multipart.new(:$content, :%headers);
                     my $name = $multipart.name;
                     %result{$name} = $multipart;
+                    $content = Blob.new;
                 }
             },
             on_error => sub (Str $message) {
