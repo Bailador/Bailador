@@ -86,17 +86,4 @@ get '/env' => sub {
 
 static-dir / (.*) /  => '/public';
 
-prefix '/media' => sub {
-    prefix '/video' => sub {
-        get '/dvds' => sub { 'DVDS' }
-        get '/VHS'  => sub { 'VHS' }
-    }
-    prefix '/music' => sub {
-        get '/cds'  => sub { 'CDS' }
-        get '/mp3'  => sub { 'MP3' }
-    }
-    get '/art'      => sub { 'art' }
-    get '/movies'   => sub { 'movies' }
-}
-
 baile();

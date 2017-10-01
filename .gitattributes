@@ -1,0 +1,4 @@
+*.template linguist-language=HTML
+*.pl6      linguist-language=Perl 6
+*.pm       linguist-language=Perl 6
+*.t        linguist-language=Perl 6

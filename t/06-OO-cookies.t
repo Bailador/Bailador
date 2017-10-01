@@ -11,73 +11,73 @@ plan 14;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD (|) {
 
-        self.add_route: make-simple-route('GET','/cook1' => sub {
+        self.add_route: make-route('GET','/cook1' => sub {
             self.response.cookie("flavour", "chocolate");
             "cookie test #1";
         });
 
-        self.add_route: make-simple-route('GET','/cook2' => sub {
+        self.add_route: make-route('GET','/cook2' => sub {
             self.response.cookie("flavour", "chocolate", domain => "example.com");
             "cookie test #2";
         });
 
-        self.add_route: make-simple-route('GET','/cook3' => sub {
+        self.add_route: make-route('GET','/cook3' => sub {
             self.response.cookie("flavour", "chocolate", path => "/test");
             "cookie test #3";
         });
 
-        self.add_route: make-simple-route('GET','/cook4' => sub {
+        self.add_route: make-route('GET','/cook4' => sub {
             self.response.cookie("flavour", "chocolate", path => "/test", domain => "example.com");
             "cookie test #4";
         });
 
-        self.add_route: make-simple-route('GET','/cook5' => sub {
+        self.add_route: make-route('GET','/cook5' => sub {
             self.response.cookie("flavour", "chocolate", expires => DateTime.new("2021-06-09T01:18:14-09"));
             "cookie test #5";
         });
 
-        self.add_route: make-simple-route('GET','/rfc1' => sub {
+        self.add_route: make-route('GET','/rfc1' => sub {
             self.response.cookie("SID", "31d4d96e407aad42");
             "rfc";
         });
 
-        self.add_route: make-simple-route('GET','/rfc2' => sub {
+        self.add_route: make-route('GET','/rfc2' => sub {
             self.response.cookie("SID", "31d4d96e407aad42", path=> "/", domain => "example.com");
             "rfc";
         });
-        self.add_route: make-simple-route('GET','/rfc3' => sub {
+        self.add_route: make-route('GET','/rfc3' => sub {
             self.response.cookie("SID", "31d4d96e407aad42", path=> "/", :secure, :http-only);
             "rfc";
         });
 
-        self.add_route: make-simple-route('GET','/rfc4' => sub {
+        self.add_route: make-route('GET','/rfc4' => sub {
             self.response.cookie("lang", "", expires => DateTime.new("1994-11-06T08:49:37"));
             "rfc";
         });
 
-        self.add_route: make-simple-route('GET','/wiki1' => sub {
+        self.add_route: make-route('GET','/wiki1' => sub {
             self.response.cookie("LSID", "DQAAAKEaem_vYg", path => "/accounts", expires => DateTime.new("2021-01-13T22:23:01"), :secure, :http-only);
             "wikipedia";
         });
 
-        self.add_route: make-simple-route('GET','/wiki2' => sub {
+        self.add_route: make-route('GET','/wiki2' => sub {
             self.response.cookie("SSID", "Ap4P.GTEq", domain => "foo.com", path => "/", expires => DateTime.new("2021-01-13T22:23:01"), :secure, :http-only);
             "wikipedia";
         });
 
-        self.add_route: make-simple-route('GET','/multi1' => sub {
+        self.add_route: make-route('GET','/multi1' => sub {
             self.response.cookie("enwikiUserID", "127001", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :secure, :http-only);
             self.response.cookie("enwikiUserName", "localhost", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :secure, :http-only);
             self.response.cookie("forceHTTPS", "true", expires => DateTime.new("2015-10-15T15:12:40"), path => '/', :http-only);
             "multiple";
         });
 
-        self.add_route: make-simple-route('GET','/escape1' => sub {
+        self.add_route: make-route('GET','/escape1' => sub {
             self.response.cookie("key", "value;", :secure);
             "escape";
         });
 
-        self.add_route: make-simple-route('GET','/escape2' => sub {
+        self.add_route: make-route('GET','/escape2' => sub {
             self.response.cookie("the=key", "value", path => "/");
             "escape";
         });

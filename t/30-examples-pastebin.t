@@ -8,8 +8,8 @@ use Bailador::Test;
 plan 2;
 
 # the templating system needs relative path
-chdir "examples";
-die "Directory examples/data exists. Remove it before running the test." if 'data'.IO.e;
+chdir "examples/pastebin";
+die "Directory examples/pastebin/data exists. Remove it before running the test." if 'data'.IO.e;
 
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 %*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
