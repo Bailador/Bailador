@@ -289,23 +289,22 @@ class Bailador::App does Bailador::Routing {
 #                Log::Any.info( '',
 #                  :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
 #                  :pipeline('web'));
-        my $message = "Serving $method $uri with $http-code in " ~ $end - $start ~ 's';
+        my $env = self.context.env;
         given $http-code {
-            when is-success($_) {
-                Log::Any.info($message);
-            }
-            when is-redirect($_) {
-                Log::Any.debug($message);
-            }
-            when is-client-error($_) {
-                Log::Any.notice($message);
-            }
-            when is-server-error($_) {
-                Log::Any.error($message);
-            }
-            default {
-                Log::Any.error($message);
-            }
+            my $severity = 'error';
+            when is-success($_)      { $severity = 'info';   }
+            when is-redirect($_)     { $severity = 'debug';  }
+            when is-client-error($_) { $severity = 'notice'; }
+            when is-server-error($_) { $severity = 'error';  }
+            # default                  { $severity = 'error';  }
+
+            # The message argument is only used in default logging format
+            Log::Any.log(
+                :message("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
+                :severity( $severity ),
+                :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
+                :pipeline('web')
+            );
         }
     }
 

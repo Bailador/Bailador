@@ -3,17 +3,14 @@ use v6.c;
 # Log::Any v 0.9.4 introduces extra-fields.
 use Log::Any::Formatter:ver('0.9.4');
 
-# class A2-Formatter is Log::Any::Formatter {
-#   my @res;
-#   has $.format;
-#   method format( :$date-time, :$msg!, :$category!, :$severity!, :%extra-fields ) {
-#     $!format.format( %extra-fields, @res, 0, $date-time, DateTime.now );
-#   }
-# }
+use Terminal::ANSIColor;
 
 class Bailador::LogFormatter is Log::Any::Formatter {
   has $.format = '';
   has $!backend;
+  has %.colors is required;
+  has $.log-any-formatter;
+  has $.colorize;
 
   use Log::Any::Formatter;
   submethod TWEAK {
@@ -44,7 +41,7 @@ class Bailador::LogFormatter is Log::Any::Formatter {
       default {
         $!backend = Log::Any::FormatterBuiltIN.new(
           # Serving GET /test HTTP/1.0 with 200
-          :format( 'Serving \e{r} with \e{s}' )
+          :format( '\m' )
         );
       }
     }
@@ -115,9 +112,14 @@ class Bailador::LogFormatter is Log::Any::Formatter {
       }
     }
 
-    $!backend.format(
+    my $log-formatted = $!backend.format(
       :$date-time, :$msg, :$category, :$severity,
       :extra-fields( %data )
     );
+
+    # Colorize output
+    my $override = %extra-fields<color>;
+    my $color    = $override || %.colors{ $severity };
+    return $color ?? colored($log-formatted, $color) !! $log-formatted;
   }
 }
