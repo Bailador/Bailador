@@ -1,3 +1,5 @@
+    - Ticket #236 - Regular Expression meta chars are not evalulated by accident. Use URLs with rx// instead
+
 0.0.13 2017.10.01
     - Ticket #265 - 'bailador new --name=<name>' is now 'bailador new <name>'
     - Ticket #144 - added render-file($filename, :$mime-type)
