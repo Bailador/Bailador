@@ -6,7 +6,7 @@ use Bailador;
 
 
 # simple cases
-get '/.*' => sub {
+get rx/ .* / => sub {
     my $r = request;
     my $html = "<h2>Show the parameters of the request object</h2><hr>\n";
     $html ~= "<table>\n";

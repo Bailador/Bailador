@@ -147,6 +147,8 @@ role Bailador::Route does Bailador::Routing {
             my $r = $_;
             if $_.substr(0, 1) eq ':' {
                 $r = q{(<-[\/\.]>+)};
+            } else {
+                $r = "'" ~  $r ~ "'";
             }
             $r
          }).join("'/'");
