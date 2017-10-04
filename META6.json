@@ -76,6 +76,7 @@
     "Bailador::Sessions" : "lib/Bailador/Sessions.pm",
     "Bailador::Sessions::Store" : "lib/Bailador/Sessions/Store.pm",
     "Bailador::Sessions::Store::Memory" : "lib/Bailador/Sessions/Store/Memory.pm",
+    "Bailador::Status" : "lib/Bailador/Status.pm",
     "Bailador::Template" : "lib/Bailador/Template.pm",
     "Bailador::Template::Mojo" : "lib/Bailador/Template/Mojo.pm",
     "Bailador::Template::Mustache" : "lib/Bailador/Template/Mustache.pm",
