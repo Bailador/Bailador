@@ -28,6 +28,7 @@ class Bailador::App does Bailador::Routing {
     has Bailador::Commands $.commands = Bailador::Commands.new;
     has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
     has %.error_handlers;
+    has Int $.requests-number is rw = 0;
 
     method load-config {
         if %*ENV<BAILADOR_CONFIGDIR> {
@@ -364,6 +365,10 @@ class Bailador::App does Bailador::Routing {
                 my $http-code = self.response.code;
                 my DateTime $end = DateTime.now;
                 self.log-request($start, $end, $method, $uri, $http-code);
+                if self.config.report {
+                    self.requests-number++;
+                }
+
                 self!done-rendering();
             }
 
