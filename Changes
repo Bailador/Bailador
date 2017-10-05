@@ -1,3 +1,4 @@
+    - BREAKING CHANGE : Bailador::Gradual -> Bailador::Feature::Gradual
     - Ticket #236 - Regular Expression meta chars are not evalulated by accident. Use URLs with rx// instead
 
 0.0.13 2017.10.01
@@ -47,14 +48,14 @@
     - Ticket #174 - Removed Bailador::import()
     - Ticket #169 - All paths are relative to Bailador::App $!location. Use %*ENV<BAILADOR_APP_ROOT> explicitly set it.
     - Improved logging speed - https://github.com/jsimonet/log-any/issues/1
-    - Ticket #138 - Added a fancy output Bailador::Command::routes, use bin/bailador routes -t <app> 
+    - Ticket #138 - Added a fancy output Bailador::Command::routes, use bin/bailador routes -t <app>
     - Ticket #177 - Route matching on / or "end of URI" works better
     - Ticket #190 - Added syntactic suggar for static-dir routes
-    - Ticket #189 - views directory is relative to where the application script is when it is in a directory called 'bin'. 
+    - Ticket #189 - views directory is relative to where the application script is when it is in a directory called 'bin'.
     - Ticket #196 - Pass arbitrary header to run-psgi-request
 
 0.0.7 2017.07.04
-    - Ticket #164 - bin/bailador version should work even after installation 
+    - Ticket #164 - bin/bailador version should work even after installation
     - Ticket #98 - Added Bailador::Feature::AutoHead and added head() keyword to setup head routes manually
     - Named arguments to bin/bailador such as --config can now be anywhere
     - Added documentation to the usage of bin/bailador
@@ -94,4 +95,3 @@
 0.0.2 2017.05.31
 
 0.0.1 2017.05.28
-
