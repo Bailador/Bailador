@@ -57,11 +57,12 @@ class Bailador::Configuration {
     #                     '' (empty, defaults to Bailador)
     has @.logs where * ~~ Pair = [
       # Accesses logs, in combined format
-      'file:logs/access.log' => { 'category' => 'request', 'format' => 'combined' },
+      # 'file:logs/access.log' => { 'category' => 'request', 'format' => 'combined' },
       # Error logs, in 'simple' Apache format
-      'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'format' => 'simple' },
+      # 'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'format' => 'simple' },
       # Everything, including accesses and error (in Bailador format)
-      'terminal:stdout'      => { 'severity' => '>=info', },
+      # 'terminal:stderr'      => { 'severity' => '>=warning', },
+      'p6w:errors'           => { 'severity' => '>=warning'   },
     ];
 
     method !variants($filename) {

@@ -175,6 +175,13 @@ class Bailador::App does Bailador::Routing {
               use Log::Any::Adapter::File;
               $adapter = Log::Any::Adapter::File.new( :path($log-output-uri.path) );
             }
+            when 'p6w' {
+              given $log-output-uri.path {
+                when 'errors' {
+                  $adapter = $.log-adapter;
+                }
+              }
+            }
             default { die "Invalid output ($log-output)." }
           }
           my $format = $log-config{'format'} // '';
