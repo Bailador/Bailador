@@ -120,6 +120,6 @@ class Bailador::LogFormatter is Log::Any::Formatter {
     # Colorize output
     my $override = %extra-fields<color>;
     my $color    = $override || %.colors{ $severity };
-    return $color ?? colored($log-formatted, $color) !! $log-formatted;
+    return ($.colorize && $color) ?? colored($log-formatted, $color) !! $log-formatted;
   }
 }

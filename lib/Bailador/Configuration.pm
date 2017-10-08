@@ -51,16 +51,18 @@ class Bailador::Configuration {
     has Str $.log-format is rw = '\d (\s) \m';
     has @.log-filter is rw     = ('severity' => '>=warning');
 
-    # Specify the access log format
-    # An empty string means no logging
-    has Str $.log-access-format is rw
-      where * ~~ '' | 'common' | 'combined' | 'bailador';
-    has $.log-access-output is rw; # An URI string
-
-    # Error logs
-    has Str $.log-error-format is rw
-      where * ~~ '' | 'simple';
-    has $.log-error-output is rw; # An URI string
+    # Log specification
+    # Available outputs : 'terminal:stdout', 'terminal:stderr', 'file:///path/to/log.log'
+    # Available formats : 'common', 'combined' and 'simple' wich are defaults in Apache ;
+    #                     '' (empty, defaults to Bailador)
+    has @.logs where * ~~ Pair = [
+      # Accesses logs, in combined format
+      'file:logs/access.log' => { 'category' => 'request', 'format' => 'combined' },
+      # Error logs, in 'simple' Apache format
+      'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'format' => 'simple' },
+      # Everything, including accesses and error (in Bailador format)
+      'terminal:stdout'      => { 'severity' => '>=info', },
+    ];
 
     method !variants($filename) {
         my @pieces = $filename.split('.');

@@ -3,6 +3,7 @@ use v6.c;
 use HTTP::Status;
 use Log::Any:ver('0.9.4');
 use Template::Mojo;
+use URI; # Used to parse log configuration
 
 use Bailador::Commands;
 use Bailador::Configuration;
@@ -148,78 +149,69 @@ class Bailador::App does Bailador::Routing {
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
 
-        # Error stream
-        use URI;
-        if $.config.log-error-output {
-          my $uri = URI.new( $.config.log-error-output );
-          my $error-adapter;
-          given $uri.scheme {
-            when 'console' {
-              given $uri.path {
+        # Configure logs
+        for $.config.logs {
+          my $log-output = $_.key;
+          my $log-config = $_.value;
+
+          my $log-output-uri = URI.new( $log-output );
+          my $adapter;
+          my $colorize = False; # Set to config.terminal-color value if output is a terminal
+          given $log-output-uri.scheme {
+            when 'terminal' {
+              given $log-output-uri.path {
                 when 'stdout' {
                   use Log::Any::Adapter::Stdout;
-                  $error-adapter = Log::Any::Adapter::Stdout.new;
+                  $adapter = Log::Any::Adapter::Stdout.new;
                 }
                 when 'stderr' {
                   use Log::Any::Adapter::Stderr;
-                  $error-adapter = Log::Any::Adapter::Stderr.new;
+                  $adapter = Log::Any::Adapter::Stderr.new;
                 }
               }
+              $colorize = $.config.terminal-color;
             }
             when 'file' {
               use Log::Any::Adapter::File;
-              $error-adapter = Log::Any::Adapter::File.new( :path($uri.path) );
+              $adapter = Log::Any::Adapter::File.new( :path($log-output-uri.path) );
             }
-            default { die "Unknow output ($_) for log-error-output" }
+            default { die "Invalid output ($log-output)." }
           }
-          my $format = $.config.log-error-format;
-          Log::Any.add( $error-adapter,
-            :formatter( Bailador::LogFormatter.new( :format($format) ) ),
-            :pipeline('web') );
-        } else {
-          # BlackHole
-          # because if no pipeline, the log is sent to the main one
-          Log::Any.add(
-            :pipeline( 'web' )
+          my $format = $log-config{'format'} // '';
+
+          # Check filters
+          my @filters;
+          if $log-config{'category'} -> $category {
+            @filters.push( 'category' => $category );
+          }
+
+          if $log-config{'severity'} -> $severity {
+            @filters.push( 'severity' => $severity );
+          }
+
+          Log::Any.add( $adapter,
+            :formatter(
+              Bailador::LogFormatter.new(
+                format => $format,
+                colorize => $colorize,
+                colors   => {
+                  trace     =>  $.config.terminal-color-trace,
+                  debug     =>  $.config.terminal-color-debug,
+                  info      =>  $.config.terminal-color-info,
+                  notice    =>  $.config.terminal-color-notice,
+                  warning   =>  $.config.terminal-color-warning,
+                  error     =>  $.config.terminal-color-error,
+                  critical  =>  $.config.terminal-color-critical,
+                  alert     =>  $.config.terminal-color-alert,
+                  emergency =>  $.config.terminal-color-emergency,
+                }
+              )
+            ),
+            :filter( @filters ),
+            :continue-on-match,
           );
         }
 
-        # Access stream
-        if $.config.log-access-output {
-          my $uri = URI.new( $.config.log-access-output );
-          my $access-adapter;
-          given $uri.scheme {
-            when 'console' {
-              given $uri.path {
-                when 'stdout' {
-                  use Log::Any::Adapter::Stdout;
-                  $access-adapter = Log::Any::Adapter::Stdout.new;
-                }
-                when 'stderr' {
-                  use Log::Any::Adapter::Stderr;
-                  $access-adapter = Log::Any::Adapter::Stderr.new;
-                }
-              }
-            }
-            when 'file' {
-              use Log::Any::Adapter::File;
-              $access-adapter = Log::Any::Adapter::File.new( :path($uri.path) );
-            }
-            default { die "Unknow output ($_) for log-access-format." }
-          }
-          my $format = $.config.log-access-format;
-          Log::Any.add( $access-adapter,
-            :formatter( Bailador::LogFormatter.new( :format($format) ) ),
-            :pipeline('web') );
-        } else {
-          # BlackHole
-          # because if no pipeline, the log is sent to the main one
-          Log::Any.add(
-            :pipeline( 'web' )
-          );
-        }
-        # Every other logs
-        Log::Any.add($.log-adapter, :$formatter, :@filter);
         self!generate-head-routes(self);
     }
 
@@ -338,10 +330,10 @@ class Bailador::App does Bailador::Routing {
         }
         # The message argument is only used in default logging format
         Log::Any.log(
-           :msg("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
-           :severity( $severity ),
-           :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
-           :pipeline('web')
+            :msg("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
+            :severity( $severity ),
+            :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
+            :category('request')
         );
     }
 
@@ -453,10 +445,9 @@ class Bailador::App does Bailador::Routing {
                 default {
                     Log::Any.error(
                       .gist,
+                      :category( 'request-error' ),
                       :extra-fields( Hash.new( ( $env.kv, :file-and-line($?FILE~':'~$?LINE), :pid($*PID), :client-ip('-') ) ) ),
-                      :pipeline('web')
                     );
-                    Log::Any.error(.gist);
 
                     my $err-page;
                     if $!config.mode eq 'development' {
