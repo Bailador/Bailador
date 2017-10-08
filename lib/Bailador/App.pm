@@ -148,31 +148,72 @@ class Bailador::App does Bailador::Routing {
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
 
-        use Log::Any::Adapter::Stderr;
-        use Bailador::LogFormatter;
         # Error stream
-
-        if $.config.log-error-format -> $format {
-          # todo: empty adapter if no logging, prevent error log to be logged elsewhere
-          Log::Any.add( $.log-adapter,
+        use URI;
+        if $.config.log-error-output {
+          my $uri = URI.new( $.config.log-error-output );
+          my $error-adapter;
+          given $uri.scheme {
+            when 'console' {
+              given $uri.path {
+                when 'stdout' {
+                  use Log::Any::Adapter::Stdout;
+                  $error-adapter = Log::Any::Adapter::Stdout.new;
+                }
+                when 'stderr' {
+                  use Log::Any::Adapter::Stderr;
+                  $error-adapter = Log::Any::Adapter::Stderr.new;
+                }
+              }
+            }
+            when 'file' {
+              use Log::Any::Adapter::File;
+              $error-adapter = Log::Any::Adapter::File.new( :path($uri.path) );
+            }
+            default { die "Unknow output ($_) for log-error-output" }
+          }
+          my $format = $.config.log-error-format;
+          Log::Any.add( $error-adapter,
             :formatter( Bailador::LogFormatter.new( :format($format) ) ),
-            :filter( [ severity => '>=error' ] ),
-            # :continue-on-match,
             :pipeline('web') );
         } else {
           # BlackHole
+          # because if no pipeline, the log is sent to the main one
           Log::Any.add(
-            :filter( [ severity => '>=error' ] ),
             :pipeline( 'web' )
           );
         }
+
         # Access stream
-        if $.config.log-access-format -> $format {
-          Log::Any.add( Log::Any::Adapter::Stderr.new,
+        if $.config.log-access-output {
+          my $uri = URI.new( $.config.log-access-output );
+          my $access-adapter;
+          given $uri.scheme {
+            when 'console' {
+              given $uri.path {
+                when 'stdout' {
+                  use Log::Any::Adapter::Stdout;
+                  $access-adapter = Log::Any::Adapter::Stdout.new;
+                }
+                when 'stderr' {
+                  use Log::Any::Adapter::Stderr;
+                  $access-adapter = Log::Any::Adapter::Stderr.new;
+                }
+              }
+            }
+            when 'file' {
+              use Log::Any::Adapter::File;
+              $access-adapter = Log::Any::Adapter::File.new( :path($uri.path) );
+            }
+            default { die "Unknow output ($_) for log-access-format." }
+          }
+          my $format = $.config.log-access-format;
+          Log::Any.add( $access-adapter,
             :formatter( Bailador::LogFormatter.new( :format($format) ) ),
             :pipeline('web') );
         } else {
           # BlackHole
+          # because if no pipeline, the log is sent to the main one
           Log::Any.add(
             :pipeline( 'web' )
           );
@@ -286,26 +327,22 @@ class Bailador::App does Bailador::Routing {
     }
 
     method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
-#                Log::Any.info( '',
-#                  :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
-#                  :pipeline('web'));
         my $env = self.context.env;
+        my $severity = 'error';
         given $http-code {
-            my $severity = 'error';
             when is-success($_)      { $severity = 'info';   }
             when is-redirect($_)     { $severity = 'debug';  }
             when is-client-error($_) { $severity = 'notice'; }
             when is-server-error($_) { $severity = 'error';  }
             # default                  { $severity = 'error';  }
-
-            # The message argument is only used in default logging format
-            Log::Any.log(
-                :message("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
-                :severity( $severity ),
-                :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
-                :pipeline('web')
-            );
         }
+        # The message argument is only used in default logging format
+        Log::Any.log(
+           :msg("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
+           :severity( $severity ),
+           :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
+           :pipeline('web')
+        );
     }
 
     multi method baile() {

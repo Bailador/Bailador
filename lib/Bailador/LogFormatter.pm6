@@ -8,7 +8,7 @@ use Terminal::ANSIColor;
 class Bailador::LogFormatter is Log::Any::Formatter {
   has $.format = '';
   has $!backend;
-  has %.colors is required;
+  has %.colors;
   has $.log-any-formatter;
   has $.colorize;
 
