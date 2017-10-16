@@ -5,7 +5,7 @@ use Log::Any::Formatter:ver('0.9.4');
 
 use Terminal::ANSIColor;
 
-class Bailador::LogFormatter is Log::Any::Formatter {
+class Bailador::Log::Formatter is Log::Any::Formatter {
   has $.format = '';
   has $!backend;
   has %.colors;
