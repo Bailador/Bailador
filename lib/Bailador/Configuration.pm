@@ -48,10 +48,6 @@ class Bailador::Configuration {
     has Str $.backend is rw           = "Bailador::Sessions::Store::Memory";
 
     ## LOGGING
-    has Str $.log-format is rw = '\d (\s) \m';
-    has @.log-filter is rw     = ('severity' => '>=warning');
-
-    # Log specification
     # Available outputs : 'terminal:stdout', 'terminal:stderr', 'file:///path/to/log.log'
     # Available formats : 'common', 'combined' and 'simple' wich are defaults in Apache ;
     #                     '' (empty, defaults to Bailador)
