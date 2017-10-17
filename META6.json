@@ -36,6 +36,7 @@
     "Template::Mustache",
     "Terminal::ANSIColor",
     "URI",
+    "URI::Encode",
     "YAMLish"
   ],
   "description" : "A light-weight route-based web application framework for Perl 6",

@@ -3,6 +3,7 @@ use v6.c;
 use HTTP::Status;
 use Log::Any;
 use Template::Mojo;
+use URI::Encode;
 
 use Bailador::Commands;
 use Bailador::Configuration;
@@ -348,7 +349,7 @@ class Bailador::App does Bailador::Routing {
         try {
             self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0];
+            my $uri    = uri_decode( $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0] );
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {
