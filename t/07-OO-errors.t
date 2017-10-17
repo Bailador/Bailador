@@ -11,9 +11,9 @@ plan 6;
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
 
-        self.add_route: make-simple-route('GET','/die' => sub { die "oh no!" });
-        self.add_route: make-simple-route('GET','/fail' => sub { fail "oh no!" });
-        self.add_route: make-simple-route('GET','/exception' => sub { X::NYI.new(feature => 'NYI').throw });
+        self.add_route: make-route('GET','/die' => sub { die "oh no!" });
+        self.add_route: make-route('GET','/fail' => sub { fail "oh no!" });
+        self.add_route: make-route('GET','/exception' => sub { X::NYI.new(feature => 'NYI').throw });
     }
 }
 

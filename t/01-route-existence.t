@@ -5,9 +5,11 @@ use Test;
 use Bailador;
 use Bailador::Test;
 
-plan 9 + 9 + 9;
+plan 28;
+config.log-filter = (severity => '>=error');
 
 get '/foo' => sub { }
+get '/x-y' => sub { }
 get '/echo' => sub { return 'Echo: ' ~ (request.params<text> // '')}
 get '/echo2/:text' => sub ($text) { return 'Echo2: ' ~ join('-', $text,  (request.params<text> // ''), (request.params('body')<text> // ''), (request.params('query')<text> // ''))}
 post '/bar' => sub { }
@@ -42,6 +44,8 @@ is-deeply get-psgi-response($p6w-app, 'GET', '/foo'),  [200, ["Content-Type" => 
 is-deeply get-psgi-response($p6w-app, 'POST', '/foo'), [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route POST /foo does not exist';
 is-deeply get-psgi-response($p6w-app, 'POST', '/bar'), [200, ["Content-Type" => "text/html"], ''],              'route POST /bar exists';
 is-deeply get-psgi-response($p6w-app, 'GET', '/bar'),  [404, ["Content-Type" => "text/plain;charset=UTF-8"], 'Not found'], 'route GET /bar does not exist';
+
+is-deeply get-psgi-response($p6w-app, 'GET', '/x-y'),  [200, ["Content-Type" => "text/html"], ''],              'route GET /foo exists';
 
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/echo'),               [200, ["Content-Type" => "text/html"], 'Echo: '], 'echo';
 is-deeply get-psgi-response($p6w-app, 'GET', 'http://127.0.0.1:1234/echo?text=bar'),      [200, ["Content-Type" => "text/html"], 'Echo: bar'], 'echo with text';

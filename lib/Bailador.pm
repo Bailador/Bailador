@@ -8,9 +8,10 @@ use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.9>;
+unit module Bailador:ver<0.0.13>:auth<github:Bailador>;
 
 my $app;
+my $container;
 
 my package EXPORT::DEFAULT {
     OUR::{'&to-json'} := &to-json;
@@ -27,6 +28,10 @@ multi sub app(Bailador::App $myapp) is export {
     $app = $myapp;
 }
 
+sub container($my-container) is export {
+    $container = $my-container;
+}
+
 sub error(Pair $x) is export {
     app.add_error: $x;
     return $x;
@@ -39,32 +44,32 @@ sub use-feature(Str $feature-name) is export {
 }
 
 sub get(Pair $x) is export {
-    app.add_route: make-simple-route('GET', $x);
+    app.add_route: make-route('GET', $x, :$container);
     return $x;
 }
 
 sub post(Pair $x) is export {
-    app.add_route: make-simple-route('POST', $x);
+    app.add_route: make-route('POST', $x, :$container);
     return $x;
 }
 
 sub put(Pair $x) is export {
-    app.add_route: make-simple-route('PUT', $x);
+    app.add_route: make-route('PUT', $x, :$container);
     return $x;
 }
 
 sub delete(Pair $x) is export {
-    app.add_route: make-simple-route('DELETE', $x);
+    app.add_route: make-route('DELETE', $x, :$container);
     return $x;
 }
 
 sub patch(Pair $x) is export {
-    app.add_route: make-simple-route('PATCH', $x);
+    app.add_route: make-route('PATCH', $x, :$container);
     return $x;
 }
 
 sub head(Pair $x) is export {
-    app.add_route: make-simple-route('HEAD', $x);
+    app.add_route: make-route('HEAD', $x, :$container);
     return $x;
 }
 
@@ -102,6 +107,10 @@ sub status(Int $code) is export {
 
 sub template(Str $tmpl, *@params, *%params) is export {
     app.template($tmpl, @params, |%params);
+}
+
+sub render-file(Str $filename, Str :$mime-type) is export {
+    app.render-file($filename, :$mime-type);
 }
 
 sub session is export {

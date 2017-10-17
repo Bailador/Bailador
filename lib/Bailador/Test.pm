@@ -44,7 +44,27 @@ my class IO::Null is IO::Handle {
     }
 }
 
-sub run-psgi-request(Callable $app, $meth, $url, $data = '', :%headers ) is export {
+multi sub run-psgi-request(Callable $app, $meth, $url, $data = '', :%headers ) is export {
+    my $error-buf = ErrorBuffer.new;
+    my $response  = get-psgi-response($app, $meth, $url, $data, :%headers, :$error-buf),
+
+    return {
+        err      => $error-buf.Str,
+        response => $response;
+    };
+}
+
+multi sub run-psgi-request(Callable $app, $meth, $url, %data, :%headers ) is export {
+    my Str $data = '';
+    my Int $n = 0;
+    my Int $elems = %data.elems;
+    for %data.kv -> $key, $value {
+        $n++;
+        $data ~= $key ~ '=' ~ $value ~ '&' if $n < $elems;
+        $data ~= $key ~ '=' ~ $value if $n == $elems;
+    }
+    $data .= substr(/\h/, '%20');
+
     my $error-buf = ErrorBuffer.new;
     my $response  = get-psgi-response($app, $meth, $url, $data, :%headers, :$error-buf),
 

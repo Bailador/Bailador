@@ -10,25 +10,25 @@ plan 498;
 
 class MyOwnWebApp is Bailador::App {
     submethod BUILD(|) {
-        self.add_route: make-simple-route('GET', '/foo' => sub { "foo text" });
-        self.add_route: make-simple-route('POST',  '/bar' => sub { "peti bar" });
+        self.add_route: make-route('GET', '/foo' => sub { "foo text" });
+        self.add_route: make-route('POST',  '/bar' => sub { "peti bar" });
 
-        self.add_route: make-simple-route('GET','/baz' => sub { { foo => "bar", baz => 5 } });
+        self.add_route: make-route('GET','/baz' => sub { { foo => "bar", baz => 5 } });
 
-        self.add_route: make-simple-route('GET','/params/:foo'    => sub ($foo) { "a happy $foo" });
-        self.add_route: make-simple-route('GET',/'/regexes/'(.+)/ => sub ($foo) { "a happy $foo" });
+        self.add_route: make-route('GET','/params/:foo'    => sub ($foo) { "a happy $foo" });
+        self.add_route: make-route('GET',/'/regexes/'(.+)/ => sub ($foo) { "a happy $foo" });
 
-        self.add_route: make-simple-route('GET','/header1' => sub {
+        self.add_route: make-route('GET','/header1' => sub {
             self.response.headers{"X-Test"} = "header1";
             "added header X-Test";
         });
 
-        self.add_route: make-simple-route('GET','/header2' => sub {
+        self.add_route: make-route('GET','/header2' => sub {
             self.response.headers{"X-Again"} = "header2";
             "added header X-Again";
         });
 
-        self.add_route: make-simple-route('POST',  '/utf8' => sub {
+        self.add_route: make-route('POST',  '/utf8' => sub {
             self.request.params<text>;
         });
     }

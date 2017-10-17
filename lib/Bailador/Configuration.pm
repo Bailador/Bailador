@@ -18,6 +18,11 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+
+    # https and tls stuff
+    has Bool $.tls-mode is rw = False;
+    has %.tls-config is rw = ();
+
     # has Str $.default-content-type is rw = 'text/html;charset=UTF-8';
     has Str $.default-content-type is rw = 'text/html';
     has Str $.file-discovery-content-type is rw = 'application/octet-stream';
@@ -30,6 +35,15 @@ class Bailador::Configuration {
 
     ## Terminal output
     has Bool $.terminal-color is rw = False;
+    has Str  $.terminal-color-trace is rw;
+    has Str  $.terminal-color-debug is rw;
+    has Str  $.terminal-color-info is rw;
+    has Str  $.terminal-color-notice is rw    = 'blue';
+    has Str  $.terminal-color-warning is rw   = 'yellow';
+    has Str  $.terminal-color-error is rw     = 'red';
+    has Str  $.terminal-color-critical is rw  = 'red';
+    has Str  $.terminal-color-alert is rw     = 'red';
+    has Str  $.terminal-color-emergency is rw = 'red';
 
     ## SESSION RELATED STUFF
     has Str $.cookie-name is rw       = 'bailador';

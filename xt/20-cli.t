@@ -1,9 +1,11 @@
 use v6.c;
-use lib 'lib','t/lib';
+use lib 'xt/lib';
 
 use File::Temp;
 use Helpers;
 use Test;
+
+use Bailador::CLI;
 
 plan 10;
 
@@ -13,47 +15,41 @@ my $dir = tempdir();
 my $git_dir = $*CWD;
 chdir($dir);
 diag $*CWD;
-diag "PERL6LIB=" ~ %*ENV<PERL6LIB> // '';
+diag "PERL6LIB=" ~ (%*ENV<PERL6LIB> // '');
 # diag $*EXECUTABLE;
 # $*EXECUTABLE   -> /home/travis/.rakudobrew/bin/../moar-nom/install/bin/perl6
 # want to append -> /home/travis/.rakudobrew/moar-nom/install/share/perl6/site/bin';
 #                ->$*EXECUTABLE.parent.parent.child('share/perl6/site/bin')
-diag "PATH=" ~  %*ENV<PATH>;
-
-%*ENV<PATH> ~= ':' ~ $*EXECUTABLE.parent.parent.child('share/perl6/site/bin');
-
-# diag QX('which prove6');
+#diag "PATH=" ~  %*ENV<PATH>;
 
 subtest {
     plan 2;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), :out, :err);
     is $p.err.get, 'Usage:' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
     is $p.out.get, Nil;
     #diag $p.out.slurp: :close;
 }, 'Show Usage when no parameter is supplied.';
 
 subtest {
-    plan 2;
+    plan 1;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', :out, :err;
-    is $p.out.get, '--name=Project-Name is a required parameter' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
-    is $p.err.get, Nil;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', :out, :err);
+    is $p.err.get, 'Usage:' or diag "Rest of STDERR:\n" ~ $p.err.slurp;
     #diag $p.out.slurp: :close;
-}, 'Show Usage when --name is not supplied.';
+}, 'Show Usage when <name> is not supplied.';
 
 
 
 subtest {
-    plan 7;
+    plan 10;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'App-Name', :out, :err);
     my $out = $p.out.slurp: :close;
-    is $out, q{Generating App-Name
-bin/app.pl6
-t/app.t
-views/index.html
-};
+    like $out, rx:s{Generating App\-Name};
+    like $out, rx{App\-Name\/bin\/app.pl6};
+    like $out, rx{App\-Name\/t\/app.t};
+    like $out, rx{App\-Name\/views\/index.html};
     my $err = $p.err.slurp: :close;
     is $err, '' or diag "Rest of STDERR:\n" ~ $p.err.slurp; # TODO Why is this the empty string and above it is Nil?
     my @main_dir = dir();
@@ -75,7 +71,7 @@ views/index.html
 subtest {
     plan 2;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), '--name=App-Name', 'new', :out, :err;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'App-Name', :out, :err);
     my $out = $p.out.slurp: :close;
     is $out, q{Generating App-Name
 App-Name already exists. Exiting.
@@ -85,15 +81,14 @@ App-Name already exists. Exiting.
 }, 'Will not overwrite existing directory';
 
 subtest {
-    plan 7;
+    plan 10;
 
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', '--name=Foo-Bar', :out, :err;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'new', 'Foo-Bar', :out, :err);
     my $out = $p.out.slurp: :close;
-    is $out, q{Generating Foo-Bar
-bin/app.pl6
-t/app.t
-views/index.html
-};
+    like $out, rx:s{Generating Foo\-Bar};
+    like $out, rx{Foo\-Bar\/bin\/app.pl6};
+    like $out, rx{Foo\-Bar\/t\/app.t};
+    like $out, rx{Foo\-Bar\/views\/index.html};
     my $err = $p.err.slurp: :close;
     is $err, ''; # TODO Why is this the empty string and above it is Nil?
     my @main_dir = dir();
@@ -119,16 +114,24 @@ subtest {
     plan 3;
 
     chdir 'App-Name';
-    temp %*ENV<PERL6LIB> = "$git_dir/lib";
-    my $p = run 'prove6', '-l', :out, :err;
-    my $exitcode = $p.exitcode;
-    is $exitcode, 0, 'program terminated successfully';
-    # diag "exitcode: " ~ $exitcode;
-    my $out = $p.out.slurp: :close;
-    like $out, rx:s/Result\: PASS/;
-    # diag $out;
-    my $err = $p.err.slurp: :close;
-    is $err, '';
+    # temp %*ENV<PERL6LIB> = join(':', "$git_dir/lib", |get-path-from-repo());
+    # diag %*ENV<PERL6LIB>;
+    # my @includes = map { "-I=" ~ $_ } ("$git_dir/lib", |get-path-from-repo());
+    my $prove6 = $*EXECUTABLE.parent.parent.child('share/perl6/site/bin/prove6');
+    if $prove6.IO.e {
+        # my $p = run($prove6, |@includes '-l', :out, :err);
+        my $p = run($prove6, "-I=$git_dir/lib", '-l', :out, :err);
+        my $exitcode = $p.exitcode;
+        is $exitcode, 0, 'program terminated successfully';
+        # diag "exitcode: " ~ $exitcode;
+        my $out = $p.out.slurp: :close;
+        like $out, rx:s/Result\: PASS/;
+        # diag $out;
+        my $err = $p.err.slurp: :close;
+        is $err, '';
+    } else {
+        skip 'prove6 is not available - you need to install Tap::Harness before Baialdor installs it as a dependency', 3;
+    }
     # diag $err;
     chdir '..';
 }, 'test newly generated app with its test cases';
@@ -141,7 +144,8 @@ subtest {
 
     my $port = 5007;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch', 'bin/app.pl6';
-    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
+    my @includes = repo-to-includes();
+    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", |@includes, $git_dir.IO.child('bin').child('bailador'), |@args);
     $server.stdout.tap; # : -> $s {say "out: ", $s};
     $server.stderr.tap; # : -> $s {say "err: ", $s};
     $server.start;
@@ -171,7 +175,8 @@ subtest {
 
     my $port = 5006;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch', 'root.pl6';
-    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
+    my @includes = repo-to-includes();
+    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", |@includes, $git_dir.IO.child('bin').child('bailador'), |@args);
     $server.stdout.tap; # : -> $s {say "out: ", $s};
     $server.stderr.tap; # : -> $s {say "err: ", $s};
     $server.start;
@@ -196,7 +201,8 @@ subtest {
     my $port = 5005;
     my @args = "--config=host:0.0.0.0,port:$port", "-w={$git_dir.IO.child('t').child('views')}", 'watch',
                ~ $git_dir.IO.child('t').child('apps').child('app.pl6');
-    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), @args);
+    my @includes = repo-to-includes();
+    my $server = Proc::Async.new($*EXECUTABLE, "-I$git_dir/lib", |@includes, $git_dir.IO.child('bin').child('bailador'), |@args);
     $server.stdout.tap; #: -> $s {say "out: ", $s};
     $server.stderr.tap; #: -> $s {say "err: ", $s};
     $server.start;
@@ -214,7 +220,7 @@ subtest {
 
 subtest {
     plan 1;
-    my $p = run $*EXECUTABLE, "-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'routes', "$git_dir/examples/prefix.pl6", :out, :err;
+    my $p = run-executable-with-includes("-I$git_dir/lib", $git_dir.IO.child('bin').child('bailador'), 'routes', "$git_dir/examples/prefix/prefix.pl6", :out, :err);
 
     my $exitcode = $p.exitcode;
     is $exitcode, 0, 'program terminated successfully';

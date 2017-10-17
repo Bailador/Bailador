@@ -1,7 +1,9 @@
 use v6.c;
 
+use HTTP::Status;
 use Log::Any;
 use Template::Mojo;
+use URI::Encode;
 
 use Bailador::Commands;
 use Bailador::Configuration;
@@ -9,6 +11,7 @@ use Bailador::ContentTypes;
 use Bailador::Context;
 use Bailador::Exceptions;
 use Bailador::LogAdapter;
+use Bailador::LogFormatter;
 use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
@@ -40,19 +43,59 @@ class Bailador::App does Bailador::Routing {
 
     method request  { $.context.request  }
     method response { $.context.response }
+
+    method !templatefile-extentions(Str:D $file) {
+        for ('', '.tt', '.mustache', '.html', '.template') -> $ext {
+            my $filename = $file ~ $ext;
+            return $filename if $filename.IO.e;
+        }
+        Log::Any.error("template file not found: $file");
+        return Str:U;
+    }
+
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
-        my $content = $!renderer.render("$.location/" ~ self.config.views ~ "/$tmpl", |@params, |%params);
+        my $content = "";
+        my $content-template = self!templatefile-extentions("$.location/" ~ self.config.views ~ "/$tmpl");
+        $content = $!renderer.render($content-template, |@params, |%params) if $content-template;
 
         my $use-this-layout = $layout // $.config.layout;
         if $use-this-layout {
-            my $filename;
-            for ('', '.tt', '.mustache', '.html', '.template') -> $ext {
-                $filename = "$.location/layout/$use-this-layout" ~ $ext;
-                return $!renderer.render($filename, $content) if $filename.IO.e
+            my $layout-template = self!templatefile-extentions("$.location/layout/$use-this-layout");
+            if $layout-template {
+                Log::Any.debug("Rendering with layout $use-this-layout");
+                $content = $!renderer.render($layout-template, $content);;
             }
+        } else {
+            Log::Any.debug("Rendering without a layout");
         }
 
         return $content;
+    }
+
+    method render-file(Str:D $filename is copy, Str :$mime-type) {
+        # The supplied path in $filename should be relative to our root. By default directory traversal
+        # is disabled because security, so basically only relavite paths from our applications location
+        # is possible. The file is rendered and served by this method.
+        $filename = $.location.IO.child($filename).resolve.Str;
+
+        if (!$filename.starts-with($.location)) {
+            # File is outside our $.location
+            Log::Any.error("Serving file outside of root is denied: " ~ $filename);
+            return;
+        }
+
+        if ($filename.IO.e) {
+            if ($mime-type.defined) {
+                self.render(status => 200, type => $mime-type, content => $filename.IO);
+            }
+            else {
+                # Content type auto-detection via render()
+                self.render(status => 200, content => $filename.IO);
+            }
+        }
+        else {
+            Log::Any.error("File not found! " ~ $filename);
+        }
     }
 
     method before-add-routes() {
@@ -86,8 +129,22 @@ class Bailador::App does Bailador::Routing {
 
     method before-run() {
         # probably a good place for a hook
-        my $formatter = $.config.log-format;
         my @filter    = $.config.log-filter;
+        my $formatter = Bailador::LogFormatter.new(
+            format   => $.config.log-format,
+            colorize => $.config.terminal-color,
+            colors   => {
+                trace     =>  $.config.terminal-color-trace,
+                debug     =>  $.config.terminal-color-debug,
+                info      =>  $.config.terminal-color-info,
+                notice    =>  $.config.terminal-color-notice,
+                warning   =>  $.config.terminal-color-warning,
+                error     =>  $.config.terminal-color-error,
+                critical  =>  $.config.terminal-color-critical,
+                alert     =>  $.config.terminal-color-alert,
+                emergency =>  $.config.terminal-color-emergency,
+            },
+        );
         # https://github.com/jsimonet/log-any/issues/1
         # black magic to increase the logging speed
         Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
@@ -124,14 +181,13 @@ class Bailador::App does Bailador::Routing {
                     }
                     if $.context.autorender {
                         # no rendering happend so far
-                        self.render(content => '');
+                        self.render();
                     } else {
                         # rendering happend so far
                         # keep statuscode, content-type but discard content
                         self.render(
                             status  => self.response.code,
                             type    => self.response.headers<Content-Type> // '',
-                            content => '',
                         );
                     }
                     # return the old result, because if boolean this is important for route dispatching
@@ -165,7 +221,7 @@ class Bailador::App does Bailador::Routing {
         $.context.autorender = False;
         self.response.code = $status                if $status;
         self.response.headers<Content-Type> = $type if $type; # and $content.defined maybe?
-        self.response.content = $content            if $content;
+        self.response.content = $content            if $content.defined;
     }
 
     method redirect(Str $location, Int $status = 302) {
@@ -200,6 +256,27 @@ class Bailador::App does Bailador::Routing {
         self!sessions.store(self.response, self.request.env);
     }
 
+    method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
+        my $message = "Serving $method $uri with $http-code in " ~ $end - $start ~ 's';
+        given $http-code {
+            when is-success($_) {
+                Log::Any.info($message);
+            }
+            when is-redirect($_) {
+                Log::Any.debug($message);
+            }
+            when is-client-error($_) {
+                Log::Any.notice($message);
+            }
+            when is-server-error($_) {
+                Log::Any.error($message);
+            }
+            default {
+                Log::Any.error($message);
+            }
+        }
+    }
+
     multi method baile() {
         # initialize the location if we didnt need it so far. that reads the config
         $.location();
@@ -230,6 +307,20 @@ class Bailador::App does Bailador::Routing {
         $cmd.run(app => self );
     }
 
+    multi method baile(Int $port, *@args) {
+        die qq:to/ERROR/;
+        baile is no longer called with the port as only argument.
+        Please call baile without arguments and put this line in front:
+
+            config.port      = $port;
+
+        For more information, please see the Configuration section
+        of the Bailador manual:
+
+            https://github.com/Bailador/Bailador/blob/dev/doc/README.md#configuration
+        ERROR
+    }
+
     method get-psgi-app {
         # quotes from https://github.com/zostay/P6SGI
         # draft 0.7
@@ -253,11 +344,12 @@ class Bailador::App does Bailador::Routing {
     }
 
     method dispatch($env) {
+        my DateTime $start = DateTime.now;
         self.context.env = $env;
         try {
             self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0];
+            my $uri    = uri_decode( $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0] );
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {
@@ -271,16 +363,17 @@ class Bailador::App does Bailador::Routing {
 
             LEAVE {
                 my $http-code = self.response.code;
-                Log::Any.trace("Serving $method $uri with $http-code");
+                my DateTime $end = DateTime.now;
+                self.log-request($start, $end, $method, $uri, $http-code);
                 self!done-rendering();
             }
 
             CATCH {
                 when X::Bailador::ControllerReturnedNoResult {
-                    self.render(content => Any);
+                    Log::Any.warning("nothing to render, looks suspicious");
+                    self.render();
                 }
                 when X::Bailador::NoRouteFound {
-                    Log::Any.notice("No Route was Found for $method $uri");
                     if self.error_handlers{404} {
                         self.render(:status(404), :type<text/html;charset=UTF-8>, content => self.error_handlers{404}());
                     } elsif $.location.defined && "$.location/views/404.xx".IO.e {
@@ -291,13 +384,6 @@ class Bailador::App does Bailador::Routing {
                 }
                 default {
                     Log::Any.error(.gist);
-                    #if ($env<p6w.errors>:exists) {
-                    #    my $err = $env<p6w.errors>;
-                    #    #$err.say(.gist);
-                    #}
-                    #else {
-                    #    note .gist;
-                    #}
 
                     my $err-page;
                     if $!config.mode eq 'development' {

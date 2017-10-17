@@ -36,6 +36,7 @@
     "Template::Mustache",
     "Terminal::ANSIColor",
     "URI",
+    "URI::Encode",
     "YAMLish"
   ],
   "description" : "A light-weight route-based web application framework for Perl 6",
@@ -61,11 +62,14 @@
     "Bailador::Feature::AutoHead" : "lib/Bailador/Feature/AutoHead.pm",
     "Bailador::Gradual" : "lib/Bailador/Gradual.pm",
     "Bailador::LogAdapter" : "lib/Bailador/LogAdapter.pm",
+    "Bailador::LogFormatter" : "lib/Bailador/LogFormatter.pm",
     "Bailador::Request" : "lib/Bailador/Request.pm",
     "Bailador::Request::Multipart" : "lib/Bailador/Request/Multipart.pm",
     "Bailador::Response" : "lib/Bailador/Response.pm",
     "Bailador::Route" : "lib/Bailador/Route.pm",
     "Bailador::Route::AutoHead" : "lib/Bailador/Route/AutoHead.pm",
+    "Bailador::Route::Controller" : "lib/Bailador/Route/Controller.pm",
+    "Bailador::Route::IoC" : "lib/Bailador/Route/IoC.pm",
     "Bailador::Route::Prefix" : "lib/Bailador/Route/Prefix.pm",
     "Bailador::Route::Simple" : "lib/Bailador/Route/Simple.pm",
     "Bailador::Route::StaticFile" : "lib/Bailador/Route/StaticFile.pm",
@@ -80,7 +84,10 @@
     "Bailador::Utils" : "lib/Bailador/Utils.pm"
   },
   "resources" : [
-    "error.template"
+    "error.template",
+    "skeleton/default/bin/app.pl6",
+    "skeleton/default/t/app.t",
+    "skeleton/default/views/index.html"
   ],
   "source-url" : "git://github.com/Bailador/Bailador.git",
   "support" : {
@@ -93,5 +100,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.9"
+  "version" : "0.0.13"
 }

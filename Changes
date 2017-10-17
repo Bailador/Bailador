@@ -1,3 +1,37 @@
+    - Ticket #236 - Regular Expression meta chars are not evalulated by accident. Use URLs with rx// instead
+
+0.0.13 2017.10.01
+    - Ticket #265 - 'bailador new --name=<name>' is now 'bailador new <name>'
+    - Ticket #144 - added render-file($filename, :$mime-type)
+    - fixed a LTA error message for baile($port) calls that are outdated
+    - Fixed a bug in Bailador::Request:Multipart that caused all parts, but the first one, to contain data from the previous ones
+    - Added method Bailador::Request::Multipart.Num()
+    - Fixed a bug that caused error messages never to be colorized
+
+0.0.12 2017.09.09
+    - Added logging to StaticRoute, if a requested file was not found
+    - Class attribute in Routes with Controllers are no longer of type Str but a class type
+    - Gradual serving now creates the sitemap.xml on the fly.
+    - Examples have been reorganized and some more tests were added.
+    - Require classes in controllers if they're not loaded
+    - Convert Failure to Exception - error handling for missing controller classes
+    - Log if template or layouts were not found and avoid "internal server errors".
+
+0.0.11 2017.08.26
+    - Ticket #245 - created doc directory
+    - Ticket #185 - let run-psgi-request accept Hash
+    - Ticket #251 - created a CONTRIBUTING.md for github
+    - Ticket #222 - update documentation on render
+    - Ticket #242 - update documentation on static-dir including bug at capture group in B::Route::StaticFile
+    - Added support for Controller classes and objects
+    - Ticket #231 - fixed includes (related to #224)
+    - Ticket #180 - allow to colorize terminal output
+
+0.0.10 2017.08.04
+    - Little code and documentation clean
+    - Ticket #201 - moved skeleton files into %?RESOURCES and added xt to be "integration tests" that run after installation
+    - Ticket #224 - installation of Bailador as a dependency does not longer fail
+
 0.0.9 2017.07.28
     - Ticket #208 - It is now possible to render without a content type, default values for content-types can be configured.
     - Ticket #116 - Added &to-json to be exported via Bailador
