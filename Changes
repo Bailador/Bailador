@@ -1,3 +1,4 @@
+    - Ticket #276 - unicode in URIs do work now
     - Ticket #236 - Regular Expression meta chars are not evalulated by accident. Use URLs with rx// instead
 
 0.0.13 2017.10.01
