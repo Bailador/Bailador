@@ -11,6 +11,6 @@ get '/qux' => sub {
 
 
 
-require Bailador::Gradual;
+require Bailador::Feature::Gradual;
 
 baile;

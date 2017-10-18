@@ -56,6 +56,9 @@ class Bailador::Configuration {
     has Str $.log-format is rw = '\d (\s) \m';
     has @.log-filter is rw     = ('severity' => '>=warning');
 
+    ## BAILADOR STATUS REPORT
+    has Bool $.report is rw;
+
     method !variants($filename) {
         my @pieces = $filename.split('.');
         my $extend-me = @pieces[*-2];
