@@ -6,7 +6,8 @@ use Log::Any::Formatter:ver('0.9.4');
 use Terminal::ANSIColor;
 
 class Bailador::Log::Formatter is Log::Any::Formatter {
-  has $.format = '';
+  has $.format = Nil;
+  has $.template-format = Nil;
   has $!backend;
   has %.colors;
   has $.log-any-formatter;
@@ -14,24 +15,22 @@ class Bailador::Log::Formatter is Log::Any::Formatter {
 
   use Log::Any::Formatter;
   submethod TWEAK {
-    given $!format {
+    if $!template-format && $!format {
+      die 'Only one of "template-format" or "format" should be specified.'
+    }
+
+    with $!template-format {
       when 'combined' {
         # Combined apache log format "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
-        $!backend = Log::Any::FormatterBuiltIN.new(
-          :format( '\e{h} \e{l} \e{u} [\e{t}] "\e{r}" \e{s} \e{b} "\e{Referer}" \e{User-agent}' )
-        );
+        $!format = '\e{h} \e{l} \e{u} [\e{t}] "\e{r}" \e{s} \e{b} "\e{Referer}" \e{User-agent}';
       }
       when 'common' {
         # Common apache log format "%h %l %u %t \"%r\" %>s %b"
-        $!backend = Log::Any::FormatterBuiltIN.new(
-          :format(  '\e{h} \e{l} \e{u} [\e{t}] \e{r} \e{s} \e{b}' )
-        );
+        $!format = '\e{h} \e{l} \e{u} [\e{t}] \e{r} \e{s} \e{b}';
       }
       when 'simple' {
         # "[%t] [%l] [pid %P] %F: %E: [client %a] %M"
-        $!backend = Log::Any::FormatterBuiltIN.new(
-          :format(  '[\e{t}] [\e{l}] [pid \e{P}] \e{F}: \e{E}: [client \e{a}] "\e{M}"' )
-        );
+        $!format = '[\e{t}] [\e{l}] [pid \e{P}] \e{F}: \e{E}: [client \e{a}] "\e{M}"';
       }
       when 'mpm' {
         #  [Fri Sep 09 10:42:29.902022 2011] [core:error] [pid 35708:tid 4328636416] [client 72.15.99.187] File does not exist: /usr/local/apache2/htdocs/favicon.ico
@@ -39,11 +38,14 @@ class Bailador::Log::Formatter is Log::Any::Formatter {
         ...
       }
       default {
-        $!backend = Log::Any::FormatterBuiltIN.new(
-          # Serving GET /test HTTP/1.0 with 200
-          :format( '\m' )
-        );
+        die "Unknown value for 'template-format' ($!template-format)"
       }
+    }
+
+    with $!format {
+      $!backend = Log::Any::FormatterBuiltIN.new(
+        :format( $!format )
+      );
     }
   }
 
@@ -65,7 +67,7 @@ class Bailador::Log::Formatter is Log::Any::Formatter {
       }
     }
 
-    given $!format {
+    with $!template-format {
       when 'combined' {
         %data = Hash.new((
           :h(%extra-fields<SERVER_NAME> // '-' ),

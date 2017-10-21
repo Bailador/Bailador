@@ -67,7 +67,6 @@ sub init( :$app ) is export {
       }
       default { die "Invalid output ($log-output)." }
     }
-    my $format = $log-config{'format'} // '';
 
     # Check filters
     my @filters;
@@ -82,7 +81,8 @@ sub init( :$app ) is export {
     Log::Any.add( $adapter,
       :formatter(
         Bailador::Log::Formatter.new(
-          format => $format,
+          format => $log-config<format> // Nil,
+          template-format => $log-config<template-format> // Nil,
           colorize => $colorize,
           colors   => {
             trace     =>  $config.terminal-color-trace,
