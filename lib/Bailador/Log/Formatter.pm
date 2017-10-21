@@ -47,6 +47,10 @@ class Bailador::Log::Formatter is Log::Any::Formatter {
         :format( $!format )
       );
     }
+
+    $!backend //= Log::Any::FormatterBuiltIN.new(
+      :format( '\m' ),
+    );
   }
 
   method format( :$date-time, :$msg!, :$category!, :$severity!, :%extra-fields ) {
