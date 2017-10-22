@@ -70,6 +70,18 @@ sub init( :$app ) is export {
 
     # Check filters
     my @filters;
+
+    # Template filters
+    with $log-config{'template-match'} {
+      when 'http-requests' {
+        @filters.push( 'category' => 'request' );
+      }
+      when 'templates' {
+        @filters.pysh( 'category' => 'templates' );
+      }
+    }
+
+    # Manual filters
     if $log-config{'category'} -> $category {
       @filters.push( 'category' => $category );
     }
