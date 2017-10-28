@@ -50,6 +50,7 @@ sub init( :$app ) is export {
             use Log::Any::Adapter::Stderr;
             $adapter = Log::Any::Adapter::Stderr.new;
           }
+          default { die "Invalid path ($_) for \"terminal\" scheme. Please use one of \"stdout\" or \"stderr\"."; }
         }
         $colorize = $config.terminal-color;
       }
@@ -65,7 +66,7 @@ sub init( :$app ) is export {
           }
         }
       }
-      default { die "Invalid output ($log-output)." }
+      default { die "Invalid scheme ($log-output). Please use one of \"terminal\", \"file\" or \"p6w\"." }
     }
 
     # Check filters
