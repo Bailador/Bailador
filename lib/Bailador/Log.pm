@@ -9,8 +9,7 @@ use Bailador::Log::Adapter;
 use Log::Any;
 use URI;
 
-sub init( :$app ) is export {
-  my $config = $app.config();
+sub init( Bailador::Configuration:D :$config!, Log::Any::Adapter:D :$p6w-adapter! ) is export {
   my @filter    = $config.log-filter;
   my $formatter = Bailador::Log::Formatter.new(
       format   => $config.log-format,
@@ -62,7 +61,7 @@ sub init( :$app ) is export {
         given $log-output-uri.path {
           when 'errors' {
             # my $app = app();
-            $adapter = $app.log-adapter;
+            $adapter = $p6w-adapter;
           }
         }
       }

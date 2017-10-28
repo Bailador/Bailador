@@ -133,7 +133,7 @@ class Bailador::App does Bailador::Routing {
 
         # Configure logging system
         use Bailador::Log;
-        init( app => self );
+        init( config => self.config, p6w-adapter => self.log-adapter );
 
         self!generate-head-routes(self);
     }
