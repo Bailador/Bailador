@@ -86,7 +86,6 @@ subtest {
 }, 'Bailador::Log::Formatter';
 
 # Test Bailador::Log::init() method
-todo 'Bailador::Log';
 subtest {
   plan 1;
 
@@ -94,18 +93,43 @@ subtest {
   use Bailador::Log;
 
   # Test URI destinations
-  my @uris-ok = (
-  'file:///path/to/log.log',
-  'console://stderr',
-  'console://stdout',
-  'p6w.errors://',
-  );
-
-  my @uris-nok = (
-  'file', # No file specified
-  'unknown://',
-  'console://nop',
-  );
+  # my @logs-rules = (
+  #   ( 'file:tmp.log'    => {} ),
+  #   ( 'terminal:stdout' => {} ),
+  #   ( 'terminal:stderr' => {} ),
+  #   ( 'p6w:errors'      => {} ),
+  # );
+  #
+  #   # Create a fake application
+  #   use Bailador::App;
+  #   my $app = Bailador::App.new(
+  #     config => Bailador::Configuration.new( logs => () ),
+  #   );
+  #   # Add a route for test
+  #   use Bailador::Route::Simple;
+  #   $app.add_route( Bailador::Route::Simple.new( :method('GET'), :url-matcher<path>, :code( {'hello test'} ) ) );
+  #
+  #   use Log::Any;
+  #   use Bailador::Log;
+  #   # init( :$app );
+  #   use Log::Any::Adapter::Stderr;
+  #   use Test::Output;
+  #   init( config => Bailador::Configuration.new( logs => @logs-rules[0] ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  #   # dd stderr-from  { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) };
+  #   # dd stdout-from  { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) };
+  #   stdout-is { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
+  #   stderr-is { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
+  #
+  #   init( config => Bailador::Configuration.new( logs => @logs-rules[1] ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  #   like stdout-from( { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) } ), / 'Serving GET path with 200 in ' .* /;
+  #   # stderr-is   { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
+  #   # say Log::Any.new;
+  #
+  # my @uris-nok = (
+  # 'file', # No file specified
+  # 'unknown://',
+  # 'console://nop',
+  # );
 
   # Test filters
 
