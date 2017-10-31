@@ -4,7 +4,7 @@
     "task" : "install perl6",
     "plugin" : "rakudo-install",
     "data" : {
-      "url" : "https://github.com/nxadm/rakudo-pkg/releases/download/2017.07/perl6-rakudo-moarvm-CentOS7.3.1611-20170700-01.x86_64.rpm"
+      "url" : "https://github.com/nxadm/rakudo-pkg/releases/download/v2017.10/rakudo-CentOS7.4.1708-20171000-01.x86_64.rpm"
     }
   },
   {
@@ -28,7 +28,7 @@
     "data" : {
         "command" : "prove6 -l",
         "envvars" : {
-          "PATH" : "/opt/rakudo/bin:/opt/rakudo/share/perl6/site/bin:/root/.rakudobrew/moar-nom/install/share/perl6/site/bin:$PATH"
+          "PATH" : "/opt/rakudo/bin:/opt/rakudo/share/perl6/site/bin:$PATH"
         }
     }
   }
