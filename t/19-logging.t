@@ -95,13 +95,12 @@ subtest {
   my class IO::Capture is IO::Handle {
     has @.output;
 
-    method print-nl { self.print($.nl-out); }
     method print (*@what) {
       @!output.push( @what.join('') );
     }
 
     method say (*@what) {
-      @!output.push( @what.join('') );
+      self.print( @what.join('') ~ $.nl-out );
     }
   }
 
@@ -124,7 +123,8 @@ subtest {
 
   use Log::Any::Adapter::Stderr;
   # Todo: generate a random and temporary file (/tmp/bailador-nrsite/log.log)
-  init( config => Bailador::Configuration.new( logs => ('file:tmp.log' => {}) ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  my $tmp-log-filename = "$*TMPDIR/perl6-bailador-test.log";
+  init( config => Bailador::Configuration.new( logs => ("file:$tmp-log-filename" => {}) ), p6w-adapter => Log::Any::Adapter::Stderr.new );
   $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
 
   # Get back to standard output
@@ -132,8 +132,8 @@ subtest {
   ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
   is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
   is $ERR-capture.output.elems, 0, 'Nothing get logged to STDERR';
-  todo 'Test tmp.log file content';
-  flunk 'NYI file content test';
+  like $tmp-log-filename.IO.slurp, /^ "Serving GET path with 200 in " \d+ '.' \d+ 's' \n $/;
+  $tmp-log-filename.IO.unlink;
 
   # Capture output
   ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
@@ -147,7 +147,7 @@ subtest {
   ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
 
   is $OUT-capture.output.elems, 1, 'One line get logged to STDOUT';
-  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' \d+ '.' \d+ 's' \n $/;
   is $ERR-capture.output.elems, 0, 'Nothing get logged to STDERR';
 
   # Log everything to STDERR
@@ -163,7 +163,7 @@ subtest {
   ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
 
   is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
-  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' \d+ '.' \d+ 's' \n $/;
   is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
 
   # Test logging to p6w.errors, basically the same thing as the STDERR
@@ -180,7 +180,7 @@ subtest {
   ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
 
   is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
-  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' \d+ '.' \d+ 's' \n $/;
   is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
 
   # Test filters
@@ -212,7 +212,7 @@ subtest {
 
   is $OUT-capture.output.elems, 1, 'One line get logged to STDOUT';
   is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
-  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' \d+ '.' \d+ 's' \n $/;
   like $ERR-capture.output[0], /^ 'die for test' .* /;
 
   # Test template-match
