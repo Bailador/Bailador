@@ -16,6 +16,7 @@ use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
+use Bailador::Utils;
 
 class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
@@ -55,12 +56,12 @@ class Bailador::App does Bailador::Routing {
 
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
         my $content = "";
-        my $content-template = self!templatefile-extentions("$.location/" ~ self.config.views ~ "/$tmpl");
+        my $content-template = self!templatefile-extentions(get-path("$.location/" ~ self.config.views ~ "/$tmpl"));
         $content = $!renderer.render($content-template, |@params, |%params) if $content-template;
 
         my $use-this-layout = $layout // $.config.layout;
         if $use-this-layout {
-            my $layout-template = self!templatefile-extentions("$.location/layout/$use-this-layout");
+            my $layout-template = self!templatefile-extentions(get-path("$.location/layout/$use-this-layout"));
             if $layout-template {
                 Log::Any.debug("Rendering with layout $use-this-layout");
                 $content = $!renderer.render($layout-template, $content);;
@@ -121,6 +122,9 @@ class Bailador::App does Bailador::Routing {
             } else {
                 my $parent = $*PROGRAM.parent.resolve;
                 $app-root = $parent.basename eq 'bin' ?? $parent.parent !! $parent;
+            }
+            if $*DISTRO.is-win {
+                $app-root.=subst(/\\/, '', :x(1));
             }
             self.location($app-root.Str);
         }
