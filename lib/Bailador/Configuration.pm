@@ -61,7 +61,7 @@ class Bailador::Configuration {
       # Accesses logs, in combined format
       # 'file:logs/access.log' => { 'template-match' => 'http-requests', 'template-format' => 'combined' },
       # Error logs, in 'simple' Apache format
-      # 'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'format' => 'simple' },
+      # 'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'template-format' => 'simple' },
       # Everything, including accesses and error (in Bailador format)
       # 'terminal:stderr'      => { 'severity' => '>=warning', },
       'p6w:errors'           => { 'severity' => '>=warning'   },

@@ -77,7 +77,10 @@ sub init( Bailador::Configuration:D :$config!, Log::Any::Adapter:D :$p6w-adapte
         @filters.push( 'category' => 'request' );
       }
       when 'templates' {
-        @filters.pysh( 'category' => 'templates' );
+        @filters.push( 'category' => 'templates' );
+      }
+      when 'request-error' {
+        @filter.push( 'category' => 'request-error', 'severity' => 'error' );
       }
     }
 
