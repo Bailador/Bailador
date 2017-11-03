@@ -184,10 +184,43 @@ subtest {
   is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
 
   # Test filters
+  # Add a second route to our fake application ; This route is dying
+  $app.add_route( Bailador::Route::Simple.new( :method('GET'), :url-matcher<err>, :code( {die 'die for test'} ) ) );
+
+  # Correctly handled request goes to STDOUT,
+  # Died requests goes to STDERR
+  # Capture output
+  $OUT-capture.output = [];
+  $ERR-capture.output = [];
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+  init(
+    config => Bailador::Configuration.new(
+      logs => (
+        'terminal:stdout' => {category => 'request', severity => 'info'},
+        'terminal:stderr' => {category => 'request-error', severity => 'error'} )
+    ),
+    p6w-adapter => Log::Any::Adapter::Stderr.new
+  );
+
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<err>,  :REQUEST_URI</err>} );
+
+  # Get back standard output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+
+  is $OUT-capture.output.elems, 1, 'One line get logged to STDOUT';
+  is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
+  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  like $ERR-capture.output[0], /^ 'die for test' .* /;
 
   # Test template-match
-  # Test template-format
+  # "template-match" basically sets a set of filtters
 
+  # Test template-format
+  # init() routine just pass "as in" the parameters to B::L::Formatter
+  # so for now, I think testing B::L::Formatter is sufficient
 
   # Test simple config
   my @log-config = [
