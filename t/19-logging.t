@@ -87,49 +87,101 @@ subtest {
 
 # Test Bailador::Log::init() method
 subtest {
-  plan 1;
+  # plan 1;
 
   use-ok 'Bailador::Log';
   use Bailador::Log;
 
-  # Test URI destinations
-  # my @logs-rules = (
-  #   ( 'file:tmp.log'    => {} ),
-  #   ( 'terminal:stdout' => {} ),
-  #   ( 'terminal:stderr' => {} ),
-  #   ( 'p6w:errors'      => {} ),
-  # );
-  #
-  #   # Create a fake application
-  #   use Bailador::App;
-  #   my $app = Bailador::App.new(
-  #     config => Bailador::Configuration.new( logs => () ),
-  #   );
-  #   # Add a route for test
-  #   use Bailador::Route::Simple;
-  #   $app.add_route( Bailador::Route::Simple.new( :method('GET'), :url-matcher<path>, :code( {'hello test'} ) ) );
-  #
-  #   use Log::Any;
-  #   use Bailador::Log;
-  #   # init( :$app );
-  #   use Log::Any::Adapter::Stderr;
-  #   use Test::Output;
-  #   init( config => Bailador::Configuration.new( logs => @logs-rules[0] ), p6w-adapter => Log::Any::Adapter::Stderr.new );
-  #   # dd stderr-from  { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) };
-  #   # dd stdout-from  { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) };
-  #   stdout-is { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
-  #   stderr-is { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
-  #
-  #   init( config => Bailador::Configuration.new( logs => @logs-rules[1] ), p6w-adapter => Log::Any::Adapter::Stderr.new );
-  #   like stdout-from( { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) } ), / 'Serving GET path with 200 in ' .* /;
-  #   # stderr-is   { $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} ) }, '';
-  #   # say Log::Any.new;
-  #
-  # my @uris-nok = (
-  # 'file', # No file specified
-  # 'unknown://',
-  # 'console://nop',
-  # );
+  my class IO::Capture is IO::Handle {
+    has @.output;
+
+    method print-nl { self.print($.nl-out); }
+    method print (*@what) {
+      @!output.push( @what.join('') );
+    }
+
+    method say (*@what) {
+      @!output.push( @what.join('') );
+    }
+  }
+
+  # Override STDOUT and STDERR to capture output
+  # If a message like "No exception handler located for catch" is shown,
+  # it probably means that an error occured which couldn't be printed to terminal
+  my $OUT-capture = $*OUT;
+  $*OUT           = IO::Capture.new;
+  my $ERR-capture = $*ERR;
+  $*ERR           = IO::Capture.new;
+
+  # Create a fake application
+  use Bailador::App;
+  my $app = Bailador::App.new(
+   config => Bailador::Configuration.new( logs => () ),
+  );
+  # Add a route for test
+  use Bailador::Route::Simple;
+  $app.add_route( Bailador::Route::Simple.new( :method('GET'), :url-matcher<path>, :code( {'hello test'} ) ) );
+
+  use Log::Any::Adapter::Stderr;
+  # Todo: generate a random and temporary file (/tmp/bailador-nrsite/log.log)
+  init( config => Bailador::Configuration.new( logs => ('file:tmp.log' => {}) ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
+
+  # Get back to standard output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+  is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
+  is $ERR-capture.output.elems, 0, 'Nothing get logged to STDERR';
+  todo 'Test tmp.log file content';
+  flunk 'NYI file content test';
+
+  # Capture output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+  # Log everything to STDOUT
+  init( config => Bailador::Configuration.new( logs => ('terminal:stdout' => {}) ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
+
+  # Get back standard output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+
+  is $OUT-capture.output.elems, 1, 'One line get logged to STDOUT';
+  like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  is $ERR-capture.output.elems, 0, 'Nothing get logged to STDERR';
+
+  # Log everything to STDERR
+  # Capture output
+  $OUT-capture.output = [];
+  $ERR-capture.output = [];
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+  init( config => Bailador::Configuration.new( logs => ('terminal:stderr' => {}) ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
+  # Get back standard output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+
+  is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
+  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
+
+  # Test logging to p6w.errors, basically the same thing as the STDERR
+  # Will use the :p6w-adapter parameter to discover where to log (here STDERR)
+  # Capture output
+  $OUT-capture.output = [];
+  $ERR-capture.output = [];
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+  init( config => Bailador::Configuration.new( logs => ( 'p6w:errors' => {} ), ), p6w-adapter => Log::Any::Adapter::Stderr.new );
+  $app.dispatch( {:REQUEST_METHOD<GET>, :PATH_INFO<path>, :REQUEST_URI</path>} );
+  # Get back standard output
+  ($*OUT, $OUT-capture) = ($OUT-capture, $*OUT);
+  ($*ERR, $ERR-capture) = ($ERR-capture, $*ERR);
+
+  is $ERR-capture.output.elems, 1, 'One line get logged to STDERR';
+  like $ERR-capture.output[0], /^ 'Serving GET path with 200 in ' .* /;
+  is $OUT-capture.output.elems, 0, 'Nothing get logged to STDOUT';
 
   # Test filters
 
@@ -140,4 +192,5 @@ subtest {
   # Test simple config
   my @log-config = [
   ];
+  done-testing;
 }, 'Test Bailador::Log::init() method.';
