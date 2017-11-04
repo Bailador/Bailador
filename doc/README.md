@@ -448,3 +448,31 @@ Currently available parameters:
 * backend           (defaults to "Bailador::Sessions::Store::Memory")
 * log-format        (defaults to '\d (\s) \m'
 * log-filter        (defaults to `( 'severity' => '>=warning')`)
+
+### Logging
+
+Logging can be configured by setting the `logs` config key. The value is a Pair where the key represents an output (a file, the terminal, ...) and the value contains specification about how to format the log and to filter them.
+
+The output is represented as an URI. Available values are:
+- file:path/to/relative.log
+- file:///path/to/absolute.log
+- terminal:stdout
+- terminal:stderr
+- p6w:errors
+
+If multiples Pairs are specified, they are all used.
+```perl6
+config.logs = [
+  # Prints HTTP requests on the standard terminal output using the default format.
+  'terminal:stdout' => { template-match => 'http-requests' },
+  # Prints debugging logs to standard error terminal output
+  'terminal:stderr' => { severity => 'debug'               },
+];
+```
+
+Defaults to:
+```perl6
+config.logs = [
+  'p6w:errors' => { 'severity' => '>=warning' },
+]
+```
