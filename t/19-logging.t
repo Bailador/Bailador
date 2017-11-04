@@ -47,7 +47,7 @@ subtest {
         :date-time( DateTime.new('2017-11-28T15:08:00') ), :msg('mm'), :category('testing format'), :severity('debug'),
         :extra-fields( Hash.new( (SERVER_NAME => 'localhost', REMOTE_USER => 'me', REQUEST_METHOD => 'GET', PATH_INFO => '/path', SERVER_PROTOCOL => 'http', HTTP_CODE => 200, ) ) ),
       ),
-      / 'localhost - me [' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s \d ** 3 '] GET /path http 200' /,
+      / 'localhost - me [' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s ['+'|'-']? \d ** 4 '] GET /path http 200' /,
       'common formatted value match';
 
     # Test
@@ -58,7 +58,7 @@ subtest {
         :date-time( DateTime.new('2017-11-28T15:08:00') ), :msg('mm'), :category('testing format'), :severity('debug'),
         :extra-fields( Hash.new( (:SERVER_NAME<localhost>, :REMOTE_USER<me>, :REQUEST_METHOD<GET>, :PATH_INFO</path>, :SERVER_PROTOCOL<http>, :HTTP_CODE(200), :b(123), :HTTP_REFERER('Fake ref'), :HTTP_USER_AGENT('fake-ua') ) ) ),
       ),
-      / 'localhost - me [' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s \d ** 3 '] "GET /path http" 200 - "Fake ref" fake-ua' /,
+      / 'localhost - me [' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s ['+'|'-']? \d ** 4 '] "GET /path http" 200 - "Fake ref" fake-ua' /,
       'combined formatted log match';
 
     # Test simple format
@@ -69,7 +69,7 @@ subtest {
         :date-time( DateTime.new('2017-11-28T15:08:00') ), :msg('mm'), :category('testing format'), :severity('debug'),
         :extra-fields( Hash.new( (:pid('1456'), :file-and-line('file.txt line 42'), :client-ip('10.0.0.1') ) ) ),
       ),
-      / '[' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s \d ** 3 ']' .*/,
+      / '[' \d ** 2 \/ \w ** 3 \/ \d ** 4 [':' \d\d] ** 3 \s ['+'|'-']? \d ** 4 ']' .*/,
       'simple formatted log match';
 
     # Default logging format is just the message
