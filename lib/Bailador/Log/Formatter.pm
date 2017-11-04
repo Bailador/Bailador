@@ -67,10 +67,11 @@ class Bailador::Log::Formatter is Log::Any::Formatter {
       ~ ( %extra-fields<SERVER_PROTOCOL> || '' );
 
     sub dateTime-to-Str( DateTime:D $date-time ) {
-      my @month = <Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec>;
+      my @months = <Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec>;
       with $date-time {
-        sprintf '%02d/%s/%04d:%02d:%02d:%02d %02d',
-          .day, @month[.month-1], .year, .hour, .minute, .second, .offset-in-hours * 100
+        sprintf '%02d/%s/%04d:%02d:%02d:%02d %s%02d%02d',
+          .day, @months[.month-1], .year, .hour, .minute, .second,
+          .offset-in-hours >= 0 ?? '+' !! '-' , round(.offset / 3600), round .offset%3600/60
       }
     }
 
