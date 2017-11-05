@@ -14,10 +14,3 @@ multi sub terminal-color(Str $text, Str $color, Bailador::Configuration $config)
         say $text;
     }
 }
-
-multi sub get-path(Str $path) is export returns Str {
-    if $*DISTRO.is-win {
-        return $path.subst(/\//, '\\', :g);
-    }
-    return $path;
-}
