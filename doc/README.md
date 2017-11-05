@@ -451,7 +451,22 @@ Currently available parameters:
 
 ### Logging
 
-Logging can be configured by setting the `logs` config key. The value is a Pair where the key represents an output (a file, the terminal, ...) and the value contains specification about how to format the log and to filter them.
+```pl6
+config.logs = [
+  # Prints HTTP requests on the standard terminal output using the default format.
+  'terminal:stdout' => { template-filter => 'http-requests' },
+  # Also prints debug logs to standard error terminal output
+  'terminal:stderr' => { severity => 'debug' },
+  # And insert logs into "access.log" file
+  'file:access.log' => { template-filter => 'http-requests' },
+];
+```
+
+Logging can be configured by setting the `logs` config key. The value is a Pair where the key represents an output (a file, the terminal, ...) and the value contains the specification about how to format the log and to filter them.
+
+If multiples `Pairs` are specified, they are all used.
+
+#### Output
 
 The output is represented as an URI. Available values are:
 - file:path/to/relative.log
@@ -460,18 +475,52 @@ The output is represented as an URI. Available values are:
 - terminal:stderr
 - p6w:errors
 
-If multiples Pairs are specified, they are all used.
-```perl6
-config.logs = [
-  # Prints HTTP requests on the standard terminal output using the default format.
-  'terminal:stdout' => { template-match => 'http-requests' },
-  # Prints debugging logs to standard error terminal output
-  'terminal:stderr' => { severity => 'debug'               },
-];
-```
+#### Log specification
 
-Defaults to:
-```perl6
+Following parameters can be used to filter which log will be handled, and in which format.
+
+| Key             | Desc | Examples |
+|-----------------|------|----------|
+| format          | specify the format to use for the log | '\d \c \m' (date, category and message) |
+| template-format | predefined format strings             | 'combined' (Apache combined format)     |
+| template-filter  | predefined filters                    | 'http-requests' HTTP request access     |
+| category        | filter on the log category            | 'templates' logs related to templating  |
+| severity        | filter on the log severity            | '>=debug' Debug logs                    |
+
+##### format
+
+The format string follows the definition of Log::Any (https://github.com/jsimonet/log-any#formatters). A work is in progress to describe all extra-fields that can be used, and in which contexts.
+
+##### template-format
+
+This parameter can be used to specify predefined formats like Apache "combined", or Apache "simple" error log.
+
+Possible values :
+- common
+- combined
+- simple
+
+##### template-filter
+
+This parameter can be used to specify predefined filters.
+
+Possible values:
+- request
+- templates
+- request-error
+
+##### category
+
+The category to filter (based on Log::Any).
+
+##### severity
+
+The severity of the log (based on Log::Any).
+
+#### Default log configuration
+
+The default configuration prints all logs where the severity equals or is above "warning".
+```pl6
 config.logs = [
   'p6w:errors' => { 'severity' => '>=warning' },
 ]
