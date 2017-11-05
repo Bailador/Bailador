@@ -59,7 +59,7 @@ class Bailador::Configuration {
     # Available format place-handlers : \d, \c, \m, …
     has @.logs where * ~~ Pair = [
       # Accesses logs, in combined format
-      # 'file:logs/access.log' => { 'template-match' => 'http-requests', 'template-format' => 'combined' },
+      # 'file:logs/access.log' => { 'template-filter' => 'http-requests', 'template-format' => 'combined' },
       # Error logs, in 'simple' Apache format
       # 'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'template-format' => 'simple' },
       # Everything, including accesses and error (in Bailador format)

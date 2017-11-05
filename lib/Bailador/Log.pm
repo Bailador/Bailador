@@ -72,7 +72,7 @@ sub init( Bailador::Configuration:D :$config!, Log::Any::Adapter:D :$p6w-adapte
     my @filters;
 
     # Template filters
-    with $log-config{'template-match'} {
+    with $log-config{'template-filter'} {
       when 'http-requests' {
         @filters.push( 'category' => 'request' );
       }

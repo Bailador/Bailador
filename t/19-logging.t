@@ -87,7 +87,7 @@ subtest {
 
 # Test Bailador::Log::init() method
 subtest {
-  # plan 1;
+  plan 17;
 
   use-ok 'Bailador::Log';
   use Bailador::Log;
@@ -215,15 +215,10 @@ subtest {
   like $OUT-capture.output[0], /^ 'Serving GET path with 200 in ' \d+ '.' \d+ 's' \n $/;
   like $ERR-capture.output[0], /^ 'die for test' .* /;
 
-  # Test template-match
-  # "template-match" basically sets a set of filtters
+  # Test template-filter
+  # "template-filter" basically sets a set of filtters
 
   # Test template-format
   # init() routine just pass "as in" the parameters to B::L::Formatter
   # so for now, I think testing B::L::Formatter is sufficient
-
-  # Test simple config
-  my @log-config = [
-  ];
-  done-testing;
 }, 'Test Bailador::Log::init() method.';
