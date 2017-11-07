@@ -1,3 +1,6 @@
+0.0.14 2017.11.07
+    - Improvment of the logging functionality in Bailador - Thanks to jsimonet++
+    - Ticket #151, #278, #277
     - Ticket #280 - Serve templates on Windows
     - Ticket #276 - unicode in URIs do work now
     - Ticket #236 - Regular Expression meta chars are not evalulated by accident. Use URLs with rx// instead

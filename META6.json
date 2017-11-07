@@ -14,7 +14,8 @@
     "ugexe",
     "vendethiel",
     "Martin Barth (ufobat)",
-    "Emeric Fischer"
+    "Emeric Fischer",
+    "Julien Simonet (jsimonet)"
   ],
   "build-depends" : [
     "TAP::Harness"
@@ -101,5 +102,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.13"
+  "version" : "0.0.14"
 }
