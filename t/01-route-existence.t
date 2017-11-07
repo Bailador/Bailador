@@ -6,7 +6,7 @@ use Bailador;
 use Bailador::Test;
 
 plan 28;
-config.log-filter = (severity => '>=error');
+
 
 get '/foo' => sub { }
 get '/x-y' => sub { }
