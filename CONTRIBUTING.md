@@ -47,6 +47,4 @@ The rest is "standard" GitHub process. Talk to us on our [Slack channel](https:/
    - `git push`
    - `git push origin 0.x.y`
 * Run `mi6 dist`
-* Copy README.md to Bailador-0.x.y/README.md
-* Build the tarball with `tar cvfz Bailador-0.x.y.tar.gz Bailador-0.x.y`
 * Upload to PAUSE
