@@ -18,6 +18,11 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+
+    # https and tls stuff
+    has Bool $.tls-mode is rw = False;
+    has %.tls-config is rw = ();
+
     # has Str $.default-content-type is rw = 'text/html;charset=UTF-8';
     has Str $.default-content-type is rw = 'text/html';
     has Str $.file-discovery-content-type is rw = 'application/octet-stream';
@@ -48,8 +53,19 @@ class Bailador::Configuration {
     has Str $.backend is rw           = "Bailador::Sessions::Store::Memory";
 
     ## LOGGING
-    has Str $.log-format is rw = '\d (\s) \m';
-    has @.log-filter is rw     = ('severity' => '>=warning');
+    # Available outputs : 'terminal:stdout', 'terminal:stderr', 'file:///path/to/log.log'
+    # Available template-format: 'common', 'combined' and 'simple' wich are defaults in Apache ;
+    #                     '' (empty, defaults to Bailador)
+    # Available format place-handlers : \d, \c, \m, …
+    has @.logs where * ~~ Pair = [
+      # Accesses logs, in combined format
+      # 'file:logs/access.log' => { 'template-filter' => 'http-requests', 'template-format' => 'combined' },
+      # Error logs, in 'simple' Apache format
+      # 'file:logs/error.log'  => { 'category' => 'request-error', 'severity' => 'error', 'template-format' => 'simple' },
+      # Everything, including accesses and error (in Bailador format)
+      # 'terminal:stderr'      => { 'severity' => '>=warning', },
+      'p6w:errors'           => { 'severity' => '>=warning'   },
+    ];
 
     method !variants($filename) {
         my @pieces = $filename.split('.');

@@ -14,7 +14,8 @@
     "ugexe",
     "vendethiel",
     "Martin Barth (ufobat)",
-    "Emeric Fischer"
+    "Emeric Fischer",
+    "Julien Simonet (jsimonet)"
   ],
   "build-depends" : [
     "TAP::Harness"
@@ -36,6 +37,7 @@
     "Template::Mustache",
     "Terminal::ANSIColor",
     "URI",
+    "URI::Encode",
     "YAMLish"
   ],
   "description" : "A light-weight route-based web application framework for Perl 6",
@@ -60,8 +62,9 @@
     "Bailador::Exceptions" : "lib/Bailador/Exceptions.pm",
     "Bailador::Feature::AutoHead" : "lib/Bailador/Feature/AutoHead.pm",
     "Bailador::Gradual" : "lib/Bailador/Gradual.pm",
-    "Bailador::LogAdapter" : "lib/Bailador/LogAdapter.pm",
-    "Bailador::LogFormatter" : "lib/Bailador/LogFormatter.pm",
+    "Bailador::Log" : "lib/Bailador/Log.pm",
+    "Bailador::Log::Adapter" : "lib/Bailador/Log/Adapter.pm",
+    "Bailador::Log::Formatter" : "lib/Bailador/Log/Formatter.pm",
     "Bailador::Request" : "lib/Bailador/Request.pm",
     "Bailador::Request::Multipart" : "lib/Bailador/Request/Multipart.pm",
     "Bailador::Response" : "lib/Bailador/Response.pm",
@@ -99,5 +102,5 @@
     "Net"
   ],
   "test-depends" : [ ],
-  "version" : "0.0.13"
+  "version" : "0.0.14"
 }

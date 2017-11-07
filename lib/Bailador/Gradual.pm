@@ -63,7 +63,7 @@ get '/sitemap.xml' => sub {
 
 
 
-get '/(.*)' => sub ($url) {
+get rx/ (.*) / => sub ($url) {
     #if $url eq 'index' or $url eq 'index.html' {
     #    redirect('/');
     #}

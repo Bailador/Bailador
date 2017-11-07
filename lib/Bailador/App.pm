@@ -1,16 +1,18 @@
 use v6.c;
 
 use HTTP::Status;
-use Log::Any;
+use Log::Any:ver('0.9.4');
 use Template::Mojo;
+use URI; # Used to parse log configuration
+use URI::Encode;
 
 use Bailador::Commands;
 use Bailador::Configuration;
 use Bailador::ContentTypes;
 use Bailador::Context;
 use Bailador::Exceptions;
-use Bailador::LogAdapter;
-use Bailador::LogFormatter;
+use Bailador::Log::Adapter;
+use Bailador::Log::Formatter;
 use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
@@ -26,7 +28,7 @@ class Bailador::App does Bailador::Routing {
     has Bailador::Sessions $!sessions;
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
-    has Bailador::LogAdapter $.log-adapter = Bailador::LogAdapter.new;
+    has Bailador::Log::Adapter $.log-adapter = Bailador::Log::Adapter.new;
     has %.error_handlers;
 
     method load-config {
@@ -54,12 +56,12 @@ class Bailador::App does Bailador::Routing {
 
     method template(Str $tmpl, Str :$layout, *@params, *%params) {
         my $content = "";
-        my $content-template = self!templatefile-extentions("$.location/" ~ self.config.views ~ "/$tmpl");
+        my $content-template = self!templatefile-extentions($.location.IO.child(self.config.views).child($tmpl).Str);
         $content = $!renderer.render($content-template, |@params, |%params) if $content-template;
 
         my $use-this-layout = $layout // $.config.layout;
         if $use-this-layout {
-            my $layout-template = self!templatefile-extentions("$.location/layout/$use-this-layout");
+            my $layout-template = self!templatefile-extentions($.location.IO.child('layout').child($use-this-layout).Str);
             if $layout-template {
                 Log::Any.debug("Rendering with layout $use-this-layout");
                 $content = $!renderer.render($layout-template, $content);;
@@ -121,6 +123,9 @@ class Bailador::App does Bailador::Routing {
                 my $parent = $*PROGRAM.parent.resolve;
                 $app-root = $parent.basename eq 'bin' ?? $parent.parent !! $parent;
             }
+            if $*DISTRO.is-win {
+                $app-root.=subst(/\\/, '', :x(1));
+            }
             self.location($app-root.Str);
         }
         return $!location;
@@ -128,26 +133,10 @@ class Bailador::App does Bailador::Routing {
 
     method before-run() {
         # probably a good place for a hook
-        my @filter    = $.config.log-filter;
-        my $formatter = Bailador::LogFormatter.new(
-            format   => $.config.log-format,
-            colorize => $.config.terminal-color,
-            colors   => {
-                trace     =>  $.config.terminal-color-trace,
-                debug     =>  $.config.terminal-color-debug,
-                info      =>  $.config.terminal-color-info,
-                notice    =>  $.config.terminal-color-notice,
-                warning   =>  $.config.terminal-color-warning,
-                error     =>  $.config.terminal-color-error,
-                critical  =>  $.config.terminal-color-critical,
-                alert     =>  $.config.terminal-color-alert,
-                emergency =>  $.config.terminal-color-emergency,
-            },
-        );
-        # https://github.com/jsimonet/log-any/issues/1
-        # black magic to increase the logging speed
-        Log::Any.add( Log::Any::Pipeline.new(), :overwrite );
-        Log::Any.add($.log-adapter, :$formatter, :@filter);
+
+        # Configure logging system
+        use Bailador::Log;
+        init( config => self.config, p6w-adapter => self.log-adapter );
 
         self!generate-head-routes(self);
     }
@@ -256,24 +245,22 @@ class Bailador::App does Bailador::Routing {
     }
 
     method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
-        my $message = "Serving $method $uri with $http-code in " ~ $end - $start ~ 's';
+        my $env = self.context.env;
+        my $severity = 'error';
         given $http-code {
-            when is-success($_) {
-                Log::Any.info($message);
-            }
-            when is-redirect($_) {
-                Log::Any.debug($message);
-            }
-            when is-client-error($_) {
-                Log::Any.notice($message);
-            }
-            when is-server-error($_) {
-                Log::Any.error($message);
-            }
-            default {
-                Log::Any.error($message);
-            }
+            when is-success($_)      { $severity = 'info';   }
+            when is-redirect($_)     { $severity = 'debug';  }
+            when is-client-error($_) { $severity = 'notice'; }
+            when is-server-error($_) { $severity = 'error';  }
+            # default                  { $severity = 'error';  }
         }
+        # The message argument is only used in default logging format
+        Log::Any.log(
+            :msg("Serving $method $uri with $http-code in " ~ $end - $start ~ 's'),
+            :severity( $severity ),
+            :extra-fields( Hash.new( ( $env.kv, :HTTP_CODE(self.response.code) ) ) ),
+            :category('request')
+        );
     }
 
     multi method baile() {
@@ -348,7 +335,7 @@ class Bailador::App does Bailador::Routing {
         try {
             self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0];
+            my $uri    = uri_decode( $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0] );
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {
@@ -382,7 +369,11 @@ class Bailador::App does Bailador::Routing {
                     }
                 }
                 default {
-                    Log::Any.error(.gist);
+                    Log::Any.error(
+                      .gist,
+                      :category( 'request-error' ),
+                      :extra-fields( Hash.new( ( $env.kv, :file-and-line($?FILE~':'~$?LINE), :pid($*PID), :client-ip('-') ) ) ),
+                    );
 
                     my $err-page;
                     if $!config.mode eq 'development' {
