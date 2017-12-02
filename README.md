@@ -38,7 +38,7 @@ You can test your installation, and see what is your Bailador installed version 
 ```
 $ bailador version
 ```
-NB: If using Rakudobrew you may need to run the following command to make B=bailador available in your terminal:
+NB: If you are using Rakudobrew you may need to run the following command to make `bailador` available in your terminal:
 ```
 $ rakudobrew rehash
 ```
@@ -56,7 +56,7 @@ $ bailador watch bin/app.pl6
 That's it!
 Using a browser, go to http://localhost:3000. Wonderful?
 
-You can now edit the files and Bailador reloads the aplication while you're developing.
+You can now edit the files and Bailador reloads the application while you're developing.
 
 If you want to learn more about Bailador, please visit our [documentation](doc/README.md).
 
@@ -64,23 +64,9 @@ If you want to learn more about Bailador, please visit our [documentation](doc/R
 
 For more examples, please see the [examples](examples) folder.
 
-# CONTRIBUTION
-
-[![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)](https://github.com/Bailador/Bailador/graphs/contributors)
-
-We encourage you to contribute to Bailador !
-
-If you'd like to contribute to Bailador, see the [CONTRIBUTING](CONTRIBUTING.md).
-
-# LICENSE
-
-Bailador is released under the MIT License.
-
----
-
 # BAILADOR RESOURCES
 
-You can find a list of Bailador ressources (articles, posts, talks, books, ...) [here](https://github.com/Bailador/Ressources).
+You can find a list of Bailador resources (articles, posts, talks, books, ...) [here](https://github.com/Bailador/Ressources).
 
 ## Bailador-based applications
 
@@ -90,3 +76,19 @@ You can find a list of Bailador ressources (articles, posts, talks, books, ...) 
 ## Related projects
 
 https://github.com/pnu/heroku-buildpack-rakudo
+
+# CONTRIBUTION
+
+[![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)](https://github.com/Bailador/Bailador/graphs/contributors)
+
+We encourage you to contribute to Bailador !
+
+If you'd like to contribute to Bailador, see
+the [CONTRIBUTING](CONTRIBUTING.md) document.
+
+# LICENSE
+
+Bailador is released under the MIT License.
+
+
+
