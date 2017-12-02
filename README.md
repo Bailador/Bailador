@@ -54,7 +54,7 @@ Then, change directory to `App-Name` and start the web server:
 $ bailador watch bin/app.pl6
 ```
 That's it!
-Using a browser, go to http://localhost:3000. Wonderful?
+Using a browser, go to http://localhost:3000. Isn't it wonderful?
 
 You can now edit the files and Bailador reloads the application while you're developing.
 
@@ -81,10 +81,8 @@ https://github.com/pnu/heroku-buildpack-rakudo
 
 [![GitHub contributors](https://img.shields.io/github/contributors/bailador/bailador.svg)](https://github.com/Bailador/Bailador/graphs/contributors)
 
-We encourage you to contribute to Bailador !
-
-If you'd like to contribute to Bailador, see
-the [CONTRIBUTING](CONTRIBUTING.md) document.
+We encourage you to contribute to Bailador! If you'd like to do that,
+see first the [CONTRIBUTING](CONTRIBUTING.md) document.
 
 # LICENSE
 
