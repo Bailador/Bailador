@@ -30,6 +30,12 @@ or
 $ prove -e 'perl6 -Ilib' t
 ```
 
+Even more tests can be run by
+```
+AUTHOR_TESTING=1 prove6 -l
+```
+
+
 The rest is "standard" GitHub process. Talk to us on our [Slack channel](https://perl6-bailador.slack.com/)
 
 ## How to make a release
