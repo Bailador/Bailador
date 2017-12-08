@@ -18,7 +18,7 @@ class Bailador::Command::watch does Bailador::Command {
             }
         }
         unless $watch-command {
-            die 'can not detect watch-command'
+            die 'cannot detect watch-command'
         }
 
         my $param = %*ENV<BAILADOR>;
