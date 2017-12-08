@@ -30,6 +30,6 @@ RUN apt-get update -q && \
 COPY . .
 
 RUN echo "Installing Bailador dependencies..." && \
-    zef --depsonly install .
+    zef --deps-only install .
 
 CMD ["/bin/bash"]
