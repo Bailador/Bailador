@@ -107,7 +107,7 @@ class Bailador::App does Bailador::Routing {
     # do not use $!location outside of this subs
     multi method location(Str $location) {
         if $!location.defined {
-            die "can not set location, it is already defined. Set it before you add the first route";
+            die "cannot set location, it is already defined. Set it before you add the first route";
         }
         $!location = $location;
 
@@ -273,7 +273,7 @@ class Bailador::App does Bailador::Routing {
         } elsif $.config.command-detection() {
             $command = $.commands.detect-command();
         } else {
-            die 'can not detect command';
+            die 'cannot detect command';
         }
         self.baile($command);
     }
