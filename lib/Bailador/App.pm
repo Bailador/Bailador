@@ -17,6 +17,7 @@ use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
+use Bailador::Plugins;
 
 class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
@@ -28,6 +29,7 @@ class Bailador::App does Bailador::Routing {
     has Bailador::Sessions $!sessions;
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
+    has Bailador::Plugins $.plugins = Bailador::Plugins.new;
     has Bailador::Log::Adapter $.log-adapter = Bailador::Log::Adapter.new;
     has %.error_handlers;
 
@@ -137,7 +139,6 @@ class Bailador::App does Bailador::Routing {
         # Configure logging system
         use Bailador::Log;
         init( config => self.config, p6w-adapter => self.log-adapter );
-
         self!generate-head-routes(self);
     }
 
@@ -275,6 +276,7 @@ class Bailador::App does Bailador::Routing {
         } else {
             die 'cannot detect command';
         }
+
         self.baile($command);
     }
 
@@ -285,11 +287,11 @@ class Bailador::App does Bailador::Routing {
 
         $.config.load-from-args(@args);
         my $cmd = $.commands.get-command($command);
-
         die 'can only baile once' if $!started;
         $!started = True;
 
         $.before-run();
+        $.plugins.detect($!config);
         $cmd.run(app => self );
     }
 
