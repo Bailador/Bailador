@@ -13,11 +13,11 @@ use Bailador::Context;
 use Bailador::Exceptions;
 use Bailador::Log::Adapter;
 use Bailador::Log::Formatter;
+use Bailador::Plugins;
 use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
 use Bailador::Template::Mojo;
-use Bailador::Plugins;
 
 class Bailador::App does Bailador::Routing {
     # has Str $.location is rw = get-app-root().absolute;
