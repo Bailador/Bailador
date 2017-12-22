@@ -2,29 +2,29 @@ use v6.c;
 
 use Bailador::Configuration;
 
-class Bailador::Plugins {
-    has %.plugins = {};
+role Bailador::Plugin {
+    has %.config;
+}
 
-    method add-namespace(Str:D $namespace) {
-        @.namespaces.push: $namespace;
+class Bailador::Plugins {
+    has %!plugins = {};
+
+    method add(Str:D $name, Bailador::Plugin:D $plugin) {
+        %!plugins.{$name} = $plugin; 
     }
 
-    method get(Str:D $plugin) {
-        return %.plugins.{$plugin};
+    method get(Str:D $name) {
+        return %!plugins.{$name};
     }
 
     method detect(Bailador::Configuration $config) {
-        for $config.plugins.keys -> $plugin {
-            my $plugin_conf= $config.plugins{$plugin};
-            my $module = 'Bailador::Plugin::' ~ $plugin;
+        for $config.plugins.keys -> $name {
+            my $plugin_conf= $config.plugins{$name};
+            my $package = 'Bailador::Plugin::' ~ $name;
             try {
-                require ::($module);
-                 %.plugins.{$plugin} = ::($module).new(config => $plugin_conf);
+                require ::($package);
+                 $.add($name, ::($package).new(config => $plugin_conf));
             }
         }
     }
-}
-
-role Bailador::Plugin {
-    has %.config;
 }
