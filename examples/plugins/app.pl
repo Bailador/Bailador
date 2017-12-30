@@ -8,9 +8,10 @@ use Bailador::Plugin::Example;
 use Data::Dump;
 
 get '/' => sub {
-    app.plugins.add('Example', Bailador::Plugin::Example.new(config => {param => 'Test'}) );
-    say Dump app.plugins;
-    template 'index.tt', { title => 'Plugin Example' };
+    template 'index.tt', {
+        title => 'Plugin Example',
+        plugin_text => app.plugins.get('Example').sample
+    };
 }
 
 baile();
