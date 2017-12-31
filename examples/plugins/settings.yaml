@@ -1,0 +1,4 @@
+
+plugins:
+  Example:
+    param: 1

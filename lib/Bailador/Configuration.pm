@@ -18,6 +18,7 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+    has Hash $.plugins is rw;
 
     # https and tls stuff
     has Bool $.tls-mode is rw = False;

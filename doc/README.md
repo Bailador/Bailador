@@ -19,6 +19,7 @@
         - [`redirect(Str $location)`](#redirectstr-location)
         - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
         - [`config()`](#config)
+        - [`plugins()`](#plugins)
         - [`set(Str $key, $value)`](#setstr-key-value)
         - [`baile()`](#baile)
     - [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
@@ -206,6 +207,23 @@ Sets the Renderer that's being used to render your templates. See the [Templates
 
 Returns the configuration. You can influence how sessions work, the mode, port and host of your Bailador app.
 See the [Sessions](#sessions) and [Configuration](#configuration) sections for details.
+
+#### `plugins()`
+
+Returns the object from the collection class Bailador::Plugins it contains all configured and loaded plugins.
+See [Configuration](#configuration) sections for how to configure a plugin.
+Following methods are available:
+
+```perl6
+# public method to add a plugin on runtime.
+app.plugins.add('Example', Bailador::Plugin::Example.new(config => {param => 'Test'}) );
+
+# public method to get a plugin by name
+app.plugins.get('Example');
+
+# public method to detect configured plugins and add it to collection via the containing public method add
+app.plugins.detect(app.config);
+```
 
 #### `set(Str $key, $value)`
 
@@ -417,6 +435,10 @@ For now, Bailador only allows you to use YAML formatted configuration files. The
 # settings.yaml
 mode: "development"
 port: 8080
+
+plugins:
+    Example:
+        foo: bar
 ```
 
 Bailador will now generate 2 more config file variants and process the settings from there. In our example `settings-local.yaml` and, depending on our `config.mode` which is development, a file named `settings-development.yaml`. If our mode was production Bailador would have used `settings-production.yaml`.
