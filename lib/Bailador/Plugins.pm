@@ -10,7 +10,7 @@ class Bailador::Plugins {
     has %!plugins = {};
 
     method add(Str:D $name, Bailador::Plugin:D $plugin) {
-        %!plugins.{$name} = $plugin; 
+        %!plugins.{$name} = $plugin;
     }
 
     method get(Str:D $name) {
