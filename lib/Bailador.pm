@@ -43,6 +43,10 @@ sub use-feature(Str $feature-name) is export {
     app() does ::($feature);
 }
 
+sub hook(Pair $x) is export {
+    app.hook($x);
+}
+
 sub get(Pair $x) is export {
     app.add_route: make-route('GET', $x, :$container);
     return $x;

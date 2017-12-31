@@ -1,8 +1,9 @@
 use v6.c;
 
 use Bailador::Configuration;
+use Bailador::Hookable;
 
-role Bailador::Plugin {
+role Bailador::Plugin does Bailador::Hookable {
     has %.config;
 }
 
@@ -15,6 +16,10 @@ class Bailador::Plugins {
 
     method get(Str:D $name) {
         return %!plugins.{$name};
+    }
+
+    method getall() {
+        return %!plugins.values;
     }
 
     method detect(Bailador::Configuration $config) {

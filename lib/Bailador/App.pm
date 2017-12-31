@@ -33,6 +33,30 @@ class Bailador::App does Bailador::Routing {
     has Bailador::Log::Adapter $.log-adapter = Bailador::Log::Adapter.new;
     has %.error_handlers;
 
+    method supported-hooks() {
+        return ('before-add-routes', 'before-run');
+    }
+
+    method !for-hook-candidate(Str:D $name, Callable $code) {
+        if self.has-hook($name) {
+            $code.(self);
+        } else {
+            # plugins can define their own hooks
+            for $.plugins.getall.grep({ $_.has-hook($name)}) -> $candidate {
+                $code.($candidate);
+            }
+        }
+    }
+
+    method hook(Pair $hook) {
+        my $name = $hook.key;
+        self!for-hook-candidate($name, { $_.add-hook($hook) });
+    }
+
+    method !execute-hook(Str:D $name) {
+        self!for-hook-candidate($name, { $_.invoke-hook($name) });
+    }
+
     method load-config {
         if %*ENV<BAILADOR_CONFIGDIR> {
             $!config.config-dir = %*ENV<BAILADOR_CONFIGDIR>;
@@ -101,11 +125,6 @@ class Bailador::App does Bailador::Routing {
         }
     }
 
-    method before-add-routes() {
-        # this is a good place for a hook
-        self.load-config();
-    }
-
     # do not use $!location outside of this subs
     multi method location(Str $location) {
         if $!location.defined {
@@ -114,7 +133,8 @@ class Bailador::App does Bailador::Routing {
         $!location = $location;
 
         # call after $!location is defined
-        self.before-add-routes();
+        self.load-config();
+        self.invoke-hook('before-add-routes');
     }
     multi method location() {
         unless $!location.defined {
@@ -131,15 +151,6 @@ class Bailador::App does Bailador::Routing {
             self.location($app-root.Str);
         }
         return $!location;
-    }
-
-    method before-run() {
-        # probably a good place for a hook
-
-        # Configure logging system
-        use Bailador::Log;
-        init( config => self.config, p6w-adapter => self.log-adapter );
-        self!generate-head-routes(self);
     }
 
     method !generate-head-routes(Bailador::Routing $route) {
@@ -290,7 +301,13 @@ class Bailador::App does Bailador::Routing {
         die 'can only baile once' if $!started;
         $!started = True;
 
-        $.before-run();
+        # Configure logging system
+        use Bailador::Log;
+        init( config => self.config, p6w-adapter => self.log-adapter );
+        self!generate-head-routes(self);
+
+        self.invoke-hook('before-run');
+
         $.plugins.detect($!config);
         $cmd.run(app => self );
     }
