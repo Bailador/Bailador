@@ -134,8 +134,13 @@ class Bailador::Configuration {
                 self.load-from-hash(%config);
                 return;
             }
-            warn 'Error while loading the YAML config file.';
-            warn 'Bailador will use his default configuration.';
+            warn qq:to/WARNING/;
+            Error while loading the YAML config file.
+            Bailador will use his default configuration :
+                Mode : production
+                Host : 127.0.0.1
+                Port : 3000
+            WARNING
         }
     }
 
