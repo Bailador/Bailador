@@ -136,10 +136,7 @@ class Bailador::Configuration {
             }
             warn qq:to/WARNING/;
             Error while loading the YAML config file.
-            Bailador will use his default configuration :
-                Mode : production
-                Host : 127.0.0.1
-                Port : 3000
+            Bailador will use his default configuration.
             WARNING
         }
     }
