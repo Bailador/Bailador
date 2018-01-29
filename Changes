@@ -1,3 +1,5 @@
+    - Export the from-json method from JOSN::Fast
+
 0.0.14 2017.11.07
     - Improvment of the logging functionality in Bailador - Thanks to jsimonet++
     - Ticket #151, #278, #277
