@@ -32,6 +32,7 @@
         - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
         - [`session()`](#session)
         - [`to-json()`](#to-json)
+        - [`from-json()`](#from-json)
         - [`render($content)`](#render-content)
         - [`render(Int :$status, Str :$type is copy, :$content is copy)`](#renderint-status-str-type-is-copy-content-is-copy)
         - [`render-file(Str $filename, Str :$mime-type)`](#render-filestr-filename-strmime-type)
@@ -285,6 +286,10 @@ Check out the [session example](../examples/sessions/sessions.pl6).
 Converts your data into JSON format using JSON::Fast.
 
 Check out the [api example](../examples/api/api.pl6) and the corresponding [test case](../t/30-examples-api.t).
+
+### `from-json()`
+
+Converts your data from JSON format using JSON::Fast.
 
 #### `render($content)`
 #### `render(Int :$status, Str :$type is copy, :$content is copy)`

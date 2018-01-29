@@ -15,6 +15,7 @@ my $container;
 
 my package EXPORT::DEFAULT {
     OUR::{'&to-json'} := &to-json;
+    OUR::{'&from-json'} := &from-json;
 }
 
 multi sub app {
