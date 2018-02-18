@@ -20,6 +20,9 @@
   "build-depends" : [
     "TAP::Harness"
   ],
+  "test-depends" : [
+    "TAP::Harness"
+  ],
   "depends" : [
     "Digest",
     "Digest::HMAC",
