@@ -12,8 +12,8 @@ install:
     - docker exec -it bailador-test zef --verbose --deps-only install .
     
 script:
-    - docker exec -it bailador-test prove6 --loose -v xt
-    - docker exec -it bailador-test prove6 --loose -v t
+    - docker exec -it bailador-test prove6 -l --loose -v xt
+    - docker exec -it bailador-test prove6 -l --loose -v t
     
 after_success:
     - docker stop bailador-test

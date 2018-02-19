@@ -17,11 +17,8 @@
     "Emeric Fischer",
     "Julien Simonet (jsimonet)"
   ],
-  "build-depends" : [
-    "TAP::Harness"
-  ],
   "test-depends" : [
-    "TAP::Harness"
+    "Tap::Harness"
   ],
   "depends" : [
     "Digest",
