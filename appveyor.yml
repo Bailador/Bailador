@@ -18,6 +18,7 @@ install:
 # https://github.com/labster/p6-file-directory-tree/issues/12
   - zef --force install File::Directory::Tree
   - zef --force install Log::Any
+  - zef --force install HTTP::Server::Ogre
   - SET AUTHOR_TESTING=1
   - zef --verbose --depsonly install .
 

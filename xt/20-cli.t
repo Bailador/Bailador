@@ -130,7 +130,7 @@ subtest {
         my $err = $p.err.slurp: :close;
         is $err, '';
     } else {
-        skip 'prove6 is not available - you need to install Tap::Harness before Baialdor installs it as a dependency', 3;
+        skip 'prove6 is not available - you need to install Tap::Harness before Bailador installs it as a dependency', 3;
     }
     # diag $err;
     chdir '..';
