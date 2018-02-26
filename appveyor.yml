@@ -19,6 +19,7 @@ install:
   - zef --force install File::Directory::Tree
   - zef --force install Log::Any
   - zef --force install HTTP::Server::Ogre
+  - zef --force install TAP::Harness
   - SET AUTHOR_TESTING=1
   - zef --verbose --depsonly install .
 
