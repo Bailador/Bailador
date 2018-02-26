@@ -23,6 +23,8 @@ install:
   - zef --verbose --depsonly install .
 
 test_script:
-  - prove -v -e "perl6 -Ilib" t/
+  #- prove -v -e "perl6 -Ilib" t/
+  - prove6 -l --loose -v xt
+  - prove6 -l --loose -v t
 
 shallow_clone: true
