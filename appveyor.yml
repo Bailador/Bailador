@@ -10,7 +10,7 @@ install:
   - SET PATH=C:\strawberry\c\bin;C:\strawberry\perl\site\bin;C:\strawberry\perl\bin;%PATH%
   - git clone https://github.com/tadzik/rakudobrew %USERPROFILE%\rakudobrew
   - SET PATH=%USERPROFILE%\rakudobrew\bin;%PATH%
-  - rakudobrew build moar 2017.08
+  - rakudobrew build moar 2018.01
   - rakudobrew build zef
   - cd %APPVEYOR_BUILD_FOLDER%
   - zef install Test::META
