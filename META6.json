@@ -18,7 +18,7 @@
     "Julien Simonet (jsimonet)"
   ],
   "test-depends" : [
-    "Tap::Harness"
+    "TAP::Harness"
   ],
   "depends" : [
     "Digest",
