@@ -20,7 +20,7 @@ install:
   - zef --force install Log::Any
   - zef --force install HTTP::Server::Ogre
   - zef --force install TAP::Harness
-  - SET PATH=C:\Users\appveyor\rakudobrew\moar-2017.08\install\share\perl6\site\bin;%PATH%
+  - SET PATH=C:\Users\appveyor\rakudobrew\moar-2018.01\install\share\perl6\site\bin;%PATH%
   - SET AUTHOR_TESTING=1
   - zef --verbose --depsonly install .
 
