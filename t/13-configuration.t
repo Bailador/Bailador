@@ -48,6 +48,7 @@ END {
 
 spurt $file, $content;
 
+# test 2
 ## Test configuration from a file
 subtest {
     plan 10;
