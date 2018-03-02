@@ -91,7 +91,7 @@ subtest {
 
 }, 'Bailador::Log::Formatter';
 
-# Note: On Windows the dollowing tests all fail
+# Note: On Windows the following tests all fail
 # They are skipped for now.
 
 if $*DISTRO. is-win {

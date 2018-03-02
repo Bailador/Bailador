@@ -4,6 +4,11 @@ use Test;
 
 use Bailador::Test;
 
+if $*DISTRO.is-win {
+    skip-rest "The following subtests fail to run on Windows.";
+    exit;
+}
+
 plan 4;
 
 chdir 'examples/templates';
@@ -59,4 +64,3 @@ subtest {
 
 # vim: expandtab
 # vim: tabstop=4
-

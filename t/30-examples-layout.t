@@ -4,6 +4,11 @@ use Test;
 
 use Bailador::Test;
 
+if $*DISTRO.is-win {
+    skip-rest "The following subtests fail to run on Windows.";
+    exit;
+}
+
 plan 2;
 
 chdir 'examples/layout';
