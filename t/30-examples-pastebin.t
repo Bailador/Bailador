@@ -19,16 +19,16 @@ if $*DISTRO.is-win {
     skip "Skipping failing Windows test...";
 }
 else {
-    subtest {
-        plan 2;
-        my %data = run-psgi-request($app, 'GET', '/');
-        my $main_html = qq{<form action='/new_paste' method='post'>
-            <textarea name='content' cols=50 rows=10></textarea><br />
-            <input type='submit' value='Paste it!' />
-            </form>
-        };
-        is-deeply %data<response>, [200, ["Content-Type" => "text/html"], $main_html], 'route GET /';
-        is %data<err>, '';
+subtest {
+    plan 2;
+    my %data = run-psgi-request($app, 'GET', '/');
+    my $main_html = qq{<form action='/new_paste' method='post'>
+    <textarea name='content' cols=50 rows=10></textarea><br />
+    <input type='submit' value='Paste it!' />
+</form>
+};
+    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], $main_html], 'route GET /';
+    is %data<err>, '';
 
     }, '/';
 }

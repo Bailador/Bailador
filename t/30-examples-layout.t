@@ -4,12 +4,12 @@ use Test;
 
 use Bailador::Test;
 
+plan 2;
+
 if $*DISTRO.is-win {
     skip-rest "The following subtests fail to run on Windows.";
     exit;
 }
-
-plan 2;
 
 chdir 'examples/layout';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
