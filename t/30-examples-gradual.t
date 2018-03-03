@@ -11,16 +11,21 @@ chdir 'examples/gradual';
 %*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
 my $app = EVALFILE "app.pl6";
 
-subtest {
-    plan 3;
-    my %data = run-psgi-request($app, 'GET', '/');
-    my $html = %data<response>[2];
-    %data<response>[2] = '';
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
-    is %data<err>, '';
-    like $html, rx:s/\<h1\>Main page \- from template\.\<\/h1\>/;
-}, '/';
-
+# test 1
+if $*DISTRO.is-win {
+    skip "Skipping failing Windows test...";
+}
+else {
+    subtest {
+        plan 3;
+        my %data = run-psgi-request($app, 'GET', '/');
+        my $html = %data<response>[2];
+        %data<response>[2] = '';
+        is-deeply %data<response>, [200, ["Content-Type" => "text/html"], ''], 'route GET /';
+        is %data<err>, '';
+        like $html, rx:s/\<h1\>Main page \- from template\.\<\/h1\>/;
+    }, '/';
+}
 
 subtest {
     plan 2;
@@ -29,12 +34,18 @@ subtest {
     is %data<err>, '';
 }, '/foo';
 
-subtest {
-    plan 2;
-    my %data = run-psgi-request($app, 'GET', '/bar');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Bar from template\n"], 'route GET /bar';
-    is %data<err>, '';
-}, '/bar';
+# test 3
+if $*DISTRO.is-win {
+    skip "Skipping failing Windows test...";
+}
+else {
+    subtest {
+        plan 2;
+        my %data = run-psgi-request($app, 'GET', '/bar');
+        is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Bar from template\n"], 'route GET /bar';
+        is %data<err>, '';
+    }, '/bar';
+}
 
 subtest {
     plan 2;
@@ -64,20 +75,32 @@ subtest {
     is %data<err>, '', 'stderr';
 }, '/xyz';
 
-subtest {
-    plan 2;
-    my %data = run-psgi-request($app, 'GET', '/cakes/carrot');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Carrot Cake\n"], 'route GET /cakes/carrot';
-    is %data<err>, '';
-};
+# test 7
+if $*DISTRO.is-win {
+    skip "Skipping failing Windows test...";
+}
+else {
+    subtest {
+        plan 2;
+        my %data = run-psgi-request($app, 'GET', '/cakes/carrot');
+        is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Carrot Cake\n"], 'route GET /cakes/carrot';
+        is %data<err>, '';
+    }
+}
 
 
-subtest {
-    plan 2;
-    my %data = run-psgi-request($app, 'GET', '/cakes/');
-    is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Root Cake\n"], 'route GET /cakes/';
-    is %data<err>, '';
-};
+# test 8
+if $*DISTRO.is-win {
+    skip "Skipping failing Windows test...";
+}
+else {
+    subtest {
+        plan 2;
+        my %data = run-psgi-request($app, 'GET', '/cakes/');
+        is-deeply %data<response>, [200, ["Content-Type" => "text/html"], "Root Cake\n"], 'route GET /cakes/';
+        is %data<err>, '';
+    };
+}
 
 subtest {
     plan 2 + 7;

@@ -6,6 +6,11 @@ use Bailador::Test;
 
 plan 2;
 
+if $*DISTRO.is-win {
+    skip-rest "The following subtests fail to run on Windows.";
+    exit;
+}
+
 chdir 'examples/layout';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 %*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;

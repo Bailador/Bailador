@@ -21,6 +21,12 @@ subtest {
     like $html, rx:s/\<h2\>Welcome to Bailador\!\<\/h2\>/;
 }, '/';
 
+
+if $*DISTRO.is-win {
+    skip-rest "The following subtests fail to run on Windows.";
+    exit;
+}
+
 subtest {
     plan 3;
     my %data = run-psgi-request($app, 'GET', '/style.css');

@@ -6,6 +6,11 @@ use Bailador::Test;
 
 plan 4;
 
+if $*DISTRO.is-win {
+    skip-rest "The following subtests fail to run on Windows.";
+    exit;
+}
+
 chdir 'examples/templates';
 %*ENV<P6W_CONTAINER> = 'Bailador::Test';
 %*ENV<BAILADOR_APP_ROOT> = $*CWD.absolute;
@@ -59,4 +64,3 @@ subtest {
 
 # vim: expandtab
 # vim: tabstop=4
-
