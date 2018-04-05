@@ -50,11 +50,11 @@ class Bailador::App does Bailador::Routing {
 
     method hook(Pair $hook) {
         my $name = $hook.key;
-        self!for-hook-candidate($name, { $_.add-hook($hook) });
+        self!for-hook-candidate($name, { $_.add-hooks($hook) });
     }
 
     method !execute-hook(Str:D $name) {
-        self!for-hook-candidate($name, { $_.invoke-hook($name) });
+        self!for-hook-candidate($name, { $_.invoke-hooks($name) });
     }
 
     method load-config {
@@ -134,7 +134,7 @@ class Bailador::App does Bailador::Routing {
 
         # call after $!location is defined
         self.load-config();
-        self.invoke-hook('before-add-routes');
+        self.invoke-hooks('before-add-routes');
     }
     multi method location() {
         unless $!location.defined {
