@@ -1,3 +1,5 @@
+    - Minor improvment a of a warning message
+    - Add a configurable plugin system
     - Export the from-json method from JOSN::Fast
 
 0.0.14 2017.11.07
