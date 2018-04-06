@@ -1,3 +1,4 @@
+    - Ticket #288 - silenced test
     - Ticket #284 - subtests failures with Tap::Harness
     - Minor improvment a of a warning message
     - Add a configurable plugin system
