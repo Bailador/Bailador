@@ -102,6 +102,5 @@
     "HTTP",
     "Net"
   ],
-  "test-depends" : [ ],
   "version" : "0.0.14"
 }
