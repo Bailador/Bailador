@@ -1,4 +1,5 @@
 {
+  "auth" : "github:Bailador",
   "authors" : [
     "Tadeusz \u201ctadzik\u201d So\u015bnierz",
     "Anthony Parsons",
@@ -17,9 +18,7 @@
     "Emeric Fischer",
     "Julien Simonet (jsimonet)"
   ],
-  "test-depends" : [
-    "TAP::Harness"
-  ],
+  "build-depends" : [ ],
   "depends" : [
     "Digest",
     "Digest::HMAC",
@@ -102,5 +101,8 @@
     "HTTP",
     "Net"
   ],
-  "version" : "0.0.14"
+  "test-depends" : [
+    "TAP::Harness"
+  ],
+  "version" : "0.0.15"
 }
