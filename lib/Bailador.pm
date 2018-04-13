@@ -8,13 +8,14 @@ use Bailador::Request;
 use Bailador::RouteHelper;
 use Bailador::Template;
 
-unit module Bailador:ver<0.0.14>:auth<github:Bailador>;
+unit module Bailador:ver<0.0.15>:auth<github:Bailador>;
 
 my $app;
 my $container;
 
 my package EXPORT::DEFAULT {
     OUR::{'&to-json'} := &to-json;
+    OUR::{'&from-json'} := &from-json;
 }
 
 multi sub app {

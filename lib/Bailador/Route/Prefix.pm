@@ -10,7 +10,7 @@ class Bailador::Route::Prefix does Bailador::Route {
         self.BUILD-ROLE(|%_);
     }
     method execute(Match $match) {
-        return $.prefix-enter-code.(| $match.list) if $.prefix-enter-code;
+        return so $.prefix-enter-code.(| $match.list) if $.prefix-enter-code;
         return True;
     }
 

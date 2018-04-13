@@ -14,7 +14,7 @@ get '/x' => { '/x' };
 
 prefix '' => sub {
     prefix-enter sub {
-        say "# prefix-enter for \"\"";
+        diag "prefix-enter for \"\"";
     };
     get '/inempty' => sub { '/inempty' };
 };
@@ -26,7 +26,7 @@ prefix '/abc' => sub {
 
 prefix '/xyz/:foo' => sub {
     prefix-enter sub ($number) {
-        say "# prefix enter for /xyz/:foo  -URL: " ~  request.uri;
+        diag "prefix enter for /xyz/:foo  -URL: " ~  request.uri;
         $prefixone-execution++;
         return ($number %% 2);
     };
@@ -35,7 +35,7 @@ prefix '/xyz/:foo' => sub {
 
     prefix '/next' => sub {
         prefix-enter sub {
-            say "# prefix enter for /match  -URL: " ~ request.uri;
+            diag "prefix enter for /match  -URL: " ~ request.uri;
             $prefixtwo-execution++;
             return True;
         };
@@ -64,7 +64,6 @@ subtest {
     is-deeply get-psgi-response($p6w-app, 'GET', '/inempty'),   [200, ["Content-Type" => "text/html"], '/inempty'], 'route GET /inempty';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo not executed');
     is($prefixtwo-execution , 0 , 'prefix /xyz/:foo/next not executed');
-
     is-deeply get-psgi-response($p6w-app, 'GET', '/abc/x'),   [200, ["Content-Type" => "text/html"], '/abc/x'], 'route GET /abc/x';
     is-deeply get-psgi-response($p6w-app, 'GET', '/abc/y'),   [200, ["Content-Type" => "text/html"], '/abc/y'], 'route GET /abc/y';
     is($prefixone-execution , 0 , 'prefix /xyz/:foo not executed');

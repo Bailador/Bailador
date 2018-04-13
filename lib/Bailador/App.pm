@@ -13,6 +13,7 @@ use Bailador::Context;
 use Bailador::Exceptions;
 use Bailador::Log::Adapter;
 use Bailador::Log::Formatter;
+use Bailador::Plugins;
 use Bailador::Route;
 use Bailador::Route::AutoHead;
 use Bailador::Sessions;
@@ -28,6 +29,7 @@ class Bailador::App does Bailador::Routing {
     has Bailador::Sessions $!sessions;
     has Bailador::Configuration $.config = Bailador::Configuration.new;
     has Bailador::Commands $.commands = Bailador::Commands.new;
+    has Bailador::Plugins $.plugins = Bailador::Plugins.new;
     has Bailador::Log::Adapter $.log-adapter = Bailador::Log::Adapter.new;
     has %.error_handlers;
 
@@ -107,7 +109,7 @@ class Bailador::App does Bailador::Routing {
     # do not use $!location outside of this subs
     multi method location(Str $location) {
         if $!location.defined {
-            die "can not set location, it is already defined. Set it before you add the first route";
+            die "cannot set location, it is already defined. Set it before you add the first route";
         }
         $!location = $location;
 
@@ -137,7 +139,6 @@ class Bailador::App does Bailador::Routing {
         # Configure logging system
         use Bailador::Log;
         init( config => self.config, p6w-adapter => self.log-adapter );
-
         self!generate-head-routes(self);
     }
 
@@ -273,8 +274,9 @@ class Bailador::App does Bailador::Routing {
         } elsif $.config.command-detection() {
             $command = $.commands.detect-command();
         } else {
-            die 'can not detect command';
+            die 'cannot detect command';
         }
+
         self.baile($command);
     }
 
@@ -285,11 +287,11 @@ class Bailador::App does Bailador::Routing {
 
         $.config.load-from-args(@args);
         my $cmd = $.commands.get-command($command);
-
         die 'can only baile once' if $!started;
         $!started = True;
 
         $.before-run();
+        $.plugins.detect($!config);
         $cmd.run(app => self );
     }
 

@@ -1,4 +1,5 @@
 {
+  "auth" : "github:Bailador",
   "authors" : [
     "Tadeusz \u201ctadzik\u201d So\u015bnierz",
     "Anthony Parsons",
@@ -17,9 +18,7 @@
     "Emeric Fischer",
     "Julien Simonet (jsimonet)"
   ],
-  "build-depends" : [
-    "TAP::Harness"
-  ],
+  "build-depends" : [ ],
   "depends" : [
     "Digest",
     "Digest::HMAC",
@@ -65,6 +64,7 @@
     "Bailador::Log" : "lib/Bailador/Log.pm",
     "Bailador::Log::Adapter" : "lib/Bailador/Log/Adapter.pm",
     "Bailador::Log::Formatter" : "lib/Bailador/Log/Formatter.pm",
+    "Bailador::Plugins" : "lib/Bailador/Plugins.pm",
     "Bailador::Request" : "lib/Bailador/Request.pm",
     "Bailador::Request::Multipart" : "lib/Bailador/Request/Multipart.pm",
     "Bailador::Response" : "lib/Bailador/Response.pm",
@@ -101,6 +101,8 @@
     "HTTP",
     "Net"
   ],
-  "test-depends" : [ ],
-  "version" : "0.0.14"
+  "test-depends" : [
+    "TAP::Harness"
+  ],
+  "version" : "0.0.15"
 }

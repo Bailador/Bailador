@@ -18,6 +18,7 @@ class Bailador::Configuration {
     has Int $.port is rw                                  = 3000;
     has Str $.views is rw                                 = 'views';
     has Str $.layout is rw;
+    has Hash $.plugins is rw;
 
     # https and tls stuff
     has Bool $.tls-mode is rw = False;
@@ -133,8 +134,10 @@ class Bailador::Configuration {
                 self.load-from-hash(%config);
                 return;
             }
-            warn 'Error while loading the YAML config file.';
-            warn 'Bailador will use his default configuration.';
+            warn qq:to/WARNING/;
+            Error while loading the YAML config file.
+            Bailador will use his default configuration.
+            WARNING
         }
     }
 

@@ -19,6 +19,7 @@
         - [`redirect(Str $location)`](#redirectstr-location)
         - [`renderer(Bailador::Template $renderer)`](#rendererbailadortemplate-renderer)
         - [`config()`](#config)
+        - [`plugins()`](#plugins)
         - [`set(Str $key, $value)`](#setstr-key-value)
         - [`baile()`](#baile)
     - [Subroutines that should only be used inside the Code block of a Route](#subroutines-that-sould-only-be-used-inside-the-code-block-of-a-route)
@@ -31,6 +32,7 @@
         - [`template(Str $template-name, *@params)`](#templatestr-template-name-params)
         - [`session()`](#session)
         - [`to-json()`](#to-json)
+        - [`from-json()`](#from-json)
         - [`render($content)`](#render-content)
         - [`render(Int :$status, Str :$type is copy, :$content is copy)`](#renderint-status-str-type-is-copy-content-is-copy)
         - [`render-file(Str $filename, Str :$mime-type)`](#render-filestr-filename-strmime-type)
@@ -207,6 +209,23 @@ Sets the Renderer that's being used to render your templates. See the [Templates
 Returns the configuration. You can influence how sessions work, the mode, port and host of your Bailador app.
 See the [Sessions](#sessions) and [Configuration](#configuration) sections for details.
 
+#### `plugins()`
+
+Returns the object from the collection class Bailador::Plugins it contains all configured and loaded plugins.
+See [Configuration](#configuration) sections for how to configure a plugin.
+Following methods are available:
+
+```perl6
+# public method to add a plugin on runtime.
+app.plugins.add('Example', Bailador::Plugin::Example.new(config => {param => 'Test'}) );
+
+# public method to get a plugin by name
+app.plugins.get('Example');
+
+# public method to detect configured plugins and add it to collection via the containing public method add
+app.plugins.detect(app.config);
+```
+
 #### `set(Str $key, $value)`
 
 This is a simple way to set values in the config.
@@ -267,6 +286,10 @@ Check out the [session example](../examples/sessions/sessions.pl6).
 Converts your data into JSON format using JSON::Fast.
 
 Check out the [api example](../examples/api/api.pl6) and the corresponding [test case](../t/30-examples-api.t).
+
+### `from-json()`
+
+Converts your data from JSON format using JSON::Fast.
 
 #### `render($content)`
 #### `render(Int :$status, Str :$type is copy, :$content is copy)`
@@ -417,6 +440,10 @@ For now, Bailador only allows you to use YAML formatted configuration files. The
 # settings.yaml
 mode: "development"
 port: 8080
+
+plugins:
+    Example:
+        foo: bar
 ```
 
 Bailador will now generate 2 more config file variants and process the settings from there. In our example `settings-local.yaml` and, depending on our `config.mode` which is development, a file named `settings-development.yaml`. If our mode was production Bailador would have used `settings-production.yaml`.
