@@ -129,3 +129,16 @@ sub get-psgi-env($meth, $url, $data, %headers, ErrorBuffer $error-buf) {
 }
 
 sub read-logs is export { ... }
+
+sub test-psgi-response($response, $expectation, $message) is export {
+    subtest $message => {
+        plan 4;
+        is $response.elems, $expectation.elems, 'response length is correct';
+        is $response[0], $expectation[0], 'status code is correct';
+
+        # headers are a list of pairs - and unsorted
+        is-deeply $response[1].Hash, $expectation[1].Hash, 'headers are complete';
+
+        is-deeply $response[2], $expectation[2], 'response body is correct';
+    }
+}

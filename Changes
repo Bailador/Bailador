@@ -1,3 +1,6 @@
+    - Added `test-psgi-response` because responses with more then 1 header failed randomly
+
+0.0.15 2018.04.13
     - Ticket #288 - silenced test
     - Ticket #284 - subtests failures with Tap::Harness
     - Minor improvment a of a warning message
