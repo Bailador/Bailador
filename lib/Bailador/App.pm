@@ -125,9 +125,9 @@ class Bailador::App does Bailador::Routing {
                 my $parent = $*PROGRAM.parent.resolve;
                 $app-root = $parent.basename eq 'bin' ?? $parent.parent !! $parent;
             }
-            if $*DISTRO.is-win {
-                $app-root.=subst(/\\/, '', :x(1));
-            }
+            # if $*DISTRO.is-win {
+                # $app-root.=subst(/\\/, '', :x(1));
+            # }
             self.location($app-root.Str);
         }
         return $!location;
