@@ -47,7 +47,7 @@ $ rakudobrew rehash
 
 At the command prompt, create a new Bailador application:
 ```
-$ bailador --name App-Name new
+$ bailador new App-Name
 ```
 Then, change directory to `App-Name` and start the web server:
 ```
