@@ -66,7 +66,7 @@ class Bailador::App does Bailador::Routing {
             my $layout-template = self!templatefile-extentions($.location.IO.child('layout').child($use-this-layout).Str);
             if $layout-template {
                 Log::Any.debug("Rendering with layout $use-this-layout");
-                $content = $!renderer.render($layout-template, $content);;
+                $content = $!renderer.render($layout-template, $content, |@params, |%params);
             }
         } else {
             Log::Any.debug("Rendering without a layout");
