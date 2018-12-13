@@ -51,9 +51,10 @@ is-deeply $res[1], ["Content-Type" => "text/html"], 'header';
 todo 'returning complex structs NYI';
 is-deeply $res[2], { foo => "bar", baz => 5 }; # this should be json, right?
 
-is-deeply get-psgi-response($p6w-app, 'GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
 
-is-deeply get-psgi-response($p6w-app, 'GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
+test-psgi-response get-psgi-response($p6w-app, 'GET', '/header1'), [ 200, ["X-Test" => "header1", "Content-Type" => "text/html" ], "added header X-Test" ], 'ROUTE GET /header1 sends an extra header';
+
+test-psgi-response get-psgi-response($p6w-app, 'GET',  '/header2'),  [ 200, ["X-Again" => "header2", "Content-Type" => "text/html"], 'added header X-Again' ], 'ROUTE GET /header2 sends an extra and does not include headers from previous requests';
 
 my @hex = ('A'..'F', 'a'..'f', 0..9).flat;
 for @hex -> $first {

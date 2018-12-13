@@ -1,3 +1,11 @@
+0.0.17 2018.12.13
+    - Removed dependency of certain version of Log::Any (just be up to date ;)
+
+0.0.16 2018.12.13
+    - Fixed Issue #306 - params for layouts
+    - Added `test-psgi-response` because responses with more then 1 header failed randomly
+
+0.0.15 2018.04.13
     - Ticket #288 - silenced test
     - Ticket #284 - subtests failures with Tap::Harness
     - Minor improvment a of a warning message

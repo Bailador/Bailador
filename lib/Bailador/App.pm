@@ -1,7 +1,7 @@
 use v6.c;
 
 use HTTP::Status;
-use Log::Any:ver('0.9.4');
+use Log::Any;
 use Template::Mojo;
 use URI; # Used to parse log configuration
 use URI::Encode;
@@ -66,7 +66,7 @@ class Bailador::App does Bailador::Routing {
             my $layout-template = self!templatefile-extentions($.location.IO.child('layout').child($use-this-layout).Str);
             if $layout-template {
                 Log::Any.debug("Rendering with layout $use-this-layout");
-                $content = $!renderer.render($layout-template, $content);;
+                $content = $!renderer.render($layout-template, $content, |@params, |%params);
             }
         } else {
             Log::Any.debug("Rendering without a layout");
@@ -125,9 +125,9 @@ class Bailador::App does Bailador::Routing {
                 my $parent = $*PROGRAM.parent.resolve;
                 $app-root = $parent.basename eq 'bin' ?? $parent.parent !! $parent;
             }
-            if $*DISTRO.is-win {
-                $app-root.=subst(/\\/, '', :x(1));
-            }
+            # if $*DISTRO.is-win {
+                # $app-root.=subst(/\\/, '', :x(1));
+            # }
             self.location($app-root.Str);
         }
         return $!location;

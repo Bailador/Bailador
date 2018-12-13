@@ -1,7 +1,7 @@
 use v6.c;
 
 # Log::Any v 0.9.4 introduces extra-fields.
-use Log::Any::Formatter:ver('0.9.4');
+use Log::Any::Formatter;
 
 use Terminal::ANSIColor;
 
