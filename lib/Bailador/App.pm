@@ -1,7 +1,7 @@
 use v6.c;
 
 use HTTP::Status;
-use Log::Any:ver('0.9.4');
+use Log::Any;
 use Template::Mojo;
 use URI; # Used to parse log configuration
 use URI::Encode;
