@@ -39,7 +39,7 @@ my &by = sub ($a, $b) {
 if AUTHOR {
     # check for use v6.c;
     my @dirs = '.';
-    for Path::Finder.skip-vcs.ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
+    for find(@dirs, :skip-vcs, :ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /)) -> $file {
         my @lines = $file.lines;
         my @modules;
         for @lines -> $line {
