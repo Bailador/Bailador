@@ -31,7 +31,7 @@
     "HTTP::Status",
     "JSON::Fast",
     "Log::Any",
-    "Path::Iterator",
+    "Path::Finder",
     "Template::Mojo",
     "Template::Mustache",
     "Terminal::ANSIColor",
