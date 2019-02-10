@@ -1,7 +1,7 @@
 use v6.c;
 use lib 'lib';
 
-use Path::Iterator;
+use Path::Finder;
 use Test;
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
@@ -39,8 +39,8 @@ my &by = sub ($a, $b) {
 if AUTHOR {
     # check for use v6.c;
     my @dirs = '.';
-    for Path::Iterator.skip-vcs.ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
-        my @lines = $file.IO.lines;
+    for find(@dirs, :skip-vcs, :ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /)) -> $file {
+        my @lines = $file.lines;
         my @modules;
         for @lines -> $line {
             next if $line eq '#!/usr/bin/env perl6'|'';

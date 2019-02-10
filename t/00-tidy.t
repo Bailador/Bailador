@@ -1,7 +1,7 @@
 use v6.c;
 use lib 'lib';
 
-use Path::Iterator;
+use Path::Finder;
 use Test;
 
 constant AUTHOR = ?%*ENV<AUTHOR_TESTING>;
@@ -10,11 +10,10 @@ if AUTHOR {
     # check for trailing spaces
     # check for tabs
     my @dirs = '.';
-    for Path::Iterator.skip-vcs.skip-dir('.precomp').ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /).in(@dirs) -> $file {
+    for find(@dirs, :ext(rx/ ^ ( 'p' <[lm]> 6? | t ) $ /), :skip-vcs, :skip-dir<.precomp>) -> $file {
         check_tidy($file);
     }
-    for Path::Iterator.skip-vcs.skip-dir('.precomp').in('examples') -> $file {
-        next if not $file.f;
+    for find('examples', :file, :skip-vcs, :skip-dir('.precomp')) -> $file {
         check_tidy($file);
     }
     check_tidy('bin/bailador');
