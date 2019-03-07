@@ -1,3 +1,9 @@
+{{$NEXT}}
+
+0.0.18  2019-03-07T13:53:57+01:00
+    - Switchted back to "master branch" versioning mode
+    - Fixed dependency of Path::Iterator which is not Path::Finder
+
 0.0.17 2018.12.13
     - Removed dependency of certain version of Log::Any (just be up to date ;)
 
