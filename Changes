@@ -1,4 +1,7 @@
 {{$NEXT}}
+    - fixed a typo: ; instead of ,
+    - updated to the new URI module version, coercion to Str
+    - fixed the env in Bailador::Context to be rw
 
 0.0.18  2019-03-07T13:53:57+01:00
     - Switchted back to "master branch" versioning mode
