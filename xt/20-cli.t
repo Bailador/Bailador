@@ -120,7 +120,7 @@ subtest {
     my $prove6 = $*EXECUTABLE.parent.parent.child('share/perl6/site/bin/prove6');
     if $prove6.IO.e {
         # my $p = run($prove6, |@includes '-l', :out, :err);
-        my $p = run($prove6, "-I=$git_dir/lib", '-l', :out, :err);
+        my $p = run($prove6, '-I', "$git_dir/lib", '-l', :out, :err);
         my $exitcode = $p.exitcode;
         is $exitcode, 0, 'program terminated successfully';
         # diag "exitcode: " ~ $exitcode;
