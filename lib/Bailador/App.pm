@@ -245,7 +245,7 @@ class Bailador::App does Bailador::Routing {
         self!sessions.store(self.response, self.request.env);
     }
 
-    method log-request(DateTime $start, DateTime $end, Str $method, Str $uri, Int $http-code) {
+    method log-request(DateTime $start, DateTime $end, Str() $method, Str() $uri, Int $http-code) {
         my $env = self.context.env;
         my $severity = 'error';
         given $http-code {
@@ -337,7 +337,7 @@ class Bailador::App does Bailador::Routing {
         try {
             self!adjust-log-adapter($env),
             my $method = $env<REQUEST_METHOD>;
-            my $uri    = uri_decode( $env<PATH_INFO> // $env<REQUEST_URI>.split('?')[0] );
+            my $uri    = uri_decode( ($env<PATH_INFO> // $env<REQUEST_URI>).Str.split('?')[0] );
             my $result = self.recurse-on-routes($method, $uri);
 
             if $.context.autorender {

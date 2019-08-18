@@ -55,7 +55,7 @@ sub init( Bailador::Configuration:D :$config!, Log::Any::Adapter:D :$p6w-adapte
       }
       when 'file' {
         use Log::Any::Adapter::File;
-        $adapter = Log::Any::Adapter::File.new( :path($log-output-uri.path) );
+        $adapter = Log::Any::Adapter::File.new( :path($log-output-uri.path.Str) );
       }
       when 'p6w' {
         given $log-output-uri.path {

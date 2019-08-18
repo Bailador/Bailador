@@ -72,7 +72,7 @@ class Bailador::Request {
         return %ret;
     }
 
-    method !parse-urlencoded(Str $encoded) {
+    method !parse-urlencoded(Str() $encoded) {
         my %ret;
         for $encoded.split('&') -> $p {
             my @pair = $p.split('=', 2);
