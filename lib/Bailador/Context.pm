@@ -9,7 +9,7 @@ class Bailador::Context {
     has Bailador::Response $.response = Bailador::Response.new;
     has Bool $.autorender is rw = True;
 
-    method env {
+    method env is rw {
         Proxy.new(
             FETCH => { $!env },
             STORE => -> $, $value {
