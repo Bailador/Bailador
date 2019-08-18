@@ -1,4 +1,6 @@
 {{$NEXT}}
+
+0.0.19  2019-08-18T20:51:38+02:00
     - fixed xt/20-cli.t to use new prove6 -I argument passing
     - fixed a typo: ; instead of ,
     - updated to the new URI module version, coercion to Str
