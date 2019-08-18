@@ -335,7 +335,7 @@ class Bailador::App does Bailador::Routing {
         my DateTime $start = DateTime.now;
         self.context.env = $env;
         try {
-            self!adjust-log-adapter($env),
+            self!adjust-log-adapter($env);
             my $method = $env<REQUEST_METHOD>;
             my $uri    = uri_decode( ($env<PATH_INFO> // $env<REQUEST_URI>).Str.split('?')[0] );
             my $result = self.recurse-on-routes($method, $uri);
